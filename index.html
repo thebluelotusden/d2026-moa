@@ -1891,6 +1891,7 @@
     let firebaseUid = null;
     let firebaseDocRef = null;
     let firebaseOnline = false;
+    let isCloudLoaded = false;
 
     const STORAGE_KEY = "artistOutreachDashboard.v4";
     const THEME_KEY = "artistOutreachDashboard.theme.v1";
@@ -2271,6 +2272,7 @@
             firebaseUid = null;
             firebaseDocRef = null;
             firebaseOnline = false;
+            isCloudLoaded = false;
             setSignedInUi(false, "Sign in to view dashboard.");
             return;
           }
@@ -2318,11 +2320,13 @@
           saveLocalArtists();
           populateRegions();
           renderArtists();
+          isCloudLoaded = true;
           await saveState();
           saveStatus.textContent = "Cloud loaded";
         } else {
           artists = dedupeArtists(artists.length ? artists : baseArtists);
           saveLocalArtists();
+          isCloudLoaded = true;
           await saveState();
           saveStatus.textContent = "Shared cloud initialized";
         }
@@ -2374,6 +2378,10 @@
       saveStatus.textContent = "Saved local " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
 
       if (!firebaseOnline || !firebaseDocRef) return;
+      if (!isCloudLoaded) {
+        console.warn("Firestore write blocked: Cloud data not yet loaded.");
+        return;
+      }
 
       try {
         await setDoc(firebaseDocRef, {
@@ -3206,6 +3214,10 @@
       flipDashboardPanel(false);
 
       if (firebaseOnline && firebaseDocRef) {
+        if (!isCloudLoaded) {
+          console.warn("Firestore write blocked: Cloud data not yet loaded.");
+          return;
+        }
         try {
           saveStatus.textContent = "Saving cloud users...";
           await setDoc(firebaseDocRef, {
@@ -3303,6 +3315,10 @@
       closeSlideUpPanelForce();
       
       if (firebaseOnline && firebaseDocRef) {
+        if (!isCloudLoaded) {
+          console.warn("Firestore write blocked: Cloud data not yet loaded.");
+          return;
+        }
         try {
           saveStatus.textContent = "Deleting cloud user...";
           await setDoc(firebaseDocRef, {
@@ -3362,6 +3378,10 @@
       closeAddUserModal();
       
       if (firebaseOnline && firebaseDocRef) {
+        if (!isCloudLoaded) {
+          console.warn("Firestore write blocked: Cloud data not yet loaded.");
+          return;
+        }
         try {
           saveStatus.textContent = "Saving new cloud user...";
           await setDoc(firebaseDocRef, {
