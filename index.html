@@ -1875,7 +1875,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
     import { geoEquirectangular, geoPath } from "https://cdn.jsdelivr.net/npm/d3-geo@3/+esm";
     import { feature, mesh } from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
 
@@ -2240,6 +2240,7 @@
     }
 
     function loadLocalArtists() {
+      if (FIREBASE_ENABLED) return [];
       try {
         return dedupeArtists(JSON.parse(localStorage.getItem(ARTISTS_CACHE_KEY)) || []);
       } catch (e) {
@@ -2248,10 +2249,12 @@
     }
 
     function saveLocalArtists() {
+      if (FIREBASE_ENABLED) return;
       localStorage.setItem(ARTISTS_CACHE_KEY, JSON.stringify(artists.map(artist => normalizeArtist(artist, true))));
     }
 
     function saveCustomArtists() {
+      if (FIREBASE_ENABLED) return;
       localStorage.setItem(CUSTOM_ARTISTS_KEY, JSON.stringify(customArtists));
     }
 
@@ -2288,6 +2291,10 @@
             firebaseDocRef = null;
             firebaseOnline = false;
             isCloudLoaded = false;
+            if (unsubscribeRealtime) {
+              unsubscribeRealtime();
+              unsubscribeRealtime = null;
+            }
             setSignedInUi(false, "Sign in to view dashboard.");
             return;
           }
@@ -2298,6 +2305,7 @@
           setSignedInUi(false, "Loading cloud database...");
 
           await loadCloudDashboard();
+          setupRealtimeSync();
           setSignedInUi(true);
           routeFromHash();
         });
@@ -2317,15 +2325,22 @@
           const cloud = snap.data();
 
           if (Array.isArray(cloud.dashboardUsers)) {
-            localStorage.setItem("dashboardUsers.v1", JSON.stringify(cloud.dashboardUsers));
+            dashboardUsers = cloud.dashboardUsers;
+            if (!FIREBASE_ENABLED) {
+              localStorage.setItem("dashboardUsers.v1", JSON.stringify(cloud.dashboardUsers));
+            }
             renderDashboardUsers();
           }
 
+          if (Array.isArray(cloud.deletedArtistIds)) {
+            deletedArtistIds = cloud.deletedArtistIds;
+          }
+          if (Array.isArray(cloud.customArtists)) {
+            customArtists = cloud.customArtists;
+          }
+
           if (Array.isArray(cloud.artists)) {
-            const cloudArtists = dedupeArtists(cloud.artists);
-            const cloudArtistIds = new Set(cloudArtists.map(artist => artist.id));
-            const localOnlyArtists = loadLocalArtists().filter(artist => !cloudArtistIds.has(artist.id));
-            artists = dedupeArtists([...localOnlyArtists, ...cloudArtists]);
+            artists = dedupeArtists(cloud.artists);
           } else {
             const cloudState = cloud.state || {};
             const cloudCustomArtists = Array.isArray(cloud.customArtists) ? cloud.customArtists : [];
@@ -2341,6 +2356,7 @@
           saveStatus.textContent = "Cloud loaded";
         } else {
           artists = dedupeArtists(artists.length ? artists : baseArtists);
+          dashboardUsers = JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_USERS));
           saveLocalArtists();
           isCloudLoaded = true;
           await saveState();
@@ -2351,6 +2367,89 @@
         saveStatus.textContent = "Cloud load failed / local mode";
       }
     }
+
+    let unsubscribeRealtime = null;
+    let hasPendingUpdate = false;
+
+    function setupRealtimeSync() {
+      if (!firebaseDb || !firebaseDocRef) return;
+      if (unsubscribeRealtime) unsubscribeRealtime();
+
+      unsubscribeRealtime = onSnapshot(firebaseDocRef, (snap) => {
+        if (!isCloudLoaded || !snap.exists()) return;
+        
+        const cloud = snap.data();
+        const activeEl = document.activeElement;
+        const isUserTyping = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA");
+        const activeCardShell = activeEl ? activeEl.closest(".card-shell") : null;
+        const activeArtistId = activeCardShell ? activeCardShell.getAttribute("data-id") : null;
+
+        // 1. Sync Dashboard Users
+        if (Array.isArray(cloud.dashboardUsers)) {
+          const newUsers = cloud.dashboardUsers;
+          const isUserEditingLinks = document.getElementById("slideUpPanelShell")?.classList.contains("is-editing");
+          if (isUserEditingLinks && currentOpenUsername) {
+            const localUser = dashboardUsers.find(u => u.username === currentOpenUsername);
+            if (localUser) {
+              const cloudUserIdx = newUsers.findIndex(u => u.username === currentOpenUsername);
+              if (cloudUserIdx !== -1) {
+                newUsers[cloudUserIdx].links = localUser.links;
+              }
+            }
+          }
+          dashboardUsers = newUsers;
+          if (!isUserTyping) {
+            renderDashboardUsers();
+          } else {
+            hasPendingUpdate = true;
+          }
+        }
+
+        // 2. Sync Custom Artists and Deleted IDs
+        if (Array.isArray(cloud.deletedArtistIds)) {
+          deletedArtistIds = cloud.deletedArtistIds;
+        }
+        if (Array.isArray(cloud.customArtists)) {
+          customArtists = cloud.customArtists;
+        }
+
+        // 3. Sync Artists
+        if (Array.isArray(cloud.artists)) {
+          const newArtists = dedupeArtists(cloud.artists);
+          if (activeArtistId) {
+            const localActive = artists.find(a => a.id === activeArtistId);
+            if (localActive) {
+              const newActiveIdx = newArtists.findIndex(a => a.id === activeArtistId);
+              if (newActiveIdx !== -1) {
+                newArtists[newActiveIdx] = localActive;
+              }
+            }
+          }
+          artists = newArtists;
+          if (!isUserTyping) {
+            populateRegions();
+            renderArtists();
+          } else {
+            hasPendingUpdate = true;
+          }
+        }
+      }, (error) => {
+        console.error("Realtime sync failed", error);
+      });
+    }
+
+    document.addEventListener("focusout", () => {
+      setTimeout(() => {
+        const activeEl = document.activeElement;
+        const isUserTypingNow = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA");
+        if (!isUserTypingNow && hasPendingUpdate) {
+          hasPendingUpdate = false;
+          renderDashboardUsers();
+          populateRegions();
+          renderArtists();
+        }
+      }, 50);
+    });
 
     async function toggleAuth() {
       if (!FIREBASE_ENABLED || !firebaseAuth || !firebaseProvider) {
@@ -2389,8 +2488,10 @@
     async function saveState() {
       artists = dedupeArtists(artists);
       const payload = buildStatePayload();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-      saveLocalArtists();
+      if (!FIREBASE_ENABLED) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        saveLocalArtists();
+      }
       saveStatus.textContent = "Saved local " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
 
       if (!firebaseOnline || !firebaseDocRef) return;
@@ -2405,7 +2506,6 @@
           state: payload,
           customArtists: artists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true)),
           deletedArtistIds,
-          dashboardUsers: loadDashboardUsers(),
           updatedAt: serverTimestamp()
         }, { merge: true });
         saveStatus.textContent = "Saved shared cloud " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
@@ -3113,8 +3213,15 @@
     ];
 
     let currentOpenUsername = null;
+    let dashboardUsers = [];
 
     function loadDashboardUsers() {
+      if (FIREBASE_ENABLED) {
+        if (dashboardUsers && dashboardUsers.length > 0) {
+          return dashboardUsers;
+        }
+        return JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_USERS));
+      }
       try {
         const stored = localStorage.getItem("dashboardUsers.v1");
         if (stored) return JSON.parse(stored);
@@ -3214,7 +3321,10 @@
       const userIndex = users.findIndex(u => u.username === currentOpenUsername);
       if (userIndex === -1) return;
       users[userIndex].links = links;
-      localStorage.setItem("dashboardUsers.v1", JSON.stringify(users));
+      dashboardUsers = users;
+      if (!FIREBASE_ENABLED) {
+        localStorage.setItem("dashboardUsers.v1", JSON.stringify(users));
+      }
       
       // Update front UI links
       const container = document.querySelector(".action-links");
@@ -3325,7 +3435,10 @@
       
       let users = loadDashboardUsers();
       users = users.filter(u => u.username !== username);
-      localStorage.setItem("dashboardUsers.v1", JSON.stringify(users));
+      dashboardUsers = users;
+      if (!FIREBASE_ENABLED) {
+        localStorage.setItem("dashboardUsers.v1", JSON.stringify(users));
+      }
       
       renderDashboardUsers();
       closeSlideUpPanelForce();
@@ -3388,7 +3501,10 @@
       };
       
       users.push(newUser);
-      localStorage.setItem("dashboardUsers.v1", JSON.stringify(users));
+      dashboardUsers = users;
+      if (!FIREBASE_ENABLED) {
+        localStorage.setItem("dashboardUsers.v1", JSON.stringify(users));
+      }
       
       renderDashboardUsers();
       closeAddUserModal();
@@ -3484,14 +3600,6 @@
       if (event.key === "Escape") closeMobileOverlays();
     });
 
-    function startPeriodicCloudSync() {
-      setInterval(() => {
-        if (firebaseOnline && firebaseDocRef) {
-          saveState();
-        }
-      }, SYNC_INTERVAL_MS);
-    }
-
     async function initApp() {
       applyThemePreference(loadThemePreference());
       if (window.matchMedia) {
@@ -3505,7 +3613,6 @@
       });
       setSignedInUi(false, "Checking sign-in...");
       await initFirebaseCloud();
-      startPeriodicCloudSync();
     }
 
     initApp();
