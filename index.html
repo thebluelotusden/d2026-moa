@@ -2324,28 +2324,49 @@
         if (snap.exists()) {
           const cloud = snap.data();
 
-          if (Array.isArray(cloud.dashboardUsers)) {
-            dashboardUsers = cloud.dashboardUsers;
+          // Read dashboardUsers with fallback
+          const cloudDashboardUsers = Array.isArray(cloud.dashboardUsers_v2) 
+            ? cloud.dashboardUsers_v2 
+            : (Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : null);
+
+          if (cloudDashboardUsers) {
+            dashboardUsers = cloudDashboardUsers;
             if (!FIREBASE_ENABLED) {
-              localStorage.setItem("dashboardUsers.v1", JSON.stringify(cloud.dashboardUsers));
+              localStorage.setItem("dashboardUsers.v1", JSON.stringify(cloudDashboardUsers));
             }
             renderDashboardUsers();
           }
 
-          if (Array.isArray(cloud.deletedArtistIds)) {
-            deletedArtistIds = cloud.deletedArtistIds;
-          }
-          if (Array.isArray(cloud.customArtists)) {
-            customArtists = cloud.customArtists;
+          // Read deletedArtistIds with fallback
+          const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds_v2)
+            ? cloud.deletedArtistIds_v2
+            : (Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : null);
+
+          if (cloudDeletedArtistIds) {
+            deletedArtistIds = cloudDeletedArtistIds;
           }
 
-          if (Array.isArray(cloud.artists)) {
-            artists = dedupeArtists(cloud.artists);
+          // Read customArtists with fallback
+          const cloudCustomArtists = Array.isArray(cloud.customArtists_v2)
+            ? cloud.customArtists_v2
+            : (Array.isArray(cloud.customArtists) ? cloud.customArtists : null);
+
+          if (cloudCustomArtists) {
+            customArtists = cloudCustomArtists;
+          }
+
+          // Read artists with fallback
+          const cloudArtists = Array.isArray(cloud.artists_v2)
+            ? cloud.artists_v2
+            : (Array.isArray(cloud.artists) ? cloud.artists : null);
+
+          if (cloudArtists) {
+            artists = dedupeArtists(cloudArtists);
           } else {
-            const cloudState = cloud.state || {};
-            const cloudCustomArtists = Array.isArray(cloud.customArtists) ? cloud.customArtists : [];
-            const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : loadDeletedArtists();
-            artists = mergeSavedState([...baseArtists, ...cloudCustomArtists], cloudState).filter(artist => !cloudDeletedArtistIds.includes(artist.id));
+            const cloudState = cloud.state_v2 || cloud.state || {};
+            const finalCustom = cloudCustomArtists || [];
+            const finalDeleted = cloudDeletedArtistIds || loadDeletedArtists();
+            artists = mergeSavedState([...baseArtists, ...finalCustom], cloudState).filter(artist => !finalDeleted.includes(artist.id));
           }
 
           saveLocalArtists();
@@ -2403,8 +2424,12 @@
         const activeArtistId = activeCardShell ? activeCardShell.getAttribute("data-id") : null;
 
         // 1. Sync Dashboard Users
-        if (Array.isArray(cloud.dashboardUsers)) {
-          const newUsers = cloud.dashboardUsers;
+        const cloudDashboardUsers = Array.isArray(cloud.dashboardUsers_v2)
+          ? cloud.dashboardUsers_v2
+          : (Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : null);
+
+        if (Array.isArray(cloudDashboardUsers)) {
+          const newUsers = cloudDashboardUsers;
           const isUserEditingLinks = document.getElementById("slideUpPanelShell")?.classList.contains("is-editing");
           if (isUserEditingLinks && currentOpenUsername) {
             const localUser = dashboardUsers.find(u => u.username === currentOpenUsername);
@@ -2419,16 +2444,29 @@
         }
 
         // 2. Sync Custom Artists and Deleted IDs
-        if (Array.isArray(cloud.deletedArtistIds)) {
-          deletedArtistIds = cloud.deletedArtistIds;
+        const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds_v2)
+          ? cloud.deletedArtistIds_v2
+          : (Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : null);
+
+        if (Array.isArray(cloudDeletedArtistIds)) {
+          deletedArtistIds = cloudDeletedArtistIds;
         }
-        if (Array.isArray(cloud.customArtists)) {
-          customArtists = cloud.customArtists;
+
+        const cloudCustomArtists = Array.isArray(cloud.customArtists_v2)
+          ? cloud.customArtists_v2
+          : (Array.isArray(cloud.customArtists) ? cloud.customArtists : null);
+
+        if (Array.isArray(cloudCustomArtists)) {
+          customArtists = cloudCustomArtists;
         }
 
         // 3. Sync Artists
-        if (Array.isArray(cloud.artists)) {
-          const newArtists = dedupeArtists(cloud.artists);
+        const cloudArtists = Array.isArray(cloud.artists_v2)
+          ? cloud.artists_v2
+          : (Array.isArray(cloud.artists) ? cloud.artists : null);
+
+        if (Array.isArray(cloudArtists)) {
+          const newArtists = dedupeArtists(cloudArtists);
           if (activeArtistId) {
             const localActive = artists.find(a => a.id === activeArtistId);
             if (localActive) {
@@ -2521,8 +2559,14 @@
 
         if (snap.exists()) {
           const cloud = snap.data();
-          const cloudArtists = Array.isArray(cloud.artists) ? cloud.artists : [];
-          const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : [];
+          
+          // Read with fallback to v1 fields
+          const cloudArtists = Array.isArray(cloud.artists_v2) 
+            ? cloud.artists_v2 
+            : (Array.isArray(cloud.artists) ? cloud.artists : []);
+          const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds_v2)
+            ? cloud.deletedArtistIds_v2
+            : (Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : []);
 
           // 1. Union of deleted IDs
           cloudDeletedArtistIds.forEach(id => {
@@ -2547,10 +2591,10 @@
         const mergedPayload = buildStatePayload(finalArtists);
 
         await setDoc(firebaseDocRef, {
-          artists: finalArtists.map(artist => normalizeArtist(artist, true)),
-          state: mergedPayload,
-          customArtists: finalCustomArtists,
-          deletedArtistIds: finalDeletedArtistIds,
+          artists_v2: finalArtists.map(artist => normalizeArtist(artist, true)),
+          state_v2: mergedPayload,
+          customArtists_v2: finalCustomArtists,
+          deletedArtistIds_v2: finalDeletedArtistIds,
           updatedAt: serverTimestamp()
         }, { merge: true });
 
@@ -3401,7 +3445,9 @@
           let mergedUsers = [...users];
           if (snap.exists()) {
             const cloud = snap.data();
-            const cloudUsers = Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : [];
+            const cloudUsers = Array.isArray(cloud.dashboardUsers_v2) 
+              ? cloud.dashboardUsers_v2 
+              : (Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : []);
             cloudUsers.forEach(cloudUser => {
               const localUser = mergedUsers.find(u => u.username === cloudUser.username);
               if (!localUser) {
@@ -3411,7 +3457,7 @@
           }
           dashboardUsers = mergedUsers;
           await setDoc(firebaseDocRef, {
-            dashboardUsers: mergedUsers,
+            dashboardUsers_v2: mergedUsers,
             updatedAt: serverTimestamp()
           }, { merge: true });
           saveStatus.textContent = "Saved cloud users " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
@@ -3521,7 +3567,9 @@
           let mergedUsers = [...users];
           if (snap.exists()) {
             const cloud = snap.data();
-            const cloudUsers = Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : [];
+            const cloudUsers = Array.isArray(cloud.dashboardUsers_v2) 
+              ? cloud.dashboardUsers_v2 
+              : (Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : []);
             cloudUsers.forEach(cloudUser => {
               if (cloudUser.username !== username) {
                 const localUser = mergedUsers.find(u => u.username === cloudUser.username);
@@ -3533,7 +3581,7 @@
           }
           dashboardUsers = mergedUsers;
           await setDoc(firebaseDocRef, {
-            dashboardUsers: mergedUsers,
+            dashboardUsers_v2: mergedUsers,
             updatedAt: serverTimestamp()
           }, { merge: true });
           saveStatus.textContent = "Deleted cloud user " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
@@ -3603,7 +3651,9 @@
           let mergedUsers = [...users];
           if (snap.exists()) {
             const cloud = snap.data();
-            const cloudUsers = Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : [];
+            const cloudUsers = Array.isArray(cloud.dashboardUsers_v2) 
+              ? cloud.dashboardUsers_v2 
+              : (Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : []);
             cloudUsers.forEach(cloudUser => {
               const localUser = mergedUsers.find(u => u.username === cloudUser.username);
               if (!localUser) {
@@ -3613,7 +3663,7 @@
           }
           dashboardUsers = mergedUsers;
           await setDoc(firebaseDocRef, {
-            dashboardUsers: mergedUsers,
+            dashboardUsers_v2: mergedUsers,
             updatedAt: serverTimestamp()
           }, { merge: true });
           saveStatus.textContent = "Saved new cloud user " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
