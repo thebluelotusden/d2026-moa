@@ -3029,14 +3029,14 @@
         return `
         <div class="send-row">
           <input type="checkbox" class="${needsDateClass.trim()}" ${entry.checked ? "checked" : ""} onclick="return toggleSendEntryChecked(event, '${artist.id}', ${index})" aria-label="Mark send entry complete" />
-          <input type="date" value="${escapeHtml(entry.date)}" oninput="changeSendEntryDate('${artist.id}', ${index}, this.value, false)" />
+          <input type="date" value="${escapeHtml(entry.date)}" oninput="changeSendEntryDate('${artist.id}', ${index}, this.value, false)" onchange="changeSendEntryDate('${artist.id}', ${index}, this.value, false)" />
           <button class="send-remove-btn" type="button" title="Remove send entry" aria-label="Remove send entry" onclick="removeSendEntry('${artist.id}', ${index})">${sendRemoveIconSvg()}</button>
         </div>`;
       };
       const entryHtml = visibleEntries.map(rowHtml).join("");
       const emptyHtml = entries.length ? "" : `<div class="send-row">
         <input type="checkbox" class="needs-date" onclick="return emptySendCheckboxClicked(event, '${artist.id}')" aria-label="Add date first" />
-        <input type="date" oninput="createFirstSendEntry('${artist.id}', this.value, false)" />
+        <input type="date" oninput="createFirstSendEntry('${artist.id}', this.value, false)" onchange="createFirstSendEntry('${artist.id}', this.value, false)" />
         <button class="send-remove-btn" type="button" title="Clear send entry" aria-label="Clear send entry" onclick="clearFirstSendEntry('${artist.id}')">${sendRemoveIconSvg()}</button>
       </div>`;
       const showAll = entries.length > 3 && !expanded ? `<button class="show-send-all" onclick="expandSendEntries('${artist.id}')">show all entry</button>` : "";
@@ -3423,6 +3423,7 @@
         // Clear dirty tracking after successful save
         _dirtySendArtists.clear();
         updateStats();
+        saveTimer = null;
       }, 420);
     }
 
