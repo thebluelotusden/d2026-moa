@@ -557,12 +557,322 @@
         text-align: left;
         padding: 12px 10px;
       }
+      .sidebar-toggle-btn {
+        display: none !important;
+      }
+      .left-sidebar, .left-sidebar-overlay {
+        display: none !important;
+      }
+    }
+
+    /* Left Sidebar Styles */
+    .icon-btn {
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0;
+    }
+    .icon-btn:hover {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
+    .sidebar-toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      border-radius: 0;
+      padding: 0;
+      z-index: 1001;
+      margin-right: auto;
+      transition: background 180ms ease, border-color 180ms ease;
+    }
+    .sidebar-toggle-btn:hover {
+      background: var(--line);
+      color: var(--white);
+    }
+    .left-sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: rgba(0,0,0,0.72);
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
+      transition: opacity 280ms cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1), -webkit-backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.theme-light .left-sidebar-overlay {
+      background: rgba(0,0,0,0.46);
+    }
+    .left-sidebar-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .left-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 340px;
+      z-index: 1000;
+      background: var(--panel);
+      border-right: 1px solid var(--line);
+      transform: translateX(-100%);
+      transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+    .left-sidebar.is-open {
+      transform: translateX(0);
+    }
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    body.theme-light .sidebar-header h2 {
+      color: var(--black);
+    }
+    .sidebar-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      min-height: 0;
+    }
+    .sidebar-links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .sidebar-link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--black);
+      border: 1px solid var(--line);
+      color: var(--text);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+    .sidebar-link-btn:hover {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+      transform: translateY(-1px);
+    }
+    .sidebar-footer, .sidebar-edit-footer {
+      margin-top: auto;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+      display: flex;
+      gap: 10px;
+    }
+    .footer-btn {
+      flex: 1;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+    }
+    .footer-btn:hover {
+      background: var(--line);
+      color: var(--white);
+    }
+    .footer-btn.save-btn {
+      border-color: var(--white);
+      color: var(--white);
+    }
+    body.theme-light .footer-btn.save-btn {
+      border-color: var(--black);
+      color: var(--black);
+    }
+    .edit-links-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .edit-link-row-vertical {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      position: relative;
+    }
+    body.theme-light .edit-link-row-vertical {
+      background: rgba(0, 0, 0, 0.02);
+    }
+    .edit-link-row-vertical .remove-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border: none;
+      background: transparent;
+      color: #ff5555;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      padding: 0;
+    }
+    .edit-link-row-vertical input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 12px;
+      font-size: 13px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+    }
+    .add-new-link-section {
+      margin-top: auto;
+      padding: 14px;
+      border: 1px dashed var(--line);
+      margin-bottom: 16px;
+      background: rgba(255,255,255,0.01);
+    }
+    body.theme-light .add-new-link-section {
+      background: rgba(0,0,0,0.01);
+    }
+    .add-new-link-section h3 {
+      margin: 0 0 12px 0;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .add-link-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .add-link-form input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 12px;
+      font-size: 13px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+    }
+    .add-link-form button {
+      padding: 8px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      transition: background 160ms ease, color 160ms ease;
+    }
+    .add-link-form button:hover {
+      background: var(--line);
+      color: var(--white);
     }
   </style>
 </head>
 <body class="theme-dark">
+  <!-- Left Sidebar Elements -->
+  <div class="left-sidebar-overlay" id="leftSidebarOverlay" onclick="closeLeftSidebar()"></div>
+  <aside class="left-sidebar" id="leftSidebar">
+    <div class="sidebar-header">
+      <h2>External Links</h2>
+      <span class="sidebar-save-status" id="sidebarSaveStatus" style="font-size: 10px; color: var(--faint); margin-left: 10px; text-transform: uppercase;"></span>
+      <button class="icon-btn" title="Close" onclick="closeLeftSidebar()">✕</button>
+    </div>
+    
+    <div class="sidebar-content">
+      <!-- View Mode -->
+      <div class="sidebar-view-mode" id="sidebarViewMode">
+        <div class="sidebar-links-list" id="sidebarLinksList">
+          <!-- Dynamic Links -->
+        </div>
+        <div class="sidebar-footer">
+          <button class="footer-btn" onclick="enterSidebarEditMode()">✎ Edit Links</button>
+        </div>
+      </div>
+
+      <!-- Edit Mode -->
+      <div class="sidebar-edit-mode hidden" id="sidebarEditMode">
+        <div class="edit-links-container" id="sidebarEditLinksContainer">
+          <!-- Dynamic edit inputs -->
+        </div>
+        
+        <div class="add-new-link-section">
+          <h3>+ Add Link</h3>
+          <div class="add-link-form">
+            <input type="text" id="newSidebarLinkLabel" placeholder="Link Name" />
+            <input type="url" id="newSidebarLinkUrl" placeholder="Link URL" />
+            <button type="button" onclick="addSidebarLinkFromForm()">Add</button>
+          </div>
+        </div>
+        
+        <div class="sidebar-edit-footer">
+          <button class="footer-btn save-btn" onclick="saveSidebarLinks()">Save Changes</button>
+          <button class="footer-btn cancel-btn" onclick="exitSidebarEditMode()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
   <div class="app">
     <section class="hero">
+      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" type="button" aria-label="Open sidebar" onclick="openLeftSidebar()">
+        <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter" fill="none" stroke="currentColor" style="width:20px;height:20px;display:block;"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
       <a class="brand-logo" href="index.html#dashboard" aria-label="MONEYOVERALL dashboard">
         <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
         <span class="logo-fallback">MONEYOVERALL</span>
@@ -778,6 +1088,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB4mAggiPorQdcnMrvox8t6ZNxF7o1C98o",
@@ -789,8 +1100,33 @@
     };
 
     const FIREBASE_ENABLED = !firebaseConfig.apiKey.includes("PASTE_");
+    let firebaseApp = null;
     let firebaseAuth = null;
     let firebaseProvider = null;
+    let firebaseDb = null;
+    let firebaseDocRef = null;
+    let firebaseOnline = false;
+    let isCloudLoaded = false;
+    let unsubscribeRealtime = null;
+
+    const DEFAULT_SIDEBAR_LINKS = [
+      { label: "Discord", url: "https://discord.com/channels/@me" },
+      { label: "Sonauto", url: "https://sonauto.ai/create" },
+      { label: "Gemini", url: "https://gemini.google.com/app" },
+      { label: "ChatGPT", url: "https://chatgpt.com/" },
+      { label: "Lalal", url: "https://www.lalal.ai/" },
+      { label: "Cosmos", url: "https://www.cosmos.so/" },
+      { label: "Pinterest", url: "https://www.pinterest.com/" },
+      { label: "Gmail", url: "https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" },
+      { label: "Random String", url: "https://pinetools.com/random-string-generator" },
+      { label: "Audio-Video", url: "https://www.onlineconverter.com/audio-to-video" }
+    ];
+
+    let sidebarLinks = [];
+
+    function escapeHtml(value) {
+      return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
 
     function setAuthButton(isSignedIn) {
       const authBtn = document.getElementById("authBtn");
@@ -802,20 +1138,113 @@
     async function initFirebaseAuth() {
       if (!FIREBASE_ENABLED) {
         setAuthButton(false);
+        sidebarLinks = JSON.parse(JSON.stringify(DEFAULT_SIDEBAR_LINKS));
+        renderSidebarLinks();
         return;
       }
 
       try {
-        const firebaseApp = initializeApp(firebaseConfig);
+        firebaseApp = initializeApp(firebaseConfig);
         firebaseAuth = getAuth(firebaseApp);
         firebaseProvider = new GoogleAuthProvider();
+        firebaseDb = getFirestore(firebaseApp);
 
-        onAuthStateChanged(firebaseAuth, user => {
+        onAuthStateChanged(firebaseAuth, async user => {
           setAuthButton(Boolean(user));
+          if (!user) {
+            firebaseDocRef = null;
+            firebaseOnline = false;
+            isCloudLoaded = false;
+            if (unsubscribeRealtime) {
+              unsubscribeRealtime();
+              unsubscribeRealtime = null;
+            }
+            sidebarLinks = JSON.parse(JSON.stringify(DEFAULT_SIDEBAR_LINKS));
+            renderSidebarLinks();
+            return;
+          }
+
+          firebaseDocRef = doc(firebaseDb, "dashboards", "druskhi-outreach");
+          firebaseOnline = true;
+          
+          // Load initially
+          try {
+            const snap = await getDoc(firebaseDocRef);
+            if (snap.exists()) {
+              const cloud = snap.data();
+              const cloudSidebarLinks = Array.isArray(cloud.sidebarLinks_v2) 
+                ? cloud.sidebarLinks_v2 
+                : (Array.isArray(cloud.sidebarLinks) ? cloud.sidebarLinks : null);
+              if (cloudSidebarLinks) {
+                sidebarLinks = cloudSidebarLinks;
+              } else {
+                sidebarLinks = JSON.parse(JSON.stringify(DEFAULT_SIDEBAR_LINKS));
+              }
+            } else {
+              sidebarLinks = JSON.parse(JSON.stringify(DEFAULT_SIDEBAR_LINKS));
+            }
+            renderSidebarLinks();
+            isCloudLoaded = true;
+          } catch (e) {
+            console.error("Initial load of sidebar links failed", e);
+            sidebarLinks = JSON.parse(JSON.stringify(DEFAULT_SIDEBAR_LINKS));
+            renderSidebarLinks();
+          }
+
+          setupRealtimeSync();
         });
       } catch (error) {
         console.error("Firebase auth init failed", error);
         setAuthButton(false);
+        sidebarLinks = JSON.parse(JSON.stringify(DEFAULT_SIDEBAR_LINKS));
+        renderSidebarLinks();
+      }
+    }
+
+    function setupRealtimeSync() {
+      if (!firebaseDb || !firebaseDocRef) return;
+      if (unsubscribeRealtime) unsubscribeRealtime();
+
+      unsubscribeRealtime = onSnapshot(firebaseDocRef, (snap) => {
+        if (!snap.exists()) return;
+        const cloud = snap.data();
+        const cloudSidebarLinks = Array.isArray(cloud.sidebarLinks_v2)
+          ? cloud.sidebarLinks_v2
+          : (Array.isArray(cloud.sidebarLinks) ? cloud.sidebarLinks : null);
+
+        if (Array.isArray(cloudSidebarLinks)) {
+          sidebarLinks = cloudSidebarLinks;
+        }
+
+        if (!isUserInteracting()) {
+          hasPendingUpdate = false;
+          renderSidebarLinks();
+        } else {
+          hasPendingUpdate = true;
+          const statusText = document.getElementById("sidebarSaveStatus");
+          if (statusText) statusText.textContent = "Updates pending...";
+        }
+      }, (error) => {
+        console.error("Realtime sync failed", error);
+      });
+    }
+
+    let hasPendingUpdate = false;
+
+    function isUserInteracting() {
+      const activeEl = document.activeElement;
+      const isTyping = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA" || activeEl.tagName === "SELECT");
+      const isEditingSidebarLinks = !document.getElementById("sidebarEditMode")?.classList.contains("hidden");
+      const isSidebarOpen = document.getElementById("leftSidebar")?.classList.contains("is-open");
+      return !!(isTyping || isEditingSidebarLinks || isSidebarOpen);
+    }
+
+    function applyPendingUpdatesIfNeeded() {
+      if (hasPendingUpdate && !isUserInteracting()) {
+        hasPendingUpdate = false;
+        const statusText = document.getElementById("sidebarSaveStatus");
+        if (statusText && statusText.textContent === "Updates pending...") statusText.textContent = "";
+        renderSidebarLinks();
       }
     }
 
@@ -837,6 +1266,155 @@
       }
     }
 
+    function openLeftSidebar() {
+      document.getElementById("leftSidebar")?.classList.add("is-open");
+      document.getElementById("leftSidebarOverlay")?.classList.add("is-open");
+    }
+
+    function closeLeftSidebar() {
+      document.getElementById("leftSidebar")?.classList.remove("is-open");
+      document.getElementById("leftSidebarOverlay")?.classList.remove("is-open");
+      exitSidebarEditMode();
+      applyPendingUpdatesIfNeeded();
+    }
+
+    function renderSidebarLinks() {
+      const viewList = document.getElementById("sidebarLinksList");
+      const editList = document.getElementById("sidebarEditLinksContainer");
+      if (!viewList) return;
+
+      viewList.innerHTML = sidebarLinks.map(link => `
+        <a class="sidebar-link-btn" href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">
+          <span>${escapeHtml(link.label)}</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;fill:none;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      `).join("");
+
+      if (editList) {
+        editList.innerHTML = sidebarLinks.map((link, index) => `
+          <div class="edit-link-row-vertical" data-index="${index}">
+            <button class="remove-btn" type="button" title="Remove Link" onclick="removeSidebarLink(${index})">✕</button>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <span style="font-size:10px; font-weight:700; color:var(--faint); text-transform:uppercase;">Name</span>
+              <input type="text" class="sidebar-link-label-input" value="${escapeHtml(link.label)}" placeholder="Link Name" />
+            </div>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <span style="font-size:10px; font-weight:700; color:var(--faint); text-transform:uppercase;">URL</span>
+              <input type="url" class="sidebar-link-url-input" value="${escapeHtml(link.url)}" placeholder="Link URL" />
+            </div>
+          </div>
+        `).join("");
+      }
+    }
+
+    function enterSidebarEditMode() {
+      document.getElementById("sidebarViewMode")?.classList.add("hidden");
+      document.getElementById("sidebarEditMode")?.classList.remove("hidden");
+      renderSidebarLinks();
+    }
+
+    function exitSidebarEditMode() {
+      document.getElementById("sidebarEditMode")?.classList.add("hidden");
+      document.getElementById("sidebarViewMode")?.classList.remove("hidden");
+      
+      const newLabel = document.getElementById("newSidebarLinkLabel");
+      const newUrl = document.getElementById("newSidebarLinkUrl");
+      if (newLabel) newLabel.value = "";
+      if (newUrl) newUrl.value = "";
+      
+      renderSidebarLinks();
+      applyPendingUpdatesIfNeeded();
+    }
+
+    function removeSidebarLink(index) {
+      const row = document.querySelector(`.edit-link-row-vertical[data-index="${index}"]`);
+      if (row) {
+        row.remove();
+      }
+    }
+
+    function addSidebarLinkFromForm() {
+      const labelInput = document.getElementById("newSidebarLinkLabel");
+      const urlInput = document.getElementById("newSidebarLinkUrl");
+      const label = labelInput ? labelInput.value.trim() : "";
+      const url = urlInput ? urlInput.value.trim() : "";
+      
+      if (!label || !url) {
+        alert("Please enter both Name and URL.");
+        return;
+      }
+
+      const editList = document.getElementById("sidebarEditLinksContainer");
+      if (!editList) return;
+
+      const index = editList.querySelectorAll(".edit-link-row-vertical").length;
+      const row = document.createElement("div");
+      row.className = "edit-link-row-vertical";
+      row.setAttribute("data-index", index);
+      row.innerHTML = `
+        <button class="remove-btn" type="button" title="Remove Link" onclick="removeSidebarLink(${index})">✕</button>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <span style="font-size:10px; font-weight:700; color:var(--faint); text-transform:uppercase;">Name</span>
+          <input type="text" class="sidebar-link-label-input" value="${escapeHtml(label)}" placeholder="Link Name" />
+        </div>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <span style="font-size:10px; font-weight:700; color:var(--faint); text-transform:uppercase;">URL</span>
+          <input type="url" class="sidebar-link-url-input" value="${escapeHtml(url)}" placeholder="Link URL" />
+        </div>
+      `;
+      editList.appendChild(row);
+      
+      labelInput.value = "";
+      urlInput.value = "";
+    }
+
+    async function saveSidebarLinks() {
+      const editList = document.getElementById("sidebarEditLinksContainer");
+      if (!editList) return;
+      
+      const rows = editList.querySelectorAll(".edit-link-row-vertical");
+      const newLinks = [];
+      rows.forEach(row => {
+        const label = row.querySelector(".sidebar-link-label-input").value.trim();
+        const url = row.querySelector(".sidebar-link-url-input").value.trim();
+        if (label && url) {
+          newLinks.push({ label, url });
+        }
+      });
+
+      const addNameInput = document.getElementById("newSidebarLinkLabel");
+      const addUrlInput = document.getElementById("newSidebarLinkUrl");
+      const addName = addNameInput ? addNameInput.value.trim() : "";
+      const addUrl = addUrlInput ? addUrlInput.value.trim() : "";
+      if (addName && addUrl) {
+        newLinks.push({ label: addName, url: addUrl });
+        if (addNameInput) addNameInput.value = "";
+        if (addUrlInput) addUrlInput.value = "";
+      }
+
+      sidebarLinks = newLinks;
+      exitSidebarEditMode();
+
+      if (firebaseOnline && firebaseDocRef) {
+        try {
+          const statusText = document.getElementById("sidebarSaveStatus");
+          if (statusText) statusText.textContent = "Saving...";
+          await setDoc(firebaseDocRef, {
+            sidebarLinks_v2: newLinks,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+          if (statusText) statusText.textContent = "Saved";
+          setTimeout(() => {
+            if (statusText && statusText.textContent === "Saved") statusText.textContent = "";
+          }, 3000);
+        } catch (error) {
+          console.error("Firebase sidebar links save failed", error);
+          const statusText = document.getElementById("sidebarSaveStatus");
+          if (statusText) statusText.textContent = "Error";
+        }
+      }
+    }
+
     function closeMobileNav() {
       document.body.classList.remove('mobile-nav-active');
       const button = document.getElementById('mobileNavToggle');
@@ -845,6 +1423,11 @@
         button.setAttribute('aria-expanded', 'false');
         button.setAttribute('aria-label', 'Open navigation');
       }
+    }
+
+    function closeMobileOverlays() {
+      closeMobileNav();
+      closeLeftSidebar();
     }
 
     function toggleMobileNav() {
@@ -859,16 +1442,29 @@
     }
 
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeMobileNav();
+      if (event.key === 'Escape') closeMobileOverlays();
     });
 
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 760) closeMobileNav();
+      if (window.innerWidth > 760) closeMobileOverlays();
+    });
+
+    document.addEventListener("focusout", () => {
+      setTimeout(applyPendingUpdatesIfNeeded, 100);
     });
 
     window.toggleAuth = toggleAuth;
     window.toggleMobileNav = toggleMobileNav;
     window.closeMobileNav = closeMobileNav;
+    window.closeMobileOverlays = closeMobileOverlays;
+    window.openLeftSidebar = openLeftSidebar;
+    window.closeLeftSidebar = closeLeftSidebar;
+    window.enterSidebarEditMode = enterSidebarEditMode;
+    window.exitSidebarEditMode = exitSidebarEditMode;
+    window.removeSidebarLink = removeSidebarLink;
+    window.addSidebarLinkFromForm = addSidebarLinkFromForm;
+    window.saveSidebarLinks = saveSidebarLinks;
+
     setAuthButton(false);
     initFirebaseAuth();
   </script>
