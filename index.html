@@ -2371,6 +2371,25 @@
     let unsubscribeRealtime = null;
     let hasPendingUpdate = false;
 
+    function isUserInteracting() {
+      const activeEl = document.activeElement;
+      const isTyping = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA" || activeEl.tagName === "SELECT");
+      const isEditingCard = typeof editingCards !== "undefined" && editingCards && editingCards.size > 0;
+      const isEditingLinks = document.getElementById("slideUpPanelShell")?.classList.contains("is-editing");
+      const isSlideUpOpen = document.getElementById("slideUpModal")?.classList.contains("is-open");
+      const isAddUserOpen = document.getElementById("addUserModal")?.classList.contains("is-open");
+      return !!(isTyping || isEditingCard || isEditingLinks || isSlideUpOpen || isAddUserOpen);
+    }
+
+    function applyPendingUpdatesIfNeeded() {
+      if (hasPendingUpdate && !isUserInteracting()) {
+        hasPendingUpdate = false;
+        renderDashboardUsers();
+        populateRegions();
+        renderArtists();
+      }
+    }
+
     function setupRealtimeSync() {
       if (!firebaseDb || !firebaseDocRef) return;
       if (unsubscribeRealtime) unsubscribeRealtime();
@@ -2380,7 +2399,6 @@
         
         const cloud = snap.data();
         const activeEl = document.activeElement;
-        const isUserTyping = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA");
         const activeCardShell = activeEl ? activeEl.closest(".card-shell") : null;
         const activeArtistId = activeCardShell ? activeCardShell.getAttribute("data-id") : null;
 
@@ -2398,11 +2416,6 @@
             }
           }
           dashboardUsers = newUsers;
-          if (!isUserTyping) {
-            renderDashboardUsers();
-          } else {
-            hasPendingUpdate = true;
-          }
         }
 
         // 2. Sync Custom Artists and Deleted IDs
@@ -2426,12 +2439,17 @@
             }
           }
           artists = newArtists;
-          if (!isUserTyping) {
-            populateRegions();
-            renderArtists();
-          } else {
-            hasPendingUpdate = true;
-          }
+        }
+
+        // 4. Render or Defer
+        if (!isUserInteracting()) {
+          hasPendingUpdate = false;
+          renderDashboardUsers();
+          populateRegions();
+          renderArtists();
+        } else {
+          hasPendingUpdate = true;
+          saveStatus.textContent = "Updates available (applying when idle)...";
         }
       }, (error) => {
         console.error("Realtime sync failed", error);
@@ -2440,15 +2458,8 @@
 
     document.addEventListener("focusout", () => {
       setTimeout(() => {
-        const activeEl = document.activeElement;
-        const isUserTypingNow = activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA");
-        if (!isUserTypingNow && hasPendingUpdate) {
-          hasPendingUpdate = false;
-          renderDashboardUsers();
-          populateRegions();
-          renderArtists();
-        }
-      }, 50);
+        applyPendingUpdatesIfNeeded();
+      }, 150);
     });
 
     async function toggleAuth() {
@@ -2469,9 +2480,10 @@
       }
     }
 
-    function buildStatePayload() {
+    function buildStatePayload(list) {
+      const targetList = list || artists;
       const payload = {};
-      artists.forEach(artist => {
+      targetList.forEach(artist => {
         payload[artist.id] = {
           priority: artist.priority,
           colorCode: normalizeColorCode(artist.colorCode || "none"),
@@ -2501,13 +2513,51 @@
       }
 
       try {
+        // Fetch the latest state from Firestore to prevent overwriting other users' concurrent edits
+        const snap = await getDoc(firebaseDocRef);
+        let finalArtists = [...artists];
+        let finalDeletedArtistIds = [...deletedArtistIds];
+        let finalCustomArtists = artists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
+
+        if (snap.exists()) {
+          const cloud = snap.data();
+          const cloudArtists = Array.isArray(cloud.artists) ? cloud.artists : [];
+          const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : [];
+
+          // 1. Union of deleted IDs
+          cloudDeletedArtistIds.forEach(id => {
+            if (!finalDeletedArtistIds.includes(id)) {
+              finalDeletedArtistIds.push(id);
+            }
+          });
+
+          // 2. Add any cloud artists that are not present locally and not deleted
+          cloudArtists.forEach(cloudArtist => {
+            const existsLocal = finalArtists.some(a => a.id === cloudArtist.id);
+            const isDeleted = finalDeletedArtistIds.includes(cloudArtist.id);
+            if (!existsLocal && !isDeleted) {
+              finalArtists.push(cloudArtist);
+            }
+          });
+
+          // 3. Re-calculate custom artists based on the merged list
+          finalCustomArtists = finalArtists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
+        }
+
+        const mergedPayload = buildStatePayload(finalArtists);
+
         await setDoc(firebaseDocRef, {
-          artists: artists.map(artist => normalizeArtist(artist, true)),
-          state: payload,
-          customArtists: artists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true)),
-          deletedArtistIds,
+          artists: finalArtists.map(artist => normalizeArtist(artist, true)),
+          state: mergedPayload,
+          customArtists: finalCustomArtists,
+          deletedArtistIds: finalDeletedArtistIds,
           updatedAt: serverTimestamp()
         }, { merge: true });
+
+        // Update in-memory collections to match the merged result
+        artists = finalArtists;
+        deletedArtistIds = finalDeletedArtistIds;
+
         saveStatus.textContent = "Saved shared cloud " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
       } catch (error) {
         console.error("Firebase save failed", error);
@@ -2950,6 +3000,7 @@
         editingCards.delete(id);
         shell.classList.remove("is-editing");
         renderArtists();
+        applyPendingUpdatesIfNeeded();
       }
     }
 
@@ -3346,8 +3397,21 @@
         }
         try {
           saveStatus.textContent = "Saving cloud users...";
+          const snap = await getDoc(firebaseDocRef);
+          let mergedUsers = [...users];
+          if (snap.exists()) {
+            const cloud = snap.data();
+            const cloudUsers = Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : [];
+            cloudUsers.forEach(cloudUser => {
+              const localUser = mergedUsers.find(u => u.username === cloudUser.username);
+              if (!localUser) {
+                mergedUsers.push(cloudUser);
+              }
+            });
+          }
+          dashboardUsers = mergedUsers;
           await setDoc(firebaseDocRef, {
-            dashboardUsers: users,
+            dashboardUsers: mergedUsers,
             updatedAt: serverTimestamp()
           }, { merge: true });
           saveStatus.textContent = "Saved cloud users " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
@@ -3356,6 +3420,7 @@
           saveStatus.textContent = "Cloud save failed / local saved";
         }
       }
+      applyPendingUpdatesIfNeeded();
     }
 
     function flipDashboardPanel(editing) {
@@ -3418,6 +3483,7 @@
         if (modal) modal.classList.remove("is-open");
         flipDashboardPanel(false);
         currentOpenUsername = null;
+        applyPendingUpdatesIfNeeded();
       }
     }
 
@@ -3426,6 +3492,7 @@
       if (modal) modal.classList.remove("is-open");
       flipDashboardPanel(false);
       currentOpenUsername = null;
+      applyPendingUpdatesIfNeeded();
     }
 
     async function deleteDashboardUser() {
@@ -3450,8 +3517,23 @@
         }
         try {
           saveStatus.textContent = "Deleting cloud user...";
+          const snap = await getDoc(firebaseDocRef);
+          let mergedUsers = [...users];
+          if (snap.exists()) {
+            const cloud = snap.data();
+            const cloudUsers = Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : [];
+            cloudUsers.forEach(cloudUser => {
+              if (cloudUser.username !== username) {
+                const localUser = mergedUsers.find(u => u.username === cloudUser.username);
+                if (!localUser) {
+                  mergedUsers.push(cloudUser);
+                }
+              }
+            });
+          }
+          dashboardUsers = mergedUsers;
           await setDoc(firebaseDocRef, {
-            dashboardUsers: users,
+            dashboardUsers: mergedUsers,
             updatedAt: serverTimestamp()
           }, { merge: true });
           saveStatus.textContent = "Deleted cloud user " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
@@ -3470,6 +3552,7 @@
 
     function closeAddUserModal() {
       document.getElementById("addUserModal").classList.remove("is-open");
+      applyPendingUpdatesIfNeeded();
     }
 
     async function addUserFromModal() {
@@ -3516,8 +3599,21 @@
         }
         try {
           saveStatus.textContent = "Saving new cloud user...";
+          const snap = await getDoc(firebaseDocRef);
+          let mergedUsers = [...users];
+          if (snap.exists()) {
+            const cloud = snap.data();
+            const cloudUsers = Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : [];
+            cloudUsers.forEach(cloudUser => {
+              const localUser = mergedUsers.find(u => u.username === cloudUser.username);
+              if (!localUser) {
+                mergedUsers.push(cloudUser);
+              }
+            });
+          }
+          dashboardUsers = mergedUsers;
           await setDoc(firebaseDocRef, {
-            dashboardUsers: users,
+            dashboardUsers: mergedUsers,
             updatedAt: serverTimestamp()
           }, { merge: true });
           saveStatus.textContent = "Saved new cloud user " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
@@ -3529,6 +3625,7 @@
     }
 
     function routeFromHash() {
+      applyPendingUpdatesIfNeeded();
       const route = String(window.location.hash || "").replace("#", "").toLowerCase();
       if (route === "settings") {
         showSettingsPage();
