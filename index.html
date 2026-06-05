@@ -3544,12 +3544,7 @@
     }
 
     function closeAddArtistModal() {
-      const modal = document.getElementById("addArtistModal");
-      const wasOpen = modal && modal.classList.contains("is-open");
-      modal?.classList.remove("is-open");
-      if (wasOpen) {
-        playAudio("close");
-      }
+      document.getElementById("addArtistModal").classList.remove("is-open");
     }
 
     function clearAddArtistForm() {
@@ -3642,16 +3637,11 @@
     }
 
     function closeLeftSidebar() {
-      const sidebar = document.getElementById("leftSidebar");
-      const wasOpen = sidebar && sidebar.classList.contains("is-open");
-      sidebar?.classList.remove("is-open");
+      document.getElementById("leftSidebar")?.classList.remove("is-open");
       document.getElementById("leftSidebarOverlay")?.classList.remove("is-open");
       document.body.classList.remove("left-sidebar-active");
       exitSidebarEditMode();
       applyPendingUpdatesIfNeeded();
-      if (wasOpen) {
-        playAudio("close");
-      }
     }
 
     function renderSidebarLinks() {
@@ -4021,27 +4011,19 @@
     function closeSlideUpPanel(event) {
       if (event.target.id === "slideUpModal") {
         const modal = document.getElementById("slideUpModal");
-        const wasOpen = modal && modal.classList.contains("is-open");
         if (modal) modal.classList.remove("is-open");
         flipDashboardPanel(false);
         currentOpenUsername = null;
         applyPendingUpdatesIfNeeded();
-        if (wasOpen) {
-          playAudio("close");
-        }
       }
     }
 
     function closeSlideUpPanelForce() {
       const modal = document.getElementById("slideUpModal");
-      const wasOpen = modal && modal.classList.contains("is-open");
       if (modal) modal.classList.remove("is-open");
       flipDashboardPanel(false);
       currentOpenUsername = null;
       applyPendingUpdatesIfNeeded();
-      if (wasOpen) {
-        playAudio("close");
-      }
     }
 
     async function deleteDashboardUser() {
@@ -4102,13 +4084,8 @@
     }
 
     function closeAddUserModal() {
-      const modal = document.getElementById("addUserModal");
-      const wasOpen = modal && modal.classList.contains("is-open");
-      modal?.classList.remove("is-open");
+      document.getElementById("addUserModal").classList.remove("is-open");
       applyPendingUpdatesIfNeeded();
-      if (wasOpen) {
-        playAudio("close");
-      }
     }
 
     async function addUserFromModal() {
@@ -4302,8 +4279,7 @@
     // Global UI Audio Feedback Manager
     const AUDIO_FILES = {
       click: new Audio('/assets/audio/btn-click.ogg'),
-      hover: new Audio('/assets/audio/hover.ogg'),
-      close: new Audio('/assets/audio/window-closed.ogg')
+      hover: new Audio('/assets/audio/hover.ogg')
     };
 
     // Preload audio files
@@ -4325,49 +4301,22 @@
     }
     window.playAudio = playAudio;
 
-    function isCloseAction(element) {
-      if (!element) return false;
-      if (element.id === 'addArtistModal' || element.id === 'addUserModal' || element.id === 'slideUpModal' || element.id === 'leftSidebarOverlay') {
-        return true;
-      }
-      if (element.classList.contains('close-btn')) {
-        return true;
-      }
-      if (element.getAttribute('title') === 'Close') {
-        return true;
-      }
-      const onclickAttr = element.getAttribute('onclick');
-      if (onclickAttr && (
-          onclickAttr.includes('closeSlideUpPanel') || 
-          onclickAttr.includes('closeAddArtistModal') || 
-          onclickAttr.includes('closeAddUserModal') || 
-          onclickAttr.includes('closeLeftSidebar')
-      )) {
-        return true;
-      }
-      return false;
-    }
-
-    // Delegated click audio trigger (using capture phase to bypass stopPropagation)
-    const clickableSelector = 'a, button, [role="button"], .card, .card-back, .color-code-btn, .summary-globe-btn, .preset-btn, .weapon-btn, .material-btn, .toggle-btn, .ratio-btn, .color-btn, .generate, .copy, .icon-btn, .mobile-nav-toggle, .mobile-filter-toggle, .remove-btn';
+    // Delegated selectors for interactive elements
+    const interactiveSelector = 'a, button, [role="button"], .nav-btn, .auth-btn, .card, .card-back, .color-code-btn, .delete-artist-btn, .add-artist-btn, .mobile-filter-toggle, .summary-globe-btn, .send-remove-btn, .send-add-btn, .show-send-all, .visual-card, .horizontal-user-card, .action-link-btn, .sidebar-toggle-btn, .sidebar-link-btn, .footer-btn, .preset-btn, .weapon-btn, .material-btn, .toggle-btn, .ratio-btn, .color-btn, .generate, .copy, .icon-btn, .mobile-nav-toggle, .mobile-filter-toggle, .remove-btn, .close-btn';
     
+    // Delegated click audio trigger (using capture phase to bypass stopPropagation)
     document.addEventListener('click', event => {
-      const clickable = event.target.closest(clickableSelector);
+      const clickable = event.target.closest(interactiveSelector);
       if (clickable) {
-        if (isCloseAction(clickable)) {
-          return;
-        }
         playAudio('click');
       }
     }, true);
 
     // Delegated hover audio trigger (using capture phase)
-    const hoverableSelector = 'a, button, [role="button"], .nav-btn, .auth-btn, .card, .card-back, .color-code-btn, .delete-artist-btn, .add-artist-btn, .mobile-filter-toggle, .summary-globe-btn, .send-remove-btn, .send-add-btn, .show-send-all, .visual-card, .horizontal-user-card, .action-link-btn, .sidebar-toggle-btn, .sidebar-link-btn, .footer-btn, .preset-btn, .weapon-btn, .material-btn, .toggle-btn, .ratio-btn, .color-btn, .generate, .copy, .icon-btn, .mobile-nav-toggle, .mobile-filter-toggle, .remove-btn, .close-btn';
-    
     let lastHoveredElement = null;
 
     document.addEventListener('mouseover', event => {
-      const hoverable = event.target.closest(hoverableSelector);
+      const hoverable = event.target.closest(interactiveSelector);
       if (hoverable) {
         if (lastHoveredElement !== hoverable) {
           lastHoveredElement = hoverable;
@@ -4379,7 +4328,7 @@
     }, true);
 
     document.addEventListener('mouseout', event => {
-      if (lastHoveredElement && !event.relatedTarget?.closest(hoverableSelector)) {
+      if (lastHoveredElement && !event.relatedTarget?.closest(interactiveSelector)) {
         lastHoveredElement = null;
       }
     }, true);
