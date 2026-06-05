@@ -2493,6 +2493,10 @@
       return normalizeSendEntries(entries).filter(entry => entry.checked && isValidSendDate(entry.date));
     }
 
+    function persistableSendEntries(entries) {
+      return normalizeSendEntries(entries).filter(entry => entry.checked || (entry.date && String(entry.date).trim() !== ""));
+    }
+
     function hasSent(artist) {
       return confirmedSendEntries(artist.sendEntries).length > 0;
     }
@@ -2515,7 +2519,7 @@
         size: artist.size || "User target",
         email: artist.email || "",
         note: artist.note || "",
-        sendEntries: persist ? confirmedSendEntries(artist.sendEntries) : normalizeSendEntries(artist.sendEntries),
+        sendEntries: persist ? persistableSendEntries(artist.sendEntries) : normalizeSendEntries(artist.sendEntries),
         customTags: Array.isArray(artist.customTags) ? artist.customTags : [],
         socials: {
           instagram: artist.socials?.instagram || "https://www.instagram.com/",
@@ -2861,7 +2865,7 @@
           colorCode: normalizeColorCode(artist.colorCode || "none"),
           note: artist.note || "",
           email: artist.email || "",
-          sendEntries: confirmedSendEntries(artist.sendEntries),
+          sendEntries: persistableSendEntries(artist.sendEntries),
           socials: artist.socials || {},
           customTags: artist.customTags || []
         };
