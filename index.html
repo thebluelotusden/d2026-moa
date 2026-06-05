@@ -1,0 +1,2837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MONEYOVERALL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080808;
+      --panel: #101010;
+      --panel-2: #151515;
+      --text: #e8e8e8;
+      --muted: #9a9a9a;
+      --faint: #666;
+      --line: #303030;
+      --line-2: #1f1f1f;
+      --white: #f5f5f5;
+      --black: #000;
+      --danger: #b00020;
+      --danger-border: #ff3b3b;
+      --code-red: #c84b4b;
+      --code-gold: #c89b3c;
+      --code-green: #3aa66a;
+      --code-blue: #4c7fd1;
+      --code-purple: #8a5bd1;
+    }
+
+    body.theme-light {
+      --bg: #f3f3f3;
+      --panel: #ffffff;
+      --panel-2: #eeeeee;
+      --text: #121212;
+      --muted: #555;
+      --faint: #888;
+      --line: #cfcfcf;
+      --line-2: #dedede;
+      --white: #000;
+      --black: #fff;
+      --danger: #b00020;
+      --danger-border: #7a0014;
+    }
+
+    body.theme-light .priority-medium {
+      background-color: #e8e8e8;
+      color: #111;
+      border-color: #9a9a9a;
+    }
+
+    body.theme-dark {
+      --bg: #080808;
+      --panel: #101010;
+      --panel-2: #151515;
+      --text: #e8e8e8;
+      --muted: #9a9a9a;
+      --faint: #666;
+      --line: #303030;
+      --line-2: #1f1f1f;
+      --white: #f5f5f5;
+      --black: #000;
+      --danger: #b00020;
+      --danger-border: #ff3b3b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Red Hat Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      padding: 18px;
+      font-size: 13px;
+    }
+
+    .container { max-width: 1680px; margin: 0 auto; }
+
+    .hero {
+      position: relative;
+      min-height: 76px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      padding: 18px 0 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -2px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .stats {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 9px 12px;
+      min-width: 118px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filters {
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      background: rgba(16,16,16,0.96);
+      border: 1px solid var(--line);
+      padding: 10px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      padding: 10px;
+      font-size: 12px;
+      background: var(--black);
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+      border-radius: 0;
+    }
+
+    textarea { min-height: 78px; resize: vertical; }
+    option { color: var(--text); background: var(--black); }
+    input::placeholder, textarea::placeholder { color: var(--faint); }
+    input:focus, select:focus, textarea:focus { border-color: var(--white); }
+
+    .count-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 12px 0;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .save-status { color: var(--muted); font-size: 12px; }
+
+    .status-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .auth-btn,
+    .nav-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 4px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0;
+      white-space: nowrap;
+      letter-spacing: 0.7px;
+    }
+
+    .auth-btn:hover,
+    .nav-btn:hover {
+      background: transparent;
+      color: var(--white);
+    }
+
+
+
+    .site-logo,
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-width: 0;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .site-logo {
+      margin: 0;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+
+    .logo-img {
+      display: block;
+      width: clamp(160px, 18vw, 260px);
+      height: auto;
+      max-height: 64px;
+      object-fit: contain;
+      filter: invert(1);
+    }
+
+    body.theme-light .logo-img { filter: none; }
+
+    .auth-panel .logo-img {
+      width: min(260px, 82vw);
+      margin: 0 auto 14px;
+    }
+
+    .logo-img.is-hidden { display: none; }
+
+    .logo-fallback {
+      display: none;
+      font-size: clamp(24px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -2px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .auth-panel .logo-fallback {
+      font-size: clamp(24px, 5vw, 38px);
+      margin-bottom: 14px;
+    }
+
+    .logo-fallback.is-visible { display: inline-block; }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin-left: auto;
+      z-index: 3;
+    }
+
+
+    .mobile-nav-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      border-radius: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      z-index: 1001;
+    }
+
+    .mobile-nav-toggle:hover,
+    .mobile-nav-toggle.is-open {
+      border-color: var(--white);
+      color: var(--white);
+      background: var(--panel-2);
+    }
+
+    .mobile-nav-toggle svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      transition: transform 180ms ease;
+    }
+
+    .mobile-nav-toggle.is-open svg {
+      transform: rotate(180deg);
+    }
+
+    .settings-page {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+
+    .settings-page h2 {
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: -0.8px;
+      margin-bottom: 14px;
+    }
+
+    .settings-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 12px;
+      align-items: center;
+      border-top: 1px solid var(--line-2);
+      padding-top: 14px;
+    }
+
+    .settings-row label {
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.4px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .auth-gate {
+      min-height: calc(100vh - 36px);
+      display: block;
+    }
+
+    .auth-container {
+      min-height: calc(100vh - 36px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .auth-hero {
+      flex: 0 0 auto;
+    }
+
+    .auth-gate-body {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 0 52px;
+    }
+
+    .auth-panel {
+      width: min(520px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 22px;
+      text-align: center;
+    }
+
+    .auth-panel h1 {
+      font-size: clamp(24px, 5vw, 38px);
+      margin-bottom: 14px;
+    }
+
+    .auth-panel p {
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.4px;
+      margin-bottom: 18px;
+    }
+
+    .auth-panel .auth-btn {
+      width: 100%;
+      border: 1px solid var(--white);
+      background: var(--white);
+      color: var(--black);
+      padding: 14px;
+      box-shadow: 6px 6px 0 var(--line);
+    }
+
+    .auth-panel .auth-btn:hover {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--white);
+      box-shadow: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .card-shell {
+      perspective: 1200px;
+      min-height: 600px;
+    }
+
+    .card-shell.send-expanded {
+      min-height: auto;
+    }
+
+    .card-flipper {
+      position: relative;
+      width: 100%;
+      min-height: 600px;
+      transform-style: preserve-3d;
+      transition: transform 0.32s ease;
+    }
+
+    .card-shell.is-editing .card-flipper { transform: rotateY(180deg); }
+
+    .card,
+    .card-back {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--card-tint, transparent), transparent 58%), var(--panel);
+      border: 1px solid var(--line);
+      padding: 14px;
+      padding-bottom: 62px;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      overflow: visible;
+    }
+
+    .card:hover, .card-back:hover {
+      border-color: var(--white);
+      background: linear-gradient(135deg, var(--card-tint-hover, var(--card-tint, transparent)), transparent 58%), var(--panel-2);
+    }
+
+    .card.color-red, .card-back.color-red { --card-tint: rgba(200, 75, 75, 0.18); --card-tint-hover: rgba(200, 75, 75, 0.24); }
+    .card.color-gold, .card-back.color-gold { --card-tint: rgba(200, 155, 60, 0.16); --card-tint-hover: rgba(200, 155, 60, 0.23); }
+    .card.color-green, .card-back.color-green { --card-tint: rgba(58, 166, 106, 0.16); --card-tint-hover: rgba(58, 166, 106, 0.23); }
+    .card.color-blue, .card-back.color-blue { --card-tint: rgba(76, 127, 209, 0.17); --card-tint-hover: rgba(76, 127, 209, 0.24); }
+    .card.color-purple, .card-back.color-purple { --card-tint: rgba(138, 91, 209, 0.17); --card-tint-hover: rgba(138, 91, 209, 0.24); }
+
+    .card-back { transform: rotateY(180deg); }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--line-2);
+      padding-bottom: 10px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h2, .card-back h2 {
+      font-size: 18px;
+      letter-spacing: -0.7px;
+      color: var(--white);
+      text-transform: uppercase;
+    }
+
+    .icon-btn {
+      width: 26px;
+      height: 26px;
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0;
+    }
+
+    .icon-btn:hover {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
+
+    .region {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .priority-select {
+      width: auto;
+      min-width: 92px;
+      cursor: pointer;
+      font-weight: 700;
+      padding: 7px 22px 7px 8px;
+      text-transform: uppercase;
+      font-size: 11px;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+      background-position: calc(100% - 13px) 50%, calc(100% - 8px) 50%;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      border-radius: 0;
+    }
+
+    .priority-user { background-color: var(--white); color: var(--black); border-color: var(--white); }
+    .priority-high { background-color: #cfcfcf; color: var(--black); border-color: #cfcfcf; }
+    .priority-medium { background-color: #303030; color: var(--text); border-color: #555; }
+    .priority-low { background-color: var(--black); color: var(--muted); border-color: var(--line); }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .tag {
+      background: var(--black);
+      border: 1px solid var(--line);
+      padding: 5px 7px;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .card p, .card-back p { color: var(--muted); font-size: 12px; }
+    .card p strong, .card-back p strong { color: var(--text); text-transform: uppercase; font-size: 11px; }
+
+    .email-display {
+      border: 1px solid var(--line);
+      background: var(--black);
+      padding: 9px;
+      min-height: 37px;
+      color: var(--text);
+      font-size: 12px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .email-display.empty-email { color: var(--faint); }
+
+    .links { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+
+    .links a {
+      border: 1px solid var(--line);
+      background: var(--black);
+      padding: 9px 6px;
+      text-align: center;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    .links a:hover { background: var(--white); color: var(--black); border-color: var(--white); }
+
+    .note-wrap, .edit-block {
+      border-top: 1px solid var(--line-2);
+      padding-top: 10px;
+    }
+
+    .note-label, .edit-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .note-label span:last-child, .edit-label span:last-child { color: var(--faint); }
+
+
+    .color-code-wrap {
+      border-top: 1px solid var(--line-2);
+      padding-top: 10px;
+    }
+
+    .color-code-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 26px;
+    }
+
+    .color-code-btn {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #1b1b1b;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      opacity: 0.62;
+      transition: opacity 140ms ease, background 140ms ease, border-color 140ms ease, transform 140ms ease;
+    }
+
+    body.theme-light .color-code-btn { background: #d7d7d7; }
+
+    .color-code-wrap:hover .color-code-btn,
+    .color-code-btn:focus-visible {
+      opacity: 1;
+    }
+
+    .color-code-btn:hover { transform: translateY(-1px); border-color: var(--white); }
+    .color-code-btn.is-active { border-color: var(--white); box-shadow: 0 0 0 1px var(--black), 0 0 0 2px var(--white); }
+
+    .color-code-btn[data-color="red"] { --swatch: var(--code-red); }
+    .color-code-btn[data-color="gold"] { --swatch: var(--code-gold); }
+    .color-code-btn[data-color="green"] { --swatch: var(--code-green); }
+    .color-code-btn[data-color="blue"] { --swatch: var(--code-blue); }
+    .color-code-btn[data-color="purple"] { --swatch: var(--code-purple); }
+
+    .color-code-wrap:hover .color-code-btn[data-color]:not([data-color="none"]),
+    .color-code-btn[data-color]:not([data-color="none"]):focus-visible {
+      background: var(--swatch);
+      border-color: var(--swatch);
+    }
+
+    .color-code-btn[data-color="none"] {
+      background: transparent;
+      border-color: var(--line);
+    }
+
+    .color-code-btn[data-color="none"] svg {
+      width: 12px;
+      height: 12px;
+      stroke: var(--muted);
+    }
+
+    .edit-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .edit-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .edit-actions button {
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--text);
+      padding: 10px;
+      font-family: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .edit-actions button:hover {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
+
+    .delete-artist-btn {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      z-index: 4;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: width 160ms ease, background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .delete-artist-btn:hover {
+      width: 86px;
+      background: var(--danger);
+      border-color: var(--danger-border);
+      color: #fff;
+    }
+
+    .delete-artist-btn .delete-icon,
+    .delete-artist-btn .delete-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 140ms ease;
+    }
+
+    .delete-artist-btn .delete-icon {
+      opacity: 1;
+    }
+
+    .delete-artist-btn .delete-icon svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+      stroke: currentColor;
+    }
+
+    .delete-artist-btn .delete-text {
+      opacity: 0;
+      letter-spacing: 0.5px;
+    }
+
+    .delete-artist-btn:hover .delete-icon { opacity: 0; }
+    .delete-artist-btn:hover .delete-text { opacity: 1; }
+
+    .empty {
+      grid-column: 1 / -1;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      text-transform: uppercase;
+    }
+
+
+
+    .mobile-filter-toggle {
+      display: none;
+    }
+
+    .mobile-ui-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 997;
+      display: none;
+      background: rgba(0,0,0,0.58);
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(0);
+      -webkit-backdrop-filter: blur(0);
+      transition: opacity 180ms ease, backdrop-filter 180ms ease, -webkit-backdrop-filter 180ms ease;
+    }
+
+    body.theme-light .mobile-ui-backdrop { background: rgba(0,0,0,0.38); }
+    body.mobile-filter-active .mobile-ui-backdrop,
+    body.mobile-nav-active .mobile-ui-backdrop {
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+      backdrop-filter: blur(9px);
+      -webkit-backdrop-filter: blur(9px);
+    }
+
+    .add-artist-btn,
+    .mobile-filter-toggle {
+      border: 1px solid var(--white);
+      background: var(--white);
+      color: var(--black);
+      padding: 14px 16px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0;
+      box-shadow: 6px 6px 0 var(--line);
+      transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 180ms ease;
+    }
+
+    .add-artist-btn {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 999;
+    }
+
+    .add-artist-btn:hover,
+    .mobile-filter-toggle:hover,
+    .mobile-filter-toggle.is-open {
+      background: var(--black);
+      color: var(--white);
+      box-shadow: none;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.68);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(0);
+      -webkit-backdrop-filter: blur(0);
+      transition: opacity 180ms ease, backdrop-filter 180ms ease, -webkit-backdrop-filter 180ms ease;
+    }
+
+    body.theme-light .modal { background: rgba(0,0,0,0.46); }
+
+    .modal.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      backdrop-filter: blur(9px);
+      -webkit-backdrop-filter: blur(9px);
+    }
+
+    .modal-panel {
+      transform: translateY(12px) scale(0.98);
+      transition: transform 180ms ease;
+    }
+
+    .modal.is-open .modal-panel { transform: translateY(0) scale(1); }
+
+    .modal-panel {
+      width: min(720px, 100%);
+      max-height: 92vh;
+      overflow: auto;
+      background: var(--panel);
+      border: 1px solid var(--white);
+      padding: 16px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .modal-header h2 {
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: -0.6px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .form-grid .full { grid-column: 1 / -1; }
+
+    .form-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+      letter-spacing: 0.4px;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .modal-actions button,
+    .close-btn {
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--text);
+      padding: 10px;
+      font-family: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .modal-actions button:hover,
+    .close-btn:hover {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
+
+
+
+    .summary-globe-btn {
+      width: 40px;
+      min-width: 40px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .summary-globe-btn:hover {
+      border-color: var(--white);
+      color: var(--white);
+      background: var(--panel-2);
+    }
+
+    .summary-globe-btn svg { width: 18px; height: 18px; stroke: currentColor; }
+
+    .summary-list-btn svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+    }
+
+    .artist-list-bubble {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 6px);
+      z-index: 18;
+    }
+
+    .send-wrap {
+      border-top: 1px solid var(--line-2);
+      padding-top: 10px;
+      position: relative;
+    }
+
+    .send-label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .send-entries { display: grid; gap: 6px; }
+
+    .send-row {
+      display: grid;
+      grid-template-columns: 28px 1fr 28px;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .send-row input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .send-row input[type="checkbox"].needs-date {
+      color: var(--faint);
+      border-color: var(--line-2);
+    }
+
+    .send-row input[type="checkbox"]:checked::after {
+      content: "";
+      width: 10px;
+      height: 6px;
+      border-left: 2px solid currentColor;
+      border-bottom: 2px solid currentColor;
+      transform: rotate(-45deg) translate(1px, -1px);
+    }
+
+    .send-row input[type="date"] { padding: 7px; font-size: 11px; }
+
+    .send-remove-btn {
+      width: 24px;
+      height: 24px;
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 0;
+      padding: 0;
+    }
+
+    .send-remove-btn svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+    }
+
+    .send-remove-btn:hover {
+      color: var(--white);
+      border-color: var(--white);
+      background: var(--panel-2);
+    }
+
+    .send-add-btn {
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--text);
+      padding: 8px;
+      font-family: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0;
+      margin-top: 7px;
+      width: 100%;
+    }
+
+    .send-add-btn:hover:not(:disabled) {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
+
+    .send-add-btn:disabled {
+      opacity: 0.42;
+      cursor: not-allowed;
+      color: var(--faint);
+    }
+
+    .show-send-all {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 11px;
+      text-transform: uppercase;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 7px 0 0;
+      width: auto;
+    }
+
+    .show-send-all:hover { color: var(--white); }
+
+    .send-warning {
+      position: absolute;
+      left: 10px;
+      top: 30px;
+      z-index: 8;
+      border: 1px solid var(--white);
+      background: var(--black);
+      color: var(--white);
+      padding: 7px 9px;
+      font-size: 11px;
+      text-transform: uppercase;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .send-warning.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .map-page {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--line-2);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .map-header h2 {
+      text-transform: uppercase;
+      font-size: 22px;
+      letter-spacing: -0.8px;
+    }
+
+    .map-shell {
+      position: relative;
+      width: 100%;
+      min-height: 560px;
+      border: 1px solid var(--line);
+      background: var(--black);
+      overflow: hidden;
+    }
+
+    .world-map {
+      width: 100%;
+      height: 560px;
+      display: block;
+    }
+
+    .map-graticule {
+      fill: none;
+      stroke: var(--line-2);
+      stroke-width: 0.75;
+      opacity: 0.7;
+    }
+
+    .map-land {
+      fill: rgba(255,255,255,0.035);
+      stroke: var(--line);
+      stroke-width: 0.72;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .map-border {
+      fill: none;
+      stroke: var(--line-2);
+      stroke-width: 0.38;
+      opacity: 0.85;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .map-dot {
+      stroke: var(--black);
+      stroke-width: 1.5;
+    }
+
+    .map-dot.sent {
+      fill: #37d16f;
+      animation: sentPulse 1.9s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    .map-dot.unsent { fill: var(--white); }
+
+    @keyframes sentPulse {
+      0%, 100% { opacity: 0.45; r: 4; }
+      50% { opacity: 1; r: 7; }
+    }
+
+    .map-legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      display: inline-block;
+      border: 1px solid var(--line);
+    }
+
+    .legend-dot.sent { background: #37d16f; }
+    .legend-dot.unsent { background: var(--white); }
+
+
+    .visuals-page {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+
+    .visuals-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--line-2);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+
+    .visuals-header h2 {
+      text-transform: uppercase;
+      font-size: 22px;
+      letter-spacing: -0.8px;
+    }
+
+    .visuals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .visual-card {
+      display: block;
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--text);
+      text-decoration: none;
+      padding: 16px;
+      min-height: 168px;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .visual-card:hover {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+      box-shadow: 6px 6px 0 var(--line);
+      transform: translateY(-1px);
+    }
+
+    .visual-card strong {
+      display: block;
+      color: inherit;
+      font-size: 18px;
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: -0.6px;
+      margin-bottom: 10px;
+    }
+
+    .visual-card span {
+      display: block;
+      color: inherit;
+      opacity: 0.72;
+      font-size: 11px;
+      line-height: 1.5;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    @media (max-width: 980px) {
+      .visuals-grid { grid-template-columns: 1fr; }
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+      text-transform: uppercase;
+      padding: 36px 18px 26px;
+      margin-top: 18px;
+      border-top: 1px solid var(--line-2);
+    }
+
+    @media (max-width: 1320px) {
+      .grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .filters-grid { grid-template-columns: 1fr 1fr; }
+      .links { grid-template-columns: repeat(2, 1fr); }
+    }
+
+
+
+    @media (max-width: 980px) {
+      body { padding-bottom: 146px; }
+
+      .filters {
+        position: fixed;
+        right: 18px;
+        bottom: 82px;
+        top: auto;
+        z-index: 998;
+        width: min(420px, calc(100vw - 36px));
+        max-height: min(72vh, 520px);
+        overflow: auto;
+        margin-bottom: 0;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(12px) scale(0.98);
+        transform-origin: bottom right;
+        transition: opacity 180ms ease, transform 180ms ease;
+        box-shadow: 6px 6px 0 var(--line);
+      }
+
+      .filters.is-mobile-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+      }
+
+      .mobile-filter-toggle {
+        position: fixed;
+        right: 18px;
+        bottom: 72px;
+        z-index: 999;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 132px;
+        min-height: 45px;
+      }
+
+      .mobile-filter-toggle.is-open {
+        bottom: calc(82px + var(--mobile-filter-panel-height, 0px));
+      }
+
+      .add-artist-btn {
+        width: 132px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 10px; }
+      .hero {
+        min-height: 66px;
+        padding: 14px 0;
+        justify-content: flex-end;
+        align-items: center;
+      }
+      .site-logo {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .logo-img { width: min(190px, 58vw); max-height: 44px; }
+      .mobile-nav-toggle { display: inline-flex; }
+      .hero-actions {
+        position: fixed;
+        top: 76px;
+        right: 10px;
+        z-index: 998;
+        width: min(320px, calc(100vw - 20px));
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 10px;
+        background: rgba(16,16,16,0.96);
+        border: 1px solid var(--line);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-8px) scale(0.98);
+        transform-origin: top right;
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+      body.theme-light .hero-actions { background: rgba(255,255,255,0.96); }
+      body.mobile-nav-active .hero-actions {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+      }
+      .hero .auth-btn, .hero .nav-btn {
+        width: 100%;
+        text-align: left;
+        padding: 12px 10px;
+      }
+      .settings-row { grid-template-columns: 1fr; }
+      .grid, .stats, .filters-grid { grid-template-columns: 1fr; }
+      .count-row { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <section class="auth-gate" id="authGate">
+    <div class="container auth-container">
+      <section class="hero auth-hero">
+        <h1 class="site-logo" aria-label="MONEYOVERALL">
+          <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
+          <span class="logo-fallback">MONEYOVERALL</span>
+        </h1>
+      </section>
+      <div class="auth-gate-body">
+        <div class="auth-panel">
+          <p id="authGateNotice">Sign in to view dashboard.</p>
+          <button class="auth-btn gate-auth-btn" id="gateAuthBtn" onclick="toggleAuth()">Sign in Google</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="appShell" class="hidden">
+  <div class="container">
+    <section class="hero">
+      <h1 class="site-logo" aria-label="MONEYOVERALL">
+        <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
+        <span class="logo-fallback">MONEYOVERALL</span>
+      </h1>
+      <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open navigation" aria-expanded="false" onclick="toggleMobileNav()">
+        <svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M5 8l7 7 7-7"></path></svg>
+      </button>
+      <div class="hero-actions">
+        <button class="nav-btn" id="dashboardNavBtn" onclick="showDashboardPage()">Dashboard</button>
+        <button class="nav-btn" id="visualsNavBtn" onclick="showVisualsPage()">Visuals</button>
+        <button class="nav-btn" id="settingsNavBtn" onclick="showSettingsPage()">Settings</button>
+        <button class="auth-btn" id="authBtn" onclick="toggleAuth()">Sign in Google</button>
+      </div>
+    </section>
+
+    <section class="settings-page hidden" id="settingsPage">
+      <h2>Settings</h2>
+      <div class="settings-row">
+        <label for="themeSelect">Theme</label>
+        <select id="themeSelect" onchange="changeTheme(this.value)">
+          <option value="system">Use system default</option>
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="map-page hidden" id="mapPage">
+      <div class="map-header">
+        <h2>Artist Map</h2>
+        <button class="nav-btn" onclick="showDashboardPage()">Back to Dashboard</button>
+      </div>
+      <div class="map-shell">
+        <svg class="world-map" id="worldMap" viewBox="0 0 1000 560" role="img" aria-label="World map of outreach artists">
+          <rect x="0" y="0" width="1000" height="560" fill="transparent"></rect>
+          <g class="map-graticule">
+            <path d="M40 280H960"></path><path d="M500 30V530"></path>
+            <path d="M40 113.3H960"></path><path d="M40 196.7H960"></path><path d="M40 363.3H960"></path><path d="M40 446.7H960"></path>
+            <path d="M166.7 30V530"></path><path d="M333.3 30V530"></path><path d="M666.7 30V530"></path><path d="M833.3 30V530"></path>
+          </g>
+          <g id="mapLandLayer"></g>
+          <g id="mapBorderLayer"></g>
+          <g id="mapDots"></g>
+        </svg>
+      </div>
+      <div class="map-legend"><span class="legend-item"><span class="legend-dot sent"></span>SENT</span><span class="legend-item"><span class="legend-dot unsent"></span>NOT SENT</span></div>
+    </section>
+
+
+    <section class="visuals-page hidden" id="visualsPage">
+      <div class="visuals-grid">
+        <a class="visual-card" href="phonk_visuals_generator.html">
+          <strong>Phonk Visuals</strong>
+        </a>
+      </div>
+    </section>
+
+    <div id="dashboardPage">
+    <section class="stats">
+      <div class="stat"><strong id="totalStat">0</strong><span>Total</span></div>
+      <div class="stat"><strong id="sentStat">0</strong><span>Sent</span></div>
+      <button class="summary-globe-btn" title="Open artist map" aria-label="Open artist map" onclick="showMapPage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c3 3 3 15 0 18"></path><path d="M12 3c-3 3-3 15 0 18"></path></svg>
+      </button>
+      <button class="summary-globe-btn summary-list-btn" title="Copy artist list" aria-label="Copy artist list" onclick="copyArtistList()">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h1"></path><path d="M3 12h1"></path><path d="M3 18h1"></path></svg>
+      </button>
+      <div class="send-warning artist-list-bubble" id="artistListBubble">ARTIST LIST COPIED</div>
+    </section>
+
+    <section class="filters" id="filtersPanel">
+      <div class="filters-grid">
+        <input id="searchInput" type="text" placeholder="SEARCH" />
+        <select id="regionFilter"><option value="All">ALL REGIONS</option></select>
+        <select id="priorityFilter">
+          <option value="All">ALL PRIORITIES</option>
+          <option value="SENT">SENT</option>
+          <option value="USER">USER</option>
+          <option value="High">HIGH</option>
+          <option value="Medium">MEDIUM</option>
+          <option value="Low">LOW</option>
+        </select>
+        <select id="colorFilter">
+          <option value="All">ALL COLORS</option>
+          <option value="none">NO COLOR</option>
+          <option value="red">RED</option>
+          <option value="gold">GOLD</option>
+          <option value="green">GREEN</option>
+          <option value="blue">BLUE</option>
+          <option value="purple">PURPLE</option>
+        </select>
+        <select id="sortSelect">
+          <option value="auto">PRIORITY + A-Z</option>
+          <option value="name">A-Z</option>
+          <option value="region">REGION + A-Z</option>
+        </select>
+      </div>
+    </section>
+
+    <div class="count-row">
+      <p id="resultCount">Showing 0 artists</p>
+      <div class="status-actions">
+        <p class="save-status" id="saveStatus">Autosave ready</p>
+      </div>
+    </div>
+
+    <main class="grid" id="artistGrid"></main>
+    </div>
+  </div>
+
+  <div class="mobile-ui-backdrop" id="mobileUiBackdrop" onclick="closeMobileOverlays()"></div>
+  <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button" aria-controls="filtersPanel" aria-expanded="false" onclick="toggleMobileFilters()">Filters</button>
+  <button class="add-artist-btn" id="addArtistFloatingBtn" onclick="openAddArtistModal()">+ Add Artist</button>
+
+  <div class="modal" id="addArtistModal">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h2>Add Artist</h2>
+        <button class="close-btn" onclick="closeAddArtistModal()">Close</button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          <span class="form-label">Name</span>
+          <input id="newName" type="text" placeholder="ARTIST NAME" />
+        </label>
+        <label>
+          <span class="form-label">Region</span>
+          <input id="newRegion" type="text" placeholder="REGION" value="User Added" />
+        </label>
+        <label>
+          <span class="form-label">Lane</span>
+          <input id="newLane" type="text" placeholder="LANE" value="User-added artist" />
+        </label>
+        <label>
+          <span class="form-label">Priority</span>
+          <select id="newPriority">
+            <option value="USER">USER</option>
+            <option value="High">HIGH</option>
+            <option value="Medium">MEDIUM</option>
+            <option value="Low">LOW</option>
+          </select>
+        </label>
+        <label class="full">
+          <span class="form-label">Email</span>
+          <input id="newEmail" type="text" placeholder="EMAIL" />
+        </label>
+        <label class="full">
+          <span class="form-label">Instagram</span>
+          <input id="newInstagram" type="url" placeholder="INSTAGRAM URL" />
+        </label>
+        <label class="full">
+          <span class="form-label">TikTok</span>
+          <input id="newTikTok" type="url" placeholder="TIKTOK URL" />
+        </label>
+        <label class="full">
+          <span class="form-label">Spotify</span>
+          <input id="newSpotify" type="url" placeholder="SPOTIFY URL" />
+        </label>
+        <label class="full">
+          <span class="form-label">YouTube</span>
+          <input id="newYouTube" type="url" placeholder="YOUTUBE URL" />
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button onclick="addArtistFromModal()">Add Artist</button>
+        <button onclick="clearAddArtistForm()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+    <footer class="footer">
+      <div>MONEYOVERALL © 2026 All Rights Reserved.</div>
+      <div>Authorized internal use only.</div>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { geoEquirectangular, geoPath } from "https://cdn.jsdelivr.net/npm/d3-geo@3/+esm";
+    import { feature, mesh } from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB4mAggiPorQdcnMrvox8t6ZNxF7o1C98o",
+      authDomain: "druskhi-outreach-dashboard.firebaseapp.com",
+      projectId: "druskhi-outreach-dashboard",
+      storageBucket: "druskhi-outreach-dashboard.firebasestorage.app",
+      messagingSenderId: "375387055106",
+      appId: "1:375387055106:web:68ab3ab1f9bd796f85b31b"
+    };
+
+    const FIREBASE_ENABLED = !firebaseConfig.apiKey.includes("PASTE_");
+    let firebaseApp = null;
+    let firebaseAuth = null;
+    let firebaseProvider = null;
+    let firebaseDb = null;
+    let firebaseUid = null;
+    let firebaseDocRef = null;
+    let firebaseOnline = false;
+
+    const STORAGE_KEY = "artistOutreachDashboard.v4";
+    const THEME_KEY = "artistOutreachDashboard.theme.v1";
+    const CUSTOM_ARTISTS_KEY = "artistOutreachDashboard.customArtists.v1";
+    const DELETED_ARTISTS_KEY = "artistOutreachDashboard.deletedArtists.v1";
+    const ARTISTS_CACHE_KEY = "artistOutreachDashboard.sharedArtists.v1";
+    const SYNC_INTERVAL_MS = 60000;
+    const OLD_STORAGE_KEY = "artistOutreachDashboard.v2";
+    const priorityOrder = { USER: 4, High: 3, Medium: 2, Low: 1 };
+    const colorCodes = ["none", "red", "gold", "green", "blue", "purple"];
+    const editingCards = new Set();
+    const sendExpandedCards = new Set();
+    const sendWarningTimers = new Map();
+
+    const baseArtists = [
+      { name: "Alyssa Sinacori", region: "User Added", lane: "User-added artist", priority: "USER", fit: "Added by user. Verify fit, current activity, and best contact route.", pitch: "Check recent posts and decide whether to pitch the reference directly or build rapport first.", size: "User target", email: "", socials: { instagram: "https://www.instagram.com/alyssa_sinacori/", tiktok: "https://www.tiktok.com/search?q=Alyssa%20Sinacori", spotify: "https://open.spotify.com/search/Alyssa%20Sinacori", youtube: "https://www.youtube.com/results?search_query=Alyssa+Sinacori" } },
+      { name: "M Huncho", region: "User Added", lane: "Melodic rap / trap", priority: "USER", fit: "Added by user. Strong melodic/rap lane if the record has a dark, polished, international feel.", pitch: "Pitch the full song direction and melody, not just the beat.", size: "User target", email: "", socials: { instagram: "https://www.instagram.com/mhuncho/", tiktok: "https://www.tiktok.com/search?q=M%20Huncho", spotify: "https://open.spotify.com/search/M%20Huncho", youtube: "https://www.youtube.com/results?search_query=M+Huncho" } },
+      { name: "J King", region: "User Added", lane: "User-added artist", priority: "USER", fit: "Added by user. Verify lane and recent activity before outreach.", pitch: "Use a short message and lead with why the song fits their sound.", size: "User target", email: "", socials: { instagram: "https://www.instagram.com/jking.music/", tiktok: "https://www.tiktok.com/search?q=J%20King%20music", spotify: "https://open.spotify.com/search/J%20King", youtube: "https://www.youtube.com/results?search_query=J+King+music" } },
+      { name: "Fredo", region: "User Added", lane: "UK rap / street rap", priority: "USER", fit: "Added by user. Better if the song can lean darker, cleaner, or more street-luxury.", pitch: "Approach professionally; likely better through management or a warm route.", size: "User target", email: "", socials: { instagram: "https://www.instagram.com/fredo/", tiktok: "https://www.tiktok.com/search?q=Fredo%20rapper", spotify: "https://open.spotify.com/search/Fredo", youtube: "https://www.youtube.com/results?search_query=Fredo+rapper" } },
+
+      { name: "Youngn Lipz", region: "Australia", lane: "Melodic rap / R&B", priority: "High", fit: "Very close Day1-adjacent fit. Strong for melodic, relationship-driven records with a clean hook.", pitch: "Lead with the melody and reference direction. Keep it polished and emotional.", size: "Mid-tier", email: "", socials: { instagram: "https://www.instagram.com/youngnlipz/", tiktok: "https://www.tiktok.com/search?q=Youngn%20Lipz", spotify: "https://open.spotify.com/search/Youngn%20Lipz", youtube: "https://www.youtube.com/results?search_query=Youngn+Lipz" } },
+      { name: "Hooligan Hefs", region: "Australia", lane: "Aus rap / street rap", priority: "Medium", fit: "Bigger than Day1 but directly in the same ecosystem. Better through management or warm intro.", pitch: "Pitch it as a real record, not just a beat. Emphasize hook and final-song potential.", size: "Upper mid-tier", email: "", socials: { instagram: "https://www.instagram.com/hooliganhefs/", tiktok: "https://www.tiktok.com/search?q=Hooligan%20Hefs", spotify: "https://open.spotify.com/search/Hooligan%20Hefs", youtube: "https://www.youtube.com/results?search_query=Hooligan+Hefs" } },
+      { name: "Lisi", region: "Australia / Pacific", lane: "Storytelling / melodic street rap", priority: "High", fit: "Strong if the song has pain, storytelling, or a big emotional hook.", pitch: "Emphasize the emotion and chorus. Let him know he can make it his own vocally.", size: "Mid-tier", email: "", socials: { instagram: "https://www.instagram.com/lisi4300/", tiktok: "https://www.tiktok.com/search?q=Lisi%20rapper", spotify: "https://open.spotify.com/search/Lisi", youtube: "https://www.youtube.com/results?search_query=Lisi+rapper" } },
+      { name: "The 046", region: "Australia", lane: "Group anthem / Aus funk / rap", priority: "Medium", fit: "Good if the record can become a group anthem or multiple-voice moment.", pitch: "Frame it as a hook-driven anthem they could flip with group energy.", size: "Mid-tier / active scene act", email: "", socials: { instagram: "https://www.instagram.com/the_046_official", tiktok: "https://www.tiktok.com/search?q=The%20046", spotify: "https://open.spotify.com/search/The%20046", youtube: "https://www.youtube.com/results?search_query=The+046" } },
+      { name: "Ay Huncho", region: "Australia", lane: "Melodic street rap / R&B", priority: "High", fit: "Close Day1 lane. Strong for dark melodic pockets or street-love records.", pitch: "Pitch the bounce, melody, and emotional tone. Keep the message direct.", size: "Mid-tier", email: "", socials: { instagram: "https://www.instagram.com/ayhuncho/", tiktok: "https://www.tiktok.com/search?q=Ay%20Huncho", spotify: "https://open.spotify.com/search/Ay%20Huncho", youtube: "https://www.youtube.com/results?search_query=Ay+Huncho" } },
+      { name: "Stallyano", region: "New Zealand", lane: "Melodic rap", priority: "High", fit: "Reachable target for emotional, melodic, street-R&B leaning records.", pitch: "Lead with melody/cadence and make it feel like a complete song idea.", size: "Mid-tier / reachable", email: "", socials: { instagram: "https://www.instagram.com/stallyano/", tiktok: "https://www.tiktok.com/search?q=Stallyano", spotify: "https://open.spotify.com/search/Stallyano", youtube: "https://www.youtube.com/results?search_query=Stallyano" } },
+      { name: "Sydney Yungins", region: "Australia", lane: "Group rap / drill / party wave", priority: "Medium", fit: "Good if the record can be adapted into a group song or party-facing hook.", pitch: "Frame the song as flexible and easy for multiple voices to jump on.", size: "Lower-mid / scene act", email: "", socials: { instagram: "https://www.instagram.com/sydneyyungins/", tiktok: "https://www.tiktok.com/search?q=Sydney%20Yungins", spotify: "https://open.spotify.com/search/Sydney%20Yungins", youtube: "https://www.youtube.com/results?search_query=Sydney+Yungins" } },
+      { name: "Oliver Cronin", region: "Australia", lane: "Pop-R&B / crossover", priority: "Medium", fit: "Good if the song has a big clean hook and crossover potential.", pitch: "Send the most polished private bounce. Emphasize the song, not the beat.", size: "Upper mid-tier / social-facing", email: "", socials: { instagram: "https://www.instagram.com/olivercronin/", tiktok: "https://www.tiktok.com/search?q=Oliver%20Cronin", spotify: "https://open.spotify.com/search/Oliver%20Cronin", youtube: "https://www.youtube.com/results?search_query=Oliver+Cronin" } },
+
+      { name: "Yatta Bandz", region: "United States", lane: "Melodic pain rap", priority: "High", fit: "One of the strongest U.S. fits for emotional melody, heartbreak, and hook-driven records.", pitch: "Lead with the hook and emotional angle. Keep the message short and serious.", size: "Mid-tier / strong fanbase", email: "", socials: { instagram: "https://www.instagram.com/yattabandz/", tiktok: "https://www.tiktok.com/search?q=Yatta%20Bandz", spotify: "https://open.spotify.com/search/Yatta%20Bandz", youtube: "https://www.youtube.com/results?search_query=Yatta+Bandz" } },
+      { name: "MBNel", region: "United States", lane: "West Coast melodic street rap", priority: "High", fit: "Great for heartfelt, street, reflective, or hook-driven songs.", pitch: "Make the record feel personal and honest. Reference + lyrics matter here.", size: "Mid-tier / Day1-caliber", email: "", socials: { instagram: "https://www.instagram.com/nellynelmb/", tiktok: "https://www.tiktok.com/search?q=MBNel", spotify: "https://open.spotify.com/search/MBNel", youtube: "https://www.youtube.com/results?search_query=MBNel" } },
+      { name: "2KBABY", region: "United States", lane: "Melodic trap / pain rap", priority: "High", fit: "Strong fit for a catchy emotional hook with vocal room and commercial potential.", pitch: "Pitch it as a complete song idea and highlight the chorus immediately.", size: "Upper mid-tier", email: "", socials: { instagram: "https://www.instagram.com/2kbaby/", tiktok: "https://www.tiktok.com/search?q=2KBABY", spotify: "https://open.spotify.com/search/2KBABY", youtube: "https://www.youtube.com/results?search_query=2KBABY" } },
+      { name: "Lil Kee", region: "United States", lane: "Atlanta melodic pain rap", priority: "High", fit: "Good for emotional piano/guitar beats, street-love themes, and NoCap/Rylo-adjacent fans.", pitch: "Use a concise message and make the private link easy to open.", size: "Mid-tier / reachable", email: "", socials: { instagram: "https://www.instagram.com/1lilkee/", tiktok: "https://www.tiktok.com/search?q=Lil%20Kee", spotify: "https://open.spotify.com/search/Lil%20Kee", youtube: "https://www.youtube.com/results?search_query=Lil+Kee" } },
+      { name: "FCG Heem", region: "United States", lane: "Florida melodic street rap", priority: "High", fit: "Great if the record has emotion but still carries bounce and street energy.", pitch: "Pitch it as something he can put his pain into while keeping the bounce.", size: "Mid-tier / active", email: "", socials: { instagram: "https://www.instagram.com/fcgheem/", tiktok: "https://www.tiktok.com/search?q=FCG%20Heem", spotify: "https://open.spotify.com/search/FCG%20Heem", youtube: "https://www.youtube.com/results?search_query=FCG+Heem" } },
+      { name: "Big Sad 1900", region: "United States", lane: "West Coast street rap / pain rap", priority: "Medium", fit: "Strong if the record is gritty, reflective, and real-life focused.", pitch: "Use a darker, more direct pitch. Less pop, more pain and authenticity.", size: "Mid-tier / strong traction", email: "", socials: { instagram: "https://www.instagram.com/bigx1900/?hl=en", tiktok: "https://www.tiktok.com/search?q=Big%20Sad%201900", spotify: "https://open.spotify.com/search/Big%20Sad%201900", youtube: "https://www.youtube.com/results?search_query=Big+Sad+1900" } },
+      { name: "Noodah05", region: "United States", lane: "Atlanta melodic street rap", priority: "Medium", fit: "Good if the hook is emotional and the beat has ATL bounce.", pitch: "Keep the pitch direct. Make the record feel ready to cut, not experimental.", size: "Mid-tier / active", email: "", socials: { instagram: "https://www.instagram.com/noodah05/", tiktok: "https://www.tiktok.com/search?q=Noodah05", spotify: "https://open.spotify.com/search/Noodah05", youtube: "https://www.youtube.com/results?search_query=Noodah05" } },
+      { name: "Wizz Havinn", region: "United States", lane: "Florida rap / slick street flow", priority: "Medium", fit: "Good for bouncy, darker, or slicker records. Less ideal for a pure love-song demo.", pitch: "Only send if the drums and flow pocket are strong enough for Florida motion.", size: "Mid-tier / active", email: "", socials: { instagram: "https://www.instagram.com/wizzhavinnn/", tiktok: "https://www.tiktok.com/search?q=Wizz%20Havinn", spotify: "https://open.spotify.com/search/Wizz%20Havinn", youtube: "https://www.youtube.com/results?search_query=Wizz+Havinn" } },
+      { name: "El Snappo", region: "United States", lane: "Florida street rap / trap", priority: "Medium", fit: "Good if the record can be flipped cockier, punchier, or more street.", pitch: "Send only if the beat hits hard and the hook can survive a grittier delivery.", size: "Mid-tier / active", email: "", socials: { instagram: "https://www.instagram.com/el.snappo/", tiktok: "https://www.tiktok.com/search?q=El%20Snappo", spotify: "https://open.spotify.com/search/El%20Snappo", youtube: "https://www.youtube.com/results?search_query=El+Snappo" } }
+    ];
+
+    let state = loadState();
+    let customArtists = loadCustomArtists();
+    let deletedArtistIds = loadDeletedArtists();
+    let artists = loadLocalArtists();
+    if (!artists.length) {
+      artists = mergeSavedState([...baseArtists, ...customArtists], state).filter(artist => !deletedArtistIds.includes(artist.id));
+    }
+
+    const grid = document.getElementById("artistGrid");
+    const searchInput = document.getElementById("searchInput");
+    const regionFilter = document.getElementById("regionFilter");
+    const priorityFilter = document.getElementById("priorityFilter");
+    const colorFilter = document.getElementById("colorFilter");
+    const sortSelect = document.getElementById("sortSelect");
+    const filtersPanel = document.getElementById("filtersPanel");
+    const mobileFilterToggle = document.getElementById("mobileFilterToggle");
+    const mobileNavToggle = document.getElementById("mobileNavToggle");
+    const resultCount = document.getElementById("resultCount");
+    const saveStatus = document.getElementById("saveStatus");
+    const settingsPage = document.getElementById("settingsPage");
+    const dashboardPage = document.getElementById("dashboardPage");
+    const mapPage = document.getElementById("mapPage");
+    const visualsPage = document.getElementById("visualsPage");
+    const themeSelect = document.getElementById("themeSelect");
+    const appShell = document.getElementById("appShell");
+    const authGate = document.getElementById("authGate");
+    const authGateNotice = document.getElementById("authGateNotice");
+    const authBtn = document.getElementById("authBtn");
+    const gateAuthBtn = document.getElementById("gateAuthBtn");
+
+    function slug(name) { return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""); }
+
+    function getSystemTheme() {
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    }
+
+    function applyThemePreference(preference) {
+      const resolvedTheme = preference === "system" ? getSystemTheme() : preference;
+      document.body.classList.remove("theme-light", "theme-dark");
+      document.body.classList.add(resolvedTheme === "light" ? "theme-light" : "theme-dark");
+      if (themeSelect) themeSelect.value = preference;
+    }
+
+    function loadThemePreference() {
+      return localStorage.getItem(THEME_KEY) || "system";
+    }
+
+    function changeTheme(value) {
+      localStorage.setItem(THEME_KEY, value);
+      applyThemePreference(value);
+    }
+
+    function setFloatingAddVisible(isVisible) {
+      const button = document.getElementById("addArtistFloatingBtn");
+      if (button) button.classList.toggle("hidden", !isVisible);
+      setMobileFilterVisible(isVisible);
+      if (!isVisible) closeMobileFilters();
+    }
+
+    function setMobileFilterVisible(isVisible) {
+      if (mobileFilterToggle) mobileFilterToggle.classList.toggle("hidden", !isVisible);
+    }
+
+    function syncMobileFilterPosition() {
+      if (!filtersPanel || !mobileFilterToggle) return;
+      const height = filtersPanel.classList.contains("is-mobile-open") ? filtersPanel.offsetHeight : 0;
+      document.documentElement.style.setProperty("--mobile-filter-panel-height", `${height}px`);
+    }
+
+    function closeMobileNav() {
+      document.body.classList.remove("mobile-nav-active");
+      if (mobileNavToggle) {
+        mobileNavToggle.classList.remove("is-open");
+        mobileNavToggle.setAttribute("aria-expanded", "false");
+        mobileNavToggle.setAttribute("aria-label", "Open navigation");
+      }
+    }
+
+    function toggleMobileNav() {
+      closeMobileFilters();
+      const isOpen = !document.body.classList.contains("mobile-nav-active");
+      document.body.classList.toggle("mobile-nav-active", isOpen);
+      if (mobileNavToggle) {
+        mobileNavToggle.classList.toggle("is-open", isOpen);
+        mobileNavToggle.setAttribute("aria-expanded", String(isOpen));
+        mobileNavToggle.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+      }
+    }
+
+    function closeMobileOverlays() {
+      closeMobileFilters();
+      closeMobileNav();
+    }
+
+    function closeMobileFilters() {
+      if (filtersPanel) filtersPanel.classList.remove("is-mobile-open");
+      document.body.classList.remove("mobile-filter-active");
+      if (mobileFilterToggle) {
+        mobileFilterToggle.classList.remove("is-open");
+        mobileFilterToggle.textContent = "Filters";
+        mobileFilterToggle.setAttribute("aria-expanded", "false");
+      }
+      document.documentElement.style.setProperty("--mobile-filter-panel-height", "0px");
+    }
+
+    function toggleMobileFilters() {
+      closeMobileNav();
+      if (!filtersPanel || !mobileFilterToggle) return;
+      const isOpen = filtersPanel.classList.toggle("is-mobile-open");
+      document.body.classList.toggle("mobile-filter-active", isOpen);
+      mobileFilterToggle.classList.toggle("is-open", isOpen);
+      mobileFilterToggle.textContent = isOpen ? "Close" : "Filters";
+      mobileFilterToggle.setAttribute("aria-expanded", String(isOpen));
+      if (isOpen) {
+        requestAnimationFrame(() => {
+          syncMobileFilterPosition();
+          searchInput.focus({ preventScroll: true });
+        });
+      } else {
+        document.documentElement.style.setProperty("--mobile-filter-panel-height", "0px");
+      }
+    }
+
+    function showSettingsPage() {
+      document.title = "MONEYOVERALL";
+      dashboardPage.classList.add("hidden");
+      mapPage.classList.add("hidden");
+      visualsPage.classList.add("hidden");
+      settingsPage.classList.remove("hidden");
+      setFloatingAddVisible(false);
+    }
+
+    function showDashboardPage() {
+      document.title = "MONEYOVERALL";
+      settingsPage.classList.add("hidden");
+      mapPage.classList.add("hidden");
+      visualsPage.classList.add("hidden");
+      dashboardPage.classList.remove("hidden");
+      setFloatingAddVisible(true);
+    }
+
+    function showVisualsPage() {
+      document.title = "MONEYOVERALL / VISUALS";
+      settingsPage.classList.add("hidden");
+      mapPage.classList.add("hidden");
+      dashboardPage.classList.add("hidden");
+      visualsPage.classList.remove("hidden");
+      setFloatingAddVisible(false);
+    }
+
+    function showMapPage() {
+      document.title = "MONEYOVERALL";
+      settingsPage.classList.add("hidden");
+      dashboardPage.classList.add("hidden");
+      visualsPage.classList.add("hidden");
+      mapPage.classList.remove("hidden");
+      setFloatingAddVisible(false);
+      renderMapLand();
+      renderMapDots();
+    }
+    function escapeHtml(value) { return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;"); }
+
+    function loadState() {
+      try {
+        const current = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (current) return current;
+        return JSON.parse(localStorage.getItem(OLD_STORAGE_KEY)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function loadCustomArtists() {
+      try {
+        return JSON.parse(localStorage.getItem(CUSTOM_ARTISTS_KEY)) || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function loadDeletedArtists() {
+      try {
+        return JSON.parse(localStorage.getItem(DELETED_ARTISTS_KEY)) || [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveDeletedArtists() {
+      localStorage.setItem(DELETED_ARTISTS_KEY, JSON.stringify(deletedArtistIds));
+    }
+
+    function isValidSendDate(value) {
+      if (!value) return false;
+      const date = String(value);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+      const parsed = new Date(`${date}T00:00:00`);
+      return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date;
+    }
+
+    function normalizeSendEntries(entries) {
+      if (!Array.isArray(entries)) return [];
+      return entries.map(entry => {
+        const date = entry && entry.date ? String(entry.date) : "";
+        const checked = Boolean(entry && entry.checked && isValidSendDate(date));
+        return { checked, date };
+      });
+    }
+
+    function confirmedSendEntries(entries) {
+      return normalizeSendEntries(entries).filter(entry => entry.checked && isValidSendDate(entry.date));
+    }
+
+    function hasSent(artist) {
+      return confirmedSendEntries(artist.sendEntries).length > 0;
+    }
+
+    function normalizeColorCode(value) {
+      return colorCodes.includes(value) ? value : "none";
+    }
+
+    function normalizeArtist(artist, persist = false) {
+      const id = artist.id || slug(artist.name || "artist");
+      return {
+        name: artist.name || "Untitled Artist",
+        id,
+        region: artist.region || "User Added",
+        lane: artist.lane || "User-added artist",
+        priority: artist.priority || "USER",
+        colorCode: normalizeColorCode(artist.colorCode || artist.color || "none"),
+        fit: artist.fit || "",
+        pitch: artist.pitch || "",
+        size: artist.size || "User target",
+        email: artist.email || "",
+        note: artist.note || "",
+        sendEntries: persist ? confirmedSendEntries(artist.sendEntries) : normalizeSendEntries(artist.sendEntries),
+        customTags: Array.isArray(artist.customTags) ? artist.customTags : [],
+        socials: {
+          instagram: artist.socials?.instagram || "https://www.instagram.com/",
+          tiktok: artist.socials?.tiktok || `https://www.tiktok.com/search?q=${encodeURIComponent(artist.name || "")}`,
+          spotify: artist.socials?.spotify || `https://open.spotify.com/search/${encodeURIComponent(artist.name || "")}`,
+          youtube: artist.socials?.youtube || `https://www.youtube.com/results?search_query=${encodeURIComponent(artist.name || "")}`
+        }
+      };
+    }
+
+    function dedupeArtists(list) {
+      const map = new Map();
+      list.map(normalizeArtist).forEach(artist => map.set(artist.id, artist));
+      return Array.from(map.values());
+    }
+
+    function loadLocalArtists() {
+      try {
+        return dedupeArtists(JSON.parse(localStorage.getItem(ARTISTS_CACHE_KEY)) || []);
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveLocalArtists() {
+      localStorage.setItem(ARTISTS_CACHE_KEY, JSON.stringify(artists.map(artist => normalizeArtist(artist, true))));
+    }
+
+    function saveCustomArtists() {
+      localStorage.setItem(CUSTOM_ARTISTS_KEY, JSON.stringify(customArtists));
+    }
+
+    function setSignedInUi(isSignedIn, message = "Sign in to view dashboard.") {
+      if (isSignedIn) {
+        authGate.classList.add("hidden");
+        appShell.classList.remove("hidden");
+        if (authBtn) authBtn.textContent = "Sign out";
+        if (gateAuthBtn) gateAuthBtn.textContent = "Sign out";
+      } else {
+        appShell.classList.add("hidden");
+        authGate.classList.remove("hidden");
+        authGateNotice.textContent = message;
+        if (authBtn) authBtn.textContent = "Sign in Google";
+        if (gateAuthBtn) gateAuthBtn.textContent = "Sign in Google";
+      }
+    }
+
+    async function initFirebaseCloud() {
+      if (!FIREBASE_ENABLED) {
+        setSignedInUi(false, "Firebase config missing.");
+        return;
+      }
+
+      try {
+        firebaseApp = initializeApp(firebaseConfig);
+        firebaseAuth = getAuth(firebaseApp);
+        firebaseProvider = new GoogleAuthProvider();
+        firebaseDb = getFirestore(firebaseApp);
+
+        onAuthStateChanged(firebaseAuth, async user => {
+          if (!user) {
+            firebaseUid = null;
+            firebaseDocRef = null;
+            firebaseOnline = false;
+            setSignedInUi(false, "Sign in to view dashboard.");
+            return;
+          }
+
+          firebaseUid = user.uid;
+          firebaseDocRef = doc(firebaseDb, "dashboards", "druskhi-outreach");
+          firebaseOnline = true;
+          setSignedInUi(true);
+
+          await loadCloudDashboard();
+          routeFromHash();
+        });
+      } catch (error) {
+        console.error("Firebase init failed", error);
+        firebaseOnline = false;
+        setSignedInUi(false, "Firebase offline. Check console/config.");
+      }
+    }
+
+    async function loadCloudDashboard() {
+      if (!firebaseDocRef) return;
+
+      try {
+        const snap = await getDoc(firebaseDocRef);
+        if (snap.exists()) {
+          const cloud = snap.data();
+
+          if (Array.isArray(cloud.artists)) {
+            const cloudArtists = dedupeArtists(cloud.artists);
+            const cloudArtistIds = new Set(cloudArtists.map(artist => artist.id));
+            const localOnlyArtists = loadLocalArtists().filter(artist => !cloudArtistIds.has(artist.id));
+            artists = dedupeArtists([...localOnlyArtists, ...cloudArtists]);
+          } else {
+            const cloudState = cloud.state || {};
+            const cloudCustomArtists = Array.isArray(cloud.customArtists) ? cloud.customArtists : [];
+            const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : loadDeletedArtists();
+            artists = mergeSavedState([...baseArtists, ...cloudCustomArtists], cloudState).filter(artist => !cloudDeletedArtistIds.includes(artist.id));
+          }
+
+          saveLocalArtists();
+          populateRegions();
+          renderArtists();
+          await saveState();
+          saveStatus.textContent = "Cloud loaded";
+        } else {
+          artists = dedupeArtists(artists.length ? artists : baseArtists);
+          saveLocalArtists();
+          await saveState();
+          saveStatus.textContent = "Shared cloud initialized";
+        }
+      } catch (error) {
+        console.error("Cloud load failed", error);
+        saveStatus.textContent = "Cloud load failed / local mode";
+      }
+    }
+
+    async function toggleAuth() {
+      if (!FIREBASE_ENABLED || !firebaseAuth || !firebaseProvider) {
+        alert("Paste your Firebase config first.");
+        return;
+      }
+
+      try {
+        if (firebaseAuth.currentUser) {
+          await signOut(firebaseAuth);
+        } else {
+          await signInWithPopup(firebaseAuth, firebaseProvider);
+        }
+      } catch (error) {
+        console.error("Auth failed", error);
+        alert("Firebase sign-in failed. Check your Firebase config and enabled providers.");
+      }
+    }
+
+    function buildStatePayload() {
+      const payload = {};
+      artists.forEach(artist => {
+        payload[artist.id] = {
+          priority: artist.priority,
+          colorCode: normalizeColorCode(artist.colorCode || "none"),
+          note: artist.note || "",
+          email: artist.email || "",
+          sendEntries: confirmedSendEntries(artist.sendEntries),
+          socials: artist.socials || {},
+          customTags: artist.customTags || []
+        };
+      });
+      return payload;
+    }
+
+    async function saveState() {
+      artists = dedupeArtists(artists);
+      const payload = buildStatePayload();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      saveLocalArtists();
+      saveStatus.textContent = "Saved local " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+
+      if (!firebaseOnline || !firebaseDocRef) return;
+
+      try {
+        await setDoc(firebaseDocRef, {
+          artists: artists.map(artist => normalizeArtist(artist, true)),
+          state: payload,
+          customArtists: artists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true)),
+          deletedArtistIds,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+        saveStatus.textContent = "Saved shared cloud " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+      } catch (error) {
+        console.error("Firebase save failed", error);
+        saveStatus.textContent = "Cloud save failed / local saved";
+      }
+    }
+
+    function mergeSavedState(list, saved) {
+      return list.map(artist => {
+        const id = slug(artist.name);
+        const existing = saved[id] || {};
+        return {
+          ...artist,
+          id,
+          priority: existing.priority || artist.priority,
+          colorCode: normalizeColorCode(existing.colorCode || artist.colorCode || "none"),
+          note: existing.note || "",
+          email: existing.email || artist.email || "",
+          sendEntries: normalizeSendEntries(existing.sendEntries || artist.sendEntries),
+          socials: { ...artist.socials, ...(existing.socials || {}) },
+          customTags: Array.isArray(existing.customTags) ? existing.customTags : (artist.customTags || [])
+        };
+      });
+    }
+
+    function populateRegions() {
+      const regions = Array.from(new Set(artists.map(a => a.region))).sort();
+      regionFilter.innerHTML = '<option value="All">ALL REGIONS</option>' + regions.map(region => `<option value="${escapeHtml(region)}">${escapeHtml(region).toUpperCase()}</option>`).join("");
+    }
+
+    function sortArtists(list) {
+      const mode = sortSelect.value;
+      const copy = [...list];
+      if (mode === "name") return copy.sort((a, b) => a.name.localeCompare(b.name));
+      if (mode === "region") return copy.sort((a, b) => a.region.localeCompare(b.region) || a.name.localeCompare(b.name));
+      return copy.sort((a, b) => (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0) || a.name.localeCompare(b.name));
+    }
+
+    function getFilteredArtists() {
+      const query = searchInput.value.toLowerCase().trim();
+      const region = regionFilter.value;
+      const priority = priorityFilter.value;
+      const selectedColor = colorFilter.value;
+
+      return artists.filter(artist => {
+        const artistColor = normalizeColorCode(artist.colorCode || "none");
+        const text = `${artist.name} ${artist.region} ${artist.lane} ${artist.size} ${artistColor} ${(artist.customTags || []).join(" ")} ${artist.note || ""} ${artist.email || ""}`.toLowerCase();
+        const priorityMatch = priority === "All" || (priority === "SENT" ? hasSent(artist) : artist.priority === priority);
+        const colorMatch = selectedColor === "All" || artistColor === selectedColor;
+        return (!query || text.includes(query)) && (region === "All" || artist.region === region) && priorityMatch && colorMatch;
+      });
+    }
+
+    function renderArtists() {
+      const filtered = sortArtists(getFilteredArtists());
+      resultCount.textContent = `Showing ${filtered.length} of ${artists.length} artists`;
+      updateStats();
+      if (!filtered.length) {
+        grid.innerHTML = '<div class="empty">No artists match your filters.</div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(artistCardHTML).join("");
+      editingCards.forEach(id => {
+        const shell = document.querySelector(`[data-id="${id}"]`);
+        if (shell) shell.classList.add("is-editing");
+      });
+    }
+
+    function renderCustomTags(artist) {
+      return (artist.customTags || [])
+        .filter(Boolean)
+        .map(tag => `<span class="tag">${escapeHtml(tag)}</span>`)
+        .join("");
+    }
+
+    function sendRemoveIconSvg() {
+      return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg>';
+    }
+
+    function renderSendEntries(artist) {
+      const entries = normalizeSendEntries(artist.sendEntries);
+      const expanded = sendExpandedCards.has(artist.id);
+      const visibleEntries = expanded ? entries : entries.slice(0, 3);
+      const canAdd = hasSent(artist);
+      const rowHtml = (entry, index) => {
+        const needsDateClass = isValidSendDate(entry.date) ? "" : " needs-date";
+        return `
+        <div class="send-row">
+          <input type="checkbox" class="${needsDateClass.trim()}" ${entry.checked ? "checked" : ""} onclick="return toggleSendEntryChecked(event, '${artist.id}', ${index})" aria-label="Mark send entry complete" />
+          <input type="date" value="${escapeHtml(entry.date)}" oninput="changeSendEntryDate('${artist.id}', ${index}, this.value, false)" />
+          <button class="send-remove-btn" type="button" title="Remove send entry" aria-label="Remove send entry" onclick="removeSendEntry('${artist.id}', ${index})">${sendRemoveIconSvg()}</button>
+        </div>`;
+      };
+      const entryHtml = visibleEntries.map(rowHtml).join("");
+      const emptyHtml = entries.length ? "" : `<div class="send-row">
+        <input type="checkbox" class="needs-date" onclick="return emptySendCheckboxClicked(event, '${artist.id}')" aria-label="Add date first" />
+        <input type="date" oninput="createFirstSendEntry('${artist.id}', this.value, false)" />
+        <button class="send-remove-btn" type="button" title="Clear send entry" aria-label="Clear send entry" onclick="clearFirstSendEntry('${artist.id}')">${sendRemoveIconSvg()}</button>
+      </div>`;
+      const showAll = entries.length > 3 && !expanded ? `<button class="show-send-all" onclick="expandSendEntries('${artist.id}')">show all entry</button>` : "";
+      return `
+        <div class="send-wrap">
+          <div class="send-label">Send</div>
+          <div class="send-warning" id="sendWarning-${artist.id}">! add date first</div>
+          <div class="send-entries">${entryHtml || emptyHtml}</div>
+          ${showAll}
+          <button class="send-add-btn" ${canAdd ? "" : "disabled"} onclick="addSendEntry('${artist.id}')">+ SEND ENTRY</button>
+        </div>
+      `;
+    }
+
+
+    function noColorIconSvg() {
+      return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.3" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M8 8l8 8"></path><path d="M16 8l-8 8"></path></svg>';
+    }
+
+    function renderColorControls(artist) {
+      const selected = normalizeColorCode(artist.colorCode || "none");
+      const buttons = colorCodes.map(color => {
+        const active = selected === color ? " is-active" : "";
+        const label = color === "none" ? "No color" : color;
+        const inside = color === "none" ? noColorIconSvg() : "";
+        return `<button class="color-code-btn${active}" type="button" data-color="${color}" title="${label}" aria-label="${label}" onclick="changeColorCode('${artist.id}', '${color}')">${inside}</button>`;
+      }).join("");
+      return `<div class="color-code-wrap"><div class="color-code-row">${buttons}</div></div>`;
+    }
+
+    function deleteIconSvg() {
+      return '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg>';
+    }
+
+    function artistCardHTML(artist) {
+      const cls = `priority-${artist.priority.toLowerCase()}`;
+      const emailText = artist.email ? escapeHtml(artist.email) : "NO EMAIL";
+      const emailClass = artist.email ? "email-display" : "email-display empty-email";
+      const colorClass = `color-${normalizeColorCode(artist.colorCode || "none")}`;
+      return `
+        <section class="card-shell ${sendExpandedCards.has(artist.id) ? "send-expanded" : ""}" data-id="${artist.id}" onmouseleave="collapseSendEntries('${artist.id}')">
+          <div class="card-flipper">
+            <article class="card ${colorClass}">
+              <div class="card-header">
+                <div>
+                  <div class="title-row">
+                    <h2>${escapeHtml(artist.name)}</h2>
+                    <button class="icon-btn" title="Edit socials/email" onclick="flipCard('${artist.id}', true)">✎</button>
+                  </div>
+                  <div class="region">${escapeHtml(artist.region)}</div>
+                </div>
+                <select class="priority-select ${cls}" onchange="changePriority('${artist.id}', this.value)">
+                  ${["USER", "High", "Medium", "Low"].map(p => `<option value="${p}" ${artist.priority === p ? "selected" : ""}>${p}</option>`).join("")}
+                </select>
+              </div>
+
+              <div class="tags">
+                <span class="tag">${escapeHtml(artist.lane)}</span>
+                <span class="tag">${escapeHtml(artist.size)}</span>
+                ${hasSent(artist) ? '<span class="tag">SENT</span>' : ''}
+                ${renderCustomTags(artist)}
+              </div>
+
+              <div>
+                <div class="note-label"><span>Email</span></div>
+                <div class="${emailClass}">${emailText}</div>
+              </div>
+
+              <div class="links">
+                <a href="${artist.socials.instagram}" target="_blank" rel="noreferrer">Instagram</a>
+                <a href="${artist.socials.tiktok}" target="_blank" rel="noreferrer">TikTok</a>
+                <a href="${artist.socials.spotify}" target="_blank" rel="noreferrer">Spotify</a>
+                <a href="${artist.socials.youtube}" target="_blank" rel="noreferrer">YouTube</a>
+              </div>
+
+              ${renderSendEntries(artist)}
+
+              <div class="note-wrap">
+                <textarea placeholder="NOTES" oninput="changeNote('${artist.id}', this.value)">${escapeHtml(artist.note || "")}</textarea>
+              </div>
+
+              ${renderColorControls(artist)}
+
+              <button class="delete-artist-btn" title="Delete artist" onclick="deleteArtist('${artist.id}')">
+                <span class="delete-icon">${deleteIconSvg()}</span>
+                <span class="delete-text">DELETE</span>
+              </button>
+            </article>
+
+            <article class="card-back ${colorClass}">
+              <div class="card-header">
+                <div>
+                  <div class="title-row">
+                    <h2>${escapeHtml(artist.name)}</h2>
+                    <button class="icon-btn" title="Back" onclick="flipCard('${artist.id}', false)">↩</button>
+                  </div>
+                  <div class="region">EDIT SOCIALS + EMAIL</div>
+                </div>
+              </div>
+
+              <div class="edit-grid">
+                <div class="edit-block">
+                  <div class="edit-label"><span>Email</span><span>Autosaved</span></div>
+                  <input type="text" value="${escapeHtml(artist.email || "")}" placeholder="EMAIL" oninput="changeEditableField('${artist.id}', 'email', this.value)" />
+                </div>
+
+                <div class="edit-block">
+                  <div class="edit-label"><span>Custom Tags</span><span>Comma separated</span></div>
+                  <input type="text" value="${escapeHtml((artist.customTags || []).join(', '))}" placeholder="CUSTOM TAGS" oninput="changeCustomTags('${artist.id}', this.value)" />
+                </div>
+
+                <div class="edit-block">
+                  <div class="edit-label"><span>Instagram</span><span>Autosaved</span></div>
+                  <input type="url" value="${escapeHtml(artist.socials.instagram || "")}" placeholder="INSTAGRAM URL" oninput="changeSocial('${artist.id}', 'instagram', this.value)" />
+                </div>
+
+                <div class="edit-block">
+                  <div class="edit-label"><span>TikTok</span><span>Autosaved</span></div>
+                  <input type="url" value="${escapeHtml(artist.socials.tiktok || "")}" placeholder="TIKTOK URL" oninput="changeSocial('${artist.id}', 'tiktok', this.value)" />
+                </div>
+
+                <div class="edit-block">
+                  <div class="edit-label"><span>Spotify</span><span>Autosaved</span></div>
+                  <input type="url" value="${escapeHtml(artist.socials.spotify || "")}" placeholder="SPOTIFY URL" oninput="changeSocial('${artist.id}', 'spotify', this.value)" />
+                </div>
+
+                <div class="edit-block">
+                  <div class="edit-label"><span>YouTube</span><span>Autosaved</span></div>
+                  <input type="url" value="${escapeHtml(artist.socials.youtube || "")}" placeholder="YOUTUBE URL" oninput="changeSocial('${artist.id}', 'youtube', this.value)" />
+                </div>
+              </div>
+
+              <div class="edit-actions">
+                <button onclick="flipCard('${artist.id}', false)">Done</button>
+                <button onclick="openAllLinks('${artist.id}')">Open Links</button>
+              </div>
+
+              <button class="delete-artist-btn" title="Delete artist" onclick="deleteArtist('${artist.id}')">
+                <span class="delete-icon">${deleteIconSvg()}</span>
+                <span class="delete-text">DELETE</span>
+              </button>
+            </article>
+          </div>
+        </section>
+      `;
+    }
+
+
+    function changeColorCode(id, color) {
+      const artist = getArtistById(id);
+      if (!artist) return;
+      artist.colorCode = normalizeColorCode(color);
+      scheduleSave();
+      renderArtists();
+    }
+
+    function getArtistById(id) {
+      return artists.find(a => a.id === id);
+    }
+
+    function saveSendStateAfterInlineEdit() {
+      scheduleSave();
+      updateStats();
+      renderMapDots();
+    }
+
+    function addSendEntry(id) {
+      const artist = getArtistById(id);
+      if (!artist || !hasSent(artist)) return;
+      artist.sendEntries = normalizeSendEntries(artist.sendEntries);
+      artist.sendEntries.push({ checked: false, date: "" });
+      sendExpandedCards.add(id);
+      saveSendStateAfterInlineEdit();
+      renderArtists();
+    }
+
+    function emptySendCheckboxClicked(event, id) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.currentTarget.checked = false;
+        setTimeout(() => { event.currentTarget.checked = false; }, 0);
+      }
+      showSendWarningForId(id);
+      return false;
+    }
+
+    function createFirstSendEntry(id, value, rerender = false) {
+      const artist = getArtistById(id);
+      if (!artist) return;
+      artist.sendEntries = normalizeSendEntries(artist.sendEntries);
+      if (!artist.sendEntries.length) artist.sendEntries = [{ checked: false, date: "" }];
+      artist.sendEntries[0].date = value || "";
+      if (!isValidSendDate(artist.sendEntries[0].date)) artist.sendEntries[0].checked = false;
+      saveSendStateAfterInlineEdit();
+      if (rerender) renderArtists();
+      else {
+        const button = document.querySelector(`[data-id="${id}"] .send-add-btn`);
+        if (button) button.disabled = !hasSent(artist);
+        const checkbox = document.querySelector(`[data-id="${id}"] .send-row input[type="checkbox"]`);
+        if (checkbox) checkbox.classList.toggle("needs-date", !isValidSendDate(artist.sendEntries[0].date));
+      }
+    }
+
+    function clearFirstSendEntry(id) {
+      const artist = getArtistById(id);
+      if (!artist) return;
+      artist.sendEntries = [];
+      sendExpandedCards.delete(id);
+      saveSendStateAfterInlineEdit();
+      renderArtists();
+    }
+
+    function changeSendEntryDate(id, index, value, rerender = false) {
+      const artist = getArtistById(id);
+      if (!artist) return;
+      artist.sendEntries = normalizeSendEntries(artist.sendEntries);
+      if (!artist.sendEntries[index]) artist.sendEntries[index] = { checked: false, date: "" };
+      artist.sendEntries[index].date = value || "";
+      if (!isValidSendDate(artist.sendEntries[index].date)) artist.sendEntries[index].checked = false;
+      saveSendStateAfterInlineEdit();
+      if (rerender) renderArtists();
+      else {
+        const button = document.querySelector(`[data-id="${id}"] .send-add-btn`);
+        if (button) button.disabled = !hasSent(artist);
+        const row = document.querySelectorAll(`[data-id="${id}"] .send-row`)[index];
+        const checkbox = row ? row.querySelector('input[type="checkbox"]') : null;
+        if (checkbox) {
+          checkbox.checked = Boolean(artist.sendEntries[index].checked);
+          checkbox.classList.toggle("needs-date", !isValidSendDate(artist.sendEntries[index].date));
+        }
+      }
+    }
+
+    function removeSendEntry(id, index) {
+      const artist = getArtistById(id);
+      if (!artist) return;
+      artist.sendEntries = normalizeSendEntries(artist.sendEntries);
+      if (artist.sendEntries.length <= 1) {
+        artist.sendEntries = [];
+        sendExpandedCards.delete(id);
+      } else {
+        artist.sendEntries.splice(index, 1);
+      }
+      saveSendStateAfterInlineEdit();
+      renderArtists();
+    }
+
+    function toggleSendEntryChecked(event, id, index) {
+      const artist = getArtistById(id);
+      if (!artist) return false;
+      artist.sendEntries = normalizeSendEntries(artist.sendEntries);
+      const entry = artist.sendEntries[index];
+      if (!entry || !isValidSendDate(entry.date)) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.currentTarget.checked = false;
+          setTimeout(() => { event.currentTarget.checked = false; }, 0);
+        }
+        if (entry) entry.checked = false;
+        showSendWarningForId(id);
+        saveSendStateAfterInlineEdit();
+        return false;
+      }
+      entry.checked = Boolean(event.currentTarget.checked);
+      saveSendStateAfterInlineEdit();
+      renderMapDots();
+      return true;
+    }
+
+    function showSendWarningForId(id) {
+      const bubble = document.getElementById(`sendWarning-${id}`);
+      if (!bubble) return;
+      bubble.classList.add("is-visible");
+      clearTimeout(sendWarningTimers.get(id));
+      sendWarningTimers.set(id, setTimeout(() => bubble.classList.remove("is-visible"), 2400));
+    }
+
+    let artistListBubbleTimer;
+    function showArtistListCopiedBubble() {
+      const bubble = document.getElementById("artistListBubble");
+      if (!bubble) return;
+      bubble.classList.add("is-visible");
+      clearTimeout(artistListBubbleTimer);
+      artistListBubbleTimer = setTimeout(() => bubble.classList.remove("is-visible"), 2400);
+    }
+
+    function fallbackCopyText(text) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    async function copyArtistList() {
+      const list = artists
+        .map(artist => artist.name)
+        .filter(Boolean)
+        .sort((a, b) => a.localeCompare(b))
+        .join(", ");
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(list);
+        } else {
+          fallbackCopyText(list);
+        }
+        showArtistListCopiedBubble();
+      } catch (error) {
+        console.error("Artist list copy failed", error);
+        fallbackCopyText(list);
+        showArtistListCopiedBubble();
+      }
+    }
+
+    function expandSendEntries(id) {
+      sendExpandedCards.add(id);
+      renderArtists();
+    }
+
+    function collapseSendEntries(id) {
+      if (!sendExpandedCards.has(id)) return;
+      sendExpandedCards.delete(id);
+      renderArtists();
+    }
+
+    function flipCard(id, editing) {
+      const shell = document.querySelector(`[data-id="${id}"]`);
+      if (!shell) return;
+      if (editing) {
+        editingCards.add(id);
+        shell.classList.add("is-editing");
+      } else {
+        editingCards.delete(id);
+        shell.classList.remove("is-editing");
+        renderArtists();
+      }
+    }
+
+    function changePriority(id, value) {
+      const artist = artists.find(a => a.id === id);
+      if (!artist) return;
+      artist.priority = value;
+      saveState();
+      renderArtists();
+    }
+
+    let saveTimer;
+    function scheduleSave() {
+      saveStatus.textContent = "Saving...";
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(async () => {
+        await saveState();
+        updateStats();
+      }, 420);
+    }
+
+    function changeNote(id, value) {
+      const artist = artists.find(a => a.id === id);
+      if (!artist) return;
+      artist.note = value;
+      scheduleSave();
+    }
+
+    function changeEditableField(id, field, value) {
+      const artist = artists.find(a => a.id === id);
+      if (!artist) return;
+      artist[field] = value;
+      scheduleSave();
+    }
+
+    function changeSocial(id, field, value) {
+      const artist = artists.find(a => a.id === id);
+      if (!artist) return;
+      artist.socials[field] = value;
+      scheduleSave();
+    }
+
+    function changeCustomTags(id, value) {
+      const artist = artists.find(a => a.id === id);
+      if (!artist) return;
+      artist.customTags = value
+        .split(",")
+        .map(tag => tag.trim())
+        .filter(Boolean);
+      scheduleSave();
+    }
+
+    function openAllLinks(id) {
+      const artist = artists.find(a => a.id === id);
+      if (!artist) return;
+      Object.values(artist.socials || {}).filter(Boolean).forEach(url => window.open(url, "_blank"));
+    }
+
+    async function deleteArtist(id) {
+      const artist = artists.find(a => a.id === id);
+      if (!artist) return;
+
+      const confirmed = confirm(`Delete ${artist.name}?`);
+      if (!confirmed) return;
+
+      deletedArtistIds = Array.from(new Set([...deletedArtistIds, id]));
+      customArtists = customArtists.filter(customArtist => slug(customArtist.name) !== id);
+      artists = artists.filter(a => a.id !== id);
+      editingCards.delete(id);
+
+      saveDeletedArtists();
+      saveCustomArtists();
+      saveLocalArtists();
+      populateRegions();
+      await saveState();
+      renderArtists();
+    }
+
+    const mapProjection = geoEquirectangular()
+      .rotate([-10, 0])
+      .fitExtent([[26, 28], [974, 532]], { type: "Sphere" });
+    const mapPath = geoPath(mapProjection);
+    let mapLandLoaded = false;
+
+    const regionCoordinates = {
+      "United States": [-98.5, 39.8],
+      "User Added": [-15, 18],
+      "Australia": [134.5, -25.5],
+      "Australia / Pacific": [151.2, -27.5],
+      "New Zealand": [172.9, -41.5],
+      "United Kingdom": [-2.5, 54.2],
+      "UK": [-2.5, 54.2],
+      "Canada": [-106.3, 56.1],
+      "Europe": [15, 50],
+      "Africa": [20, 1],
+      "Asia": [90, 38],
+      "Pacific": [166, -15]
+    };
+
+    function hashRegionCoordinate(region) {
+      let hash = 0;
+      String(region || "Unknown").split("").forEach(char => hash = ((hash << 5) - hash) + char.charCodeAt(0));
+      const lon = -170 + Math.abs(hash % 340);
+      const lat = -55 + Math.abs((hash >> 3) % 120);
+      return [lon, lat];
+    }
+
+    function getRegionCoordinate(region) {
+      return regionCoordinates[region] || hashRegionCoordinate(region);
+    }
+
+    async function renderMapLand() {
+      const landLayer = document.getElementById("mapLandLayer");
+      const borderLayer = document.getElementById("mapBorderLayer");
+      if (!landLayer || mapLandLoaded) return;
+      try {
+        const response = await fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-10m.json");
+        const topology = await response.json();
+        const countries = feature(topology, topology.objects.countries).features;
+        const borders = mesh(topology, topology.objects.countries, (a, b) => a !== b);
+        landLayer.innerHTML = countries
+          .map(country => `<path class="map-land" d="${mapPath(country)}"></path>`)
+          .join("");
+        if (borderLayer) borderLayer.innerHTML = `<path class="map-border" d="${mapPath(borders)}"></path>`;
+        mapLandLoaded = true;
+      } catch (error) {
+        console.warn("Detailed map load failed; using fallback outlines.", error);
+        if (borderLayer) borderLayer.innerHTML = "";
+        landLayer.innerHTML = `
+          <path class="map-land" d="M118 122 L156 96 L215 79 L268 83 L318 103 L356 139 L359 177 L334 205 L296 215 L266 244 L236 236 L205 255 L166 242 L137 205 L102 184 L87 151 Z"></path>
+          <path class="map-land" d="M261 252 L304 275 L332 316 L349 369 L331 429 L295 491 L258 468 L230 420 L219 369 L231 315 Z"></path>
+          <path class="map-land" d="M412 132 L454 98 L520 74 L600 82 L666 106 L730 129 L777 166 L776 210 L744 236 L678 227 L636 246 L588 219 L540 231 L496 207 L449 210 L406 179 Z"></path>
+          <path class="map-land" d="M510 238 L558 248 L612 279 L646 328 L647 389 L625 455 L580 475 L538 430 L515 369 L485 318 L493 270 Z"></path>
+          <path class="map-land" d="M686 214 L734 198 L807 213 L872 249 L921 304 L903 351 L848 358 L811 331 L760 348 L719 315 L696 270 Z"></path>
+          <path class="map-land" d="M768 392 L827 381 L882 401 L922 438 L907 474 L844 492 L785 465 L744 425 Z"></path>`;
+      }
+    }
+
+    function renderMapDots() {
+      const layer = document.getElementById("mapDots");
+      if (!layer) return;
+      const regionCounts = new Map();
+      const used = [];
+      const dots = artists.map(artist => {
+        const key = artist.region || "Unknown";
+        const count = regionCounts.get(key) || 0;
+        regionCounts.set(key, count + 1);
+        const [lon, lat] = getRegionCoordinate(key);
+        const [baseX, baseY] = mapProjection([lon, lat]);
+        const angle = count * 2.399963;
+        const radius = count === 0 ? 0 : 10 + Math.floor(count / 5) * 9;
+        let x = baseX + Math.cos(angle) * radius;
+        let y = baseY + Math.sin(angle) * radius;
+        let attempts = 0;
+        while (used.some(point => Math.hypot(point[0] - x, point[1] - y) < 13) && attempts < 28) {
+          attempts += 1;
+          x = baseX + Math.cos(angle + attempts * 0.85) * (radius + attempts * 3.5);
+          y = baseY + Math.sin(angle + attempts * 0.85) * (radius + attempts * 3.5);
+        }
+        x = Math.max(18, Math.min(982, x));
+        y = Math.max(22, Math.min(538, y));
+        used.push([x, y]);
+        return `<circle class="map-dot ${hasSent(artist) ? "sent" : "unsent"}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${hasSent(artist) ? 5 : 4}"><title>${escapeHtml(artist.name)} — ${escapeHtml(key)}${hasSent(artist) ? " — SENT" : ""}</title></circle>`;
+      }).join("");
+      layer.innerHTML = dots;
+    }
+
+    function updateStats() {
+      document.getElementById("totalStat").textContent = artists.length;
+      document.getElementById("sentStat").textContent = artists.filter(hasSent).length;
+      renderMapDots();
+    }
+
+    function openAddArtistModal() {
+      document.getElementById("addArtistModal").classList.add("is-open");
+      setTimeout(() => document.getElementById("newName").focus(), 0);
+    }
+
+    function closeAddArtistModal() {
+      document.getElementById("addArtistModal").classList.remove("is-open");
+    }
+
+    function clearAddArtistForm() {
+      document.getElementById("newName").value = "";
+      document.getElementById("newRegion").value = "User Added";
+      document.getElementById("newLane").value = "User-added artist";
+      document.getElementById("newPriority").value = "USER";
+      document.getElementById("newEmail").value = "";
+      document.getElementById("newInstagram").value = "";
+      document.getElementById("newTikTok").value = "";
+      document.getElementById("newSpotify").value = "";
+      document.getElementById("newYouTube").value = "";
+    }
+
+    function addArtistFromModal() {
+      const name = document.getElementById("newName").value.trim();
+      if (!name) {
+        alert("Artist name required.");
+        return;
+      }
+
+      const id = slug(name);
+      if (artists.some(a => a.id === id)) {
+        alert("Artist already exists.");
+        return;
+      }
+
+      const artist = {
+        name,
+        region: document.getElementById("newRegion").value.trim() || "User Added",
+        lane: document.getElementById("newLane").value.trim() || "User-added artist",
+        priority: document.getElementById("newPriority").value || "USER",
+        fit: "",
+        pitch: "",
+        size: "User target",
+        email: document.getElementById("newEmail").value.trim(),
+        note: "",
+        colorCode: "none",
+        sendEntries: [],
+        socials: {
+          instagram: document.getElementById("newInstagram").value.trim() || `https://www.instagram.com/`,
+          tiktok: document.getElementById("newTikTok").value.trim() || `https://www.tiktok.com/search?q=${encodeURIComponent(name)}`,
+          spotify: document.getElementById("newSpotify").value.trim() || `https://open.spotify.com/search/${encodeURIComponent(name)}`,
+          youtube: document.getElementById("newYouTube").value.trim() || `https://www.youtube.com/results?search_query=${encodeURIComponent(name)}`
+        }
+      };
+
+      artist.customTags = [];
+      customArtists.push(artist);
+      saveCustomArtists();
+      artists.push(normalizeArtist({ ...artist, id }));
+      populateRegions();
+      saveState();
+      clearAddArtistForm();
+      closeAddArtistModal();
+      renderArtists();
+    }
+
+    document.getElementById("addArtistModal").addEventListener("click", function(event) {
+      if (event.target.id === "addArtistModal") closeAddArtistModal();
+    });
+
+    searchInput.addEventListener("input", renderArtists);
+    regionFilter.addEventListener("change", renderArtists);
+    priorityFilter.addEventListener("change", renderArtists);
+    colorFilter.addEventListener("change", renderArtists);
+    sortSelect.addEventListener("change", renderArtists);
+
+
+
+    function routeFromHash() {
+      const route = String(window.location.hash || "").replace("#", "").toLowerCase();
+      if (route === "settings") {
+        showSettingsPage();
+      } else if (route === "visuals") {
+        showVisualsPage();
+      } else {
+        showDashboardPage();
+      }
+    }
+
+    window.openAddArtistModal = openAddArtistModal;
+    window.closeAddArtistModal = closeAddArtistModal;
+    window.clearAddArtistForm = clearAddArtistForm;
+    window.addArtistFromModal = addArtistFromModal;
+    window.flipCard = flipCard;
+    window.changePriority = changePriority;
+    window.changeColorCode = changeColorCode;
+    window.changeNote = changeNote;
+    window.changeEditableField = changeEditableField;
+    window.changeSocial = changeSocial;
+    window.changeCustomTags = changeCustomTags;
+    window.openAllLinks = openAllLinks;
+    window.deleteArtist = deleteArtist;
+    window.addSendEntry = addSendEntry;
+    window.emptySendCheckboxClicked = emptySendCheckboxClicked;
+    window.createFirstSendEntry = createFirstSendEntry;
+    window.clearFirstSendEntry = clearFirstSendEntry;
+    window.changeSendEntryDate = changeSendEntryDate;
+    window.removeSendEntry = removeSendEntry;
+    window.toggleSendEntryChecked = toggleSendEntryChecked;
+    window.showSendWarningForId = showSendWarningForId;
+    window.expandSendEntries = expandSendEntries;
+    window.collapseSendEntries = collapseSendEntries;
+    window.toggleAuth = toggleAuth;
+    window.changeTheme = changeTheme;
+    window.showSettingsPage = showSettingsPage;
+    window.showDashboardPage = showDashboardPage;
+    window.showVisualsPage = showVisualsPage;
+    window.routeFromHash = routeFromHash;
+    window.showMapPage = showMapPage;
+    window.copyArtistList = copyArtistList;
+    window.toggleMobileFilters = toggleMobileFilters;
+    window.toggleMobileNav = toggleMobileNav;
+    window.closeMobileOverlays = closeMobileOverlays;
+
+    window.addEventListener("hashchange", routeFromHash);
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 980) closeMobileOverlays();
+      else syncMobileFilterPosition();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeMobileOverlays();
+    });
+
+    function startPeriodicCloudSync() {
+      setInterval(() => {
+        if (firebaseOnline && firebaseDocRef) {
+          saveState();
+        }
+      }, SYNC_INTERVAL_MS);
+    }
+
+    async function initApp() {
+      applyThemePreference(loadThemePreference());
+      if (window.matchMedia) {
+        window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => {
+          if (loadThemePreference() === "system") applyThemePreference("system");
+        });
+      }
+      setSignedInUi(false, "Checking sign-in...");
+      await initFirebaseCloud();
+      startPeriodicCloudSync();
+    }
+
+    initApp();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phonk Visuals Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080808;
+      --panel: #101010;
+      --panel-2: #151515;
+      --text: #e8e8e8;
+      --muted: #9a9a9a;
+      --faint: #666;
+      --line: #303030;
+      --line-2: #1f1f1f;
+      --white: #f5f5f5;
+      --black: #000;
+      --shadow-line: #303030;
+    }
+
+    body.theme-light {
+      --bg: #f3f3f3;
+      --panel: #ffffff;
+      --panel-2: #eeeeee;
+      --text: #121212;
+      --muted: #555;
+      --faint: #888;
+      --line: #cfcfcf;
+      --line-2: #dedede;
+      --white: #000;
+      --black: #fff;
+      --shadow-line: #cfcfcf;
+    }
+
+    body.theme-dark {
+      --bg: #080808;
+      --panel: #101010;
+      --panel-2: #151515;
+      --text: #e8e8e8;
+      --muted: #9a9a9a;
+      --faint: #666;
+      --line: #303030;
+      --line-2: #1f1f1f;
+      --white: #f5f5f5;
+      --black: #000;
+      --shadow-line: #303030;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Red Hat Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      color: var(--text);
+      background: var(--bg);
+      padding: 18px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .app {
+      width: min(1680px, 100%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 76px;
+      background: transparent;
+      border-bottom: 1px solid var(--line);
+      padding: 18px 0 20px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -2px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+
+
+    .site-logo,
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .brand-logo {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+
+    .site-logo {
+      margin: 0;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+
+    .logo-img {
+      display: block;
+      width: clamp(160px, 18vw, 260px);
+      height: auto;
+      max-height: 64px;
+      object-fit: contain;
+      filter: invert(1);
+    }
+
+    body.theme-light .logo-img { filter: none; }
+
+    .auth-panel .logo-img {
+      width: min(260px, 82vw);
+      margin: 0 auto 14px;
+    }
+
+    .logo-img.is-hidden { display: none; }
+
+    .logo-fallback {
+      display: none;
+      font-size: clamp(24px, 4vw, 44px);
+      line-height: 1;
+      letter-spacing: -2px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .auth-panel .logo-fallback {
+      font-size: clamp(24px, 5vw, 38px);
+      margin-bottom: 14px;
+    }
+
+    .logo-fallback.is-visible { display: inline-block; }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-left: auto;
+      z-index: 3;
+    }
+
+
+    .mobile-nav-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      border-radius: 0;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      z-index: 1001;
+    }
+
+    .mobile-nav-toggle:hover,
+    .mobile-nav-toggle.is-open {
+      border-color: var(--white);
+      color: var(--white);
+      background: var(--panel-2);
+    }
+
+    .mobile-nav-toggle svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      transition: transform 180ms ease;
+    }
+
+    .mobile-nav-toggle.is-open svg {
+      transform: rotate(180deg);
+    }
+
+
+    .mobile-ui-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 997;
+      display: none;
+      background: rgba(0,0,0,0.58);
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(0);
+      -webkit-backdrop-filter: blur(0);
+      transition: opacity 180ms ease, backdrop-filter 180ms ease, -webkit-backdrop-filter 180ms ease;
+    }
+
+    body.theme-light .mobile-ui-backdrop { background: rgba(0,0,0,0.38); }
+
+    body.mobile-nav-active .mobile-ui-backdrop {
+      display: block;
+      opacity: 1;
+      pointer-events: auto;
+      backdrop-filter: blur(9px);
+      -webkit-backdrop-filter: blur(9px);
+    }
+
+    .nav-btn,
+    .auth-btn {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 4px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0;
+      white-space: nowrap;
+      letter-spacing: 0.7px;
+      text-decoration: none;
+    }
+
+    .nav-btn:hover,
+    .auth-btn:hover { color: var(--white); background: transparent; }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    @media (max-width: 920px) { main { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 16px;
+    }
+
+    .card:hover { border-color: var(--white); background: var(--panel-2); }
+
+    label {
+      display: block;
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--black);
+      color: var(--text);
+      padding: 10px;
+      outline: none;
+      font-family: inherit;
+      font-size: 12px;
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--faint); }
+    option { color: var(--text); background: var(--black); }
+    input:focus, select:focus, textarea:focus { border-color: var(--white); background: var(--black); }
+
+    .field {
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--line-2);
+      padding-bottom: 14px;
+    }
+
+    .field:last-child { border-bottom: 0; padding-bottom: 0; }
+
+    .hint {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .mini-label {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .preset-grid, .weapon-grid, .material-grid, .ratio-grid {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .preset-grid { grid-template-columns: repeat(4, 1fr); }
+    .weapon-grid { grid-template-columns: repeat(3, 1fr); }
+    .material-grid { grid-template-columns: repeat(3, 1fr); }
+    .ratio-grid { grid-template-columns: repeat(4, 1fr); }
+
+    @media (max-width: 560px) {
+      .preset-grid, .weapon-grid, .material-grid, .ratio-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    button, .preset-btn, .weapon-btn, .material-btn, .toggle-btn, .ratio-btn {
+      font-family: inherit;
+      border-radius: 0;
+      font-weight: 800;
+      cursor: pointer;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .preset-btn, .weapon-btn, .material-btn, .toggle-btn, .ratio-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--text);
+      padding: 10px;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    .preset-btn:hover, .weapon-btn:hover, .material-btn:hover, .toggle-btn:hover, .ratio-btn:hover {
+      border-color: var(--white);
+      color: var(--white);
+      background: var(--panel-2);
+      transform: translateY(-1px);
+    }
+
+    .preset-btn.active, .weapon-btn.active, .material-btn.active, .toggle-btn.active, .ratio-btn.active {
+      border-color: var(--white);
+      background: var(--white);
+      color: var(--black);
+      box-shadow: 4px 4px 0 var(--shadow-line);
+    }
+
+    .color-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    .color-btn {
+      width: 30px;
+      height: 30px;
+      min-width: 30px;
+      min-height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0;
+      background: var(--swatch);
+      color: transparent;
+      box-shadow: none;
+      overflow: hidden;
+      text-indent: -999px;
+    }
+
+    .color-btn:hover {
+      filter: none;
+      border-color: var(--white);
+      outline: 2px solid var(--white);
+      outline-offset: 2px;
+      transform: translateY(-1px);
+    }
+
+    .color-btn.active {
+      border-color: var(--white);
+      outline: 2px solid var(--white);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 1px var(--black);
+    }
+
+    .custom-input { margin-top: 10px; }
+
+    .toggle-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .title-panel, .flame-panel, .flame-accent-panel, .other-subject-panel, .holding-panel, .custom-weapon-panel {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: var(--black);
+    }
+
+    .title-panel.show, .flame-panel.show, .flame-accent-panel.show, .other-subject-panel.show, .holding-panel.show, .custom-weapon-panel.show { display: block; }
+
+    .text-controls, .three-controls {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .text-controls { grid-template-columns: 1fr 1fr; }
+    .three-controls { grid-template-columns: 1fr 1fr 1fr; }
+
+    @media (max-width: 620px) { .text-controls, .three-controls { grid-template-columns: 1fr; } }
+
+    .ratio-btn { flex-direction: column; gap: 7px; min-height: 72px; }
+    .ratio-icon { display: grid; place-items: center; border: 2px solid currentColor; border-radius: 0; opacity: 0.95; }
+    .ratio-1-1 { width: 24px; height: 24px; }
+    .ratio-16-9 { width: 34px; height: 19px; }
+    .ratio-4-5 { width: 24px; height: 30px; }
+    .ratio-9-16 { width: 20px; height: 36px; }
+    .ratio-text { font-size: 13px; font-weight: 800; }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .generate, .copy {
+      border: 1px solid var(--white);
+      padding: 14px 16px;
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 12px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .generate {
+      background: var(--white);
+      color: var(--black);
+      box-shadow: 6px 6px 0 var(--shadow-line);
+    }
+
+    .copy {
+      border-color: var(--line);
+      background: var(--black);
+      color: var(--text);
+    }
+
+    .generate:hover, .copy:hover {
+      background: var(--black);
+      color: var(--white);
+      border-color: var(--white);
+      box-shadow: none;
+      filter: none;
+    }
+
+    .output-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .copied {
+      min-height: 20px;
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    textarea {
+      min-height: 720px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+
+
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+      text-transform: uppercase;
+      padding: 36px 18px 26px;
+      margin-top: 18px;
+      border-top: 1px solid var(--line-2);
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 10px; }
+      .hero {
+        min-height: 66px;
+        padding: 14px 0;
+        justify-content: flex-end;
+        align-items: center;
+      }
+      .brand-logo,
+      .site-logo {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+      .logo-img { width: min(190px, 58vw); max-height: 44px; }
+      .mobile-nav-toggle { display: inline-flex; }
+      .hero-actions {
+        position: fixed;
+        top: 76px;
+        right: 10px;
+        z-index: 998;
+        width: min(320px, calc(100vw - 20px));
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 10px;
+        background: rgba(16,16,16,0.96);
+        border: 1px solid var(--line);
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-8px) scale(0.98);
+        transform-origin: top right;
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+      body.theme-light .hero-actions { background: rgba(255,255,255,0.96); }
+      body.mobile-nav-active .hero-actions {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+      }
+      .hero .auth-btn, .hero .nav-btn {
+        width: 100%;
+        text-align: left;
+        padding: 12px 10px;
+      }
+    }
+  </style>
+</head>
+<body class="theme-dark">
+  <div class="app">
+    <section class="hero">
+      <a class="brand-logo" href="index.html#dashboard" aria-label="MONEYOVERALL dashboard">
+        <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
+        <span class="logo-fallback">MONEYOVERALL</span>
+      </a>
+      <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open navigation" aria-expanded="false" onclick="toggleMobileNav()">
+        <svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M5 8l7 7 7-7"></path></svg>
+      </button>
+      <div class="hero-actions">
+        <a class="nav-btn" href="index.html#dashboard">Dashboard</a>
+        <a class="nav-btn" href="index.html#visuals">Visuals</a>
+        <a class="nav-btn" href="index.html#settings">Settings</a>
+        <button class="auth-btn" id="authBtn" type="button" onclick="toggleAuth()">Sign in Google</button>
+      </div>
+    </section>
+    <div class="mobile-ui-backdrop" id="mobileUiBackdrop" onclick="closeMobileNav()"></div>
+    <main>
+      <section class="card">
+        <div class="field">
+          <label>Main color</label>
+          <div id="mainColorGrid" class="color-grid"></div>
+          <input id="mainColor" class="custom-input" type="text" placeholder="custom main color" value="red" />
+        </div>
+
+        <div class="field">
+          <label>Accent color</label>
+          <div id="accentColorGrid" class="color-grid"></div>
+          <input id="accentColor" class="custom-input" type="text" placeholder="custom accent color" value="violet" />
+        </div>
+
+        <div class="field">
+          <label>Subject</label>
+          <div class="preset-grid">
+            <button type="button" class="preset-btn active" data-subject="a powerful fantasy woman with glowing eyes">Woman</button>
+            <button type="button" class="preset-btn" data-subject="a brave fantasy man with glowing eyes">Man</button>
+            <button type="button" class="preset-btn" data-subject="a young fantasy hero with glowing eyes">Boy</button>
+            <button type="button" class="preset-btn" data-subject="custom">Other</button>
+          </div>
+          <div id="otherSubjectPanel" class="other-subject-panel">
+            <input id="subject" type="text" placeholder="type your custom subject" value="a mysterious fantasy character with glowing eyes" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Subject is holding</label>
+          <div class="toggle-row">
+            <button type="button" class="toggle-btn active" data-toggle="holding" data-value="on">Holding On</button>
+            <button type="button" class="toggle-btn" data-toggle="holding" data-value="off">Holding Off</button>
+          </div>
+          <div id="holdingPanel" class="holding-panel show">
+            <div class="weapon-grid">
+              <button type="button" class="weapon-btn active" data-weapon="a glowing sword">Sword</button>
+              <button type="button" class="weapon-btn" data-weapon="an enchanted bow">Bow</button>
+              <button type="button" class="weapon-btn" data-weapon="a magic staff">Magic Staff</button>
+              <button type="button" class="weapon-btn" data-weapon="a battle axe">Battle Axe</button>
+              <button type="button" class="weapon-btn" data-weapon="a spear">Spear</button>
+              <button type="button" class="weapon-btn" data-weapon="dual daggers">Daggers</button>
+              <button type="button" class="weapon-btn" data-weapon="a rune shield">Rune Shield</button>
+              <button type="button" class="weapon-btn" data-weapon="a glowing spellbook">Spellbook</button>
+              <button type="button" class="weapon-btn" data-weapon="custom">Other</button>
+            </div>
+            <div id="customWeaponPanel" class="custom-weapon-panel">
+              <input id="customWeapon" type="text" placeholder="type what the subject is holding" value="a crystal orb" />
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Neon flame aura</label>
+          <div class="toggle-row">
+            <button type="button" class="toggle-btn active" id="flameOnBtn" data-toggle="flame" data-value="on">Flame On</button>
+            <button type="button" class="toggle-btn" id="flameOffBtn" data-toggle="flame" data-value="off">Flame Off</button>
+          </div>
+          <div id="flamePanel" class="flame-panel show">
+            <label>Flame color 1</label>
+            <div id="flameColorGrid" class="color-grid"></div>
+            <input id="flameColor" class="custom-input" type="text" placeholder="custom flame color" value="blue" />
+
+            <div class="mini-label">Flame color 2</div>
+            <div class="toggle-row">
+              <button type="button" class="toggle-btn active" data-toggle="flameAccent" data-value="on">Color 2 On</button>
+              <button type="button" class="toggle-btn" data-toggle="flameAccent" data-value="off">Color 2 Off</button>
+            </div>
+            <div id="flameAccentPanel" class="flame-accent-panel show">
+              <div id="flameAccentColorGrid" class="color-grid"></div>
+              <input id="flameAccentColor" class="custom-input" type="text" placeholder="custom second flame color" value="pink" />
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Title</label>
+          <div class="toggle-row">
+            <button type="button" class="toggle-btn active" id="titleOnBtn" data-toggle="title" data-value="on">Title On</button>
+            <button type="button" class="toggle-btn" id="titleOffBtn" data-toggle="title" data-value="off">Title Off</button>
+          </div>
+
+          <div id="titlePanel" class="title-panel show">
+            <label for="songTitle">Title text</label>
+            <input id="songTitle" type="text" placeholder="leave blank for no title" />
+
+            <div class="text-controls">
+              <div>
+                <label for="textPosition">Position</label>
+                <select id="textPosition">
+                  <option value="top">Top</option>
+                  <option value="bottom">Bottom</option>
+                </select>
+              </div>
+              <div>
+                <label for="textLayer">Layer</label>
+                <select id="textLayer">
+                  <option value="in front of the subject">In front</option>
+                  <option value="masked behind the subject">Masked behind</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mini-label">Title type</div>
+            <div class="preset-grid">
+              <button type="button" class="preset-btn active" data-title-type="flame">Flame Title</button>
+              <button type="button" class="preset-btn" data-title-type="bubble">Bubble Liquid</button>
+              <button type="button" class="preset-btn" data-title-type="graffiti">Graffiti</button>
+            </div>
+
+            <div class="three-controls">
+              <div>
+                <label for="textColor">Title color</label>
+                <input id="textColor" type="text" placeholder="white neon" value="white neon" />
+              </div>
+              <div>
+                <label for="titleTexture">Texture</label>
+                <select id="titleTexture">
+                  <option value="glowing molten neon">Glowing molten neon</option>
+                  <option value="transparent glass">Transparent glass</option>
+                  <option value="chrome silver">Chrome silver</option>
+                  <option value="glossy gold">Glossy gold</option>
+                  <option value="crystal ice">Crystal ice</option>
+                  <option value="holographic metal">Holographic metal</option>
+                  <option value="black obsidian">Black obsidian</option>
+                  <option value="pearlescent liquid">Pearlescent liquid</option>
+                </select>
+              </div>
+              <div>
+                <label for="fontMood">Font mood</label>
+                <select id="fontMood">
+                  <option value="bold high-impact display lettering">Bold Display</option>
+                  <option value="sharp gothic fantasy lettering">Gothic Fantasy</option>
+                  <option value="sleek futuristic lettering">Futuristic</option>
+                  <option value="ancient rune-inspired lettering">Rune Inspired</option>
+                  <option value="heavy blackletter lettering">Blackletter</option>
+                  <option value="wide cinematic title lettering">Cinematic Wide</option>
+                  <option value="dripping liquid lettering">Dripping Liquid</option>
+                  <option value="jagged lightning lettering">Lightning</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mini-label">Quick material buttons</div>
+            <div class="material-grid">
+              <button type="button" class="material-btn" data-texture="transparent glass">Glass</button>
+              <button type="button" class="material-btn" data-texture="chrome silver">Chrome</button>
+              <button type="button" class="material-btn" data-texture="glossy gold">Gold</button>
+              <button type="button" class="material-btn" data-texture="crystal ice">Ice</button>
+              <button type="button" class="material-btn" data-texture="holographic metal">Holographic</button>
+              <button type="button" class="material-btn" data-texture="black obsidian">Obsidian</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Aspect ratio</label>
+          <div class="ratio-grid">
+            <button type="button" class="ratio-btn active" data-ratio="1:1">
+              <span class="ratio-icon ratio-1-1"></span>
+              <span class="ratio-text">1:1</span>
+            </button>
+            <button type="button" class="ratio-btn" data-ratio="16:9">
+              <span class="ratio-icon ratio-16-9"></span>
+              <span class="ratio-text">16:9</span>
+            </button>
+            <button type="button" class="ratio-btn" data-ratio="4:5">
+              <span class="ratio-icon ratio-4-5"></span>
+              <span class="ratio-text">4:5</span>
+            </button>
+            <button type="button" class="ratio-btn" data-ratio="9:16">
+              <span class="ratio-icon ratio-9-16"></span>
+              <span class="ratio-text">9:16</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button class="generate" onclick="generatePrompt()">Generate Prompt</button>
+          <button class="copy" onclick="copyPrompt()">Copy Prompt</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="output-label">
+          <label for="output">Raw image prompt</label>
+          <span id="copied" class="copied"></span>
+        </div>
+        <textarea id="output" spellcheck="false"></textarea>
+      </section>
+    </main>
+    <footer class="footer">
+      <div>MONEYOVERALL © 2026 All Rights Reserved.</div>
+      <div>Authorized internal use only.</div>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB4mAggiPorQdcnMrvox8t6ZNxF7o1C98o",
+      authDomain: "druskhi-outreach-dashboard.firebaseapp.com",
+      projectId: "druskhi-outreach-dashboard",
+      storageBucket: "druskhi-outreach-dashboard.firebasestorage.app",
+      messagingSenderId: "375387055106",
+      appId: "1:375387055106:web:68ab3ab1f9bd796f85b31b"
+    };
+
+    const FIREBASE_ENABLED = !firebaseConfig.apiKey.includes("PASTE_");
+    let firebaseAuth = null;
+    let firebaseProvider = null;
+
+    function setAuthButton(isSignedIn) {
+      const authBtn = document.getElementById("authBtn");
+      if (!authBtn) return;
+      authBtn.textContent = isSignedIn ? "Sign out" : "Sign in Google";
+      authBtn.setAttribute("aria-label", isSignedIn ? "Sign out of Google" : "Sign in with Google");
+    }
+
+    async function initFirebaseAuth() {
+      if (!FIREBASE_ENABLED) {
+        setAuthButton(false);
+        return;
+      }
+
+      try {
+        const firebaseApp = initializeApp(firebaseConfig);
+        firebaseAuth = getAuth(firebaseApp);
+        firebaseProvider = new GoogleAuthProvider();
+
+        onAuthStateChanged(firebaseAuth, user => {
+          setAuthButton(Boolean(user));
+        });
+      } catch (error) {
+        console.error("Firebase auth init failed", error);
+        setAuthButton(false);
+      }
+    }
+
+    async function toggleAuth() {
+      if (!FIREBASE_ENABLED || !firebaseAuth || !firebaseProvider) {
+        alert("Firebase sign-in is not ready. Check the Firebase config.");
+        return;
+      }
+
+      try {
+        if (firebaseAuth.currentUser) {
+          await signOut(firebaseAuth);
+        } else {
+          await signInWithPopup(firebaseAuth, firebaseProvider);
+        }
+      } catch (error) {
+        console.error("Auth failed", error);
+        alert("Firebase sign-in failed. Check authorized domains and popup permissions.");
+      }
+    }
+
+    function closeMobileNav() {
+      document.body.classList.remove('mobile-nav-active');
+      const button = document.getElementById('mobileNavToggle');
+      if (button) {
+        button.classList.remove('is-open');
+        button.setAttribute('aria-expanded', 'false');
+        button.setAttribute('aria-label', 'Open navigation');
+      }
+    }
+
+    function toggleMobileNav() {
+      const isOpen = !document.body.classList.contains('mobile-nav-active');
+      document.body.classList.toggle('mobile-nav-active', isOpen);
+      const button = document.getElementById('mobileNavToggle');
+      if (button) {
+        button.classList.toggle('is-open', isOpen);
+        button.setAttribute('aria-expanded', String(isOpen));
+        button.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+      }
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeMobileNav();
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 760) closeMobileNav();
+    });
+
+    window.toggleAuth = toggleAuth;
+    window.toggleMobileNav = toggleMobileNav;
+    window.closeMobileNav = closeMobileNav;
+    setAuthButton(false);
+    initFirebaseAuth();
+  </script>
+
+  <script>
+    const output = document.getElementById('output');
+    const copied = document.getElementById('copied');
+    const THEME_KEY = 'artistOutreachDashboard.theme.v1';
+
+    function getSystemTheme() {
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+
+    function applyThemePreference(preference) {
+      const resolvedTheme = preference === 'system' ? getSystemTheme() : preference;
+      document.body.classList.remove('theme-light', 'theme-dark');
+      document.body.classList.add(resolvedTheme === 'light' ? 'theme-light' : 'theme-dark');
+    }
+
+    function loadThemePreference() {
+      return localStorage.getItem(THEME_KEY) || 'system';
+    }
+
+    function changeTheme(value) {
+      localStorage.setItem(THEME_KEY, value);
+      applyThemePreference(value);
+    }
+
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+        if (loadThemePreference() === 'system') applyThemePreference('system');
+      });
+    }
+    applyThemePreference(loadThemePreference());
+    window.addEventListener('storage', event => {
+      if (event.key === THEME_KEY) applyThemePreference(loadThemePreference());
+    });
+
+    let selectedRatio = '1:1';
+    let selectedSubject = 'a powerful fantasy woman with glowing eyes';
+    let selectedWeapon = 'a glowing sword';
+    let selectedTitleType = 'flame';
+    let flameEnabled = true;
+    let flameAccentEnabled = true;
+    let holdingEnabled = true;
+    let titleEnabled = true;
+
+    const swatches = [
+      { name: 'red', value: '#ff2b2b' },
+      { name: 'orange', value: '#ff7a18' },
+      { name: 'yellow', value: '#ffe600' },
+      { name: 'green', value: '#37ff6b' },
+      { name: 'cyan', value: '#00eaff' },
+      { name: 'blue', value: '#246bff' },
+      { name: 'violet', value: '#8b35ff' },
+      { name: 'pink', value: '#ff4fd8' },
+      { name: 'white', value: '#f5f5f5' }
+    ];
+
+    function clean(value, fallback) {
+      const text = String(value || '').trim();
+      return text.length ? text : fallback;
+    }
+
+    function setActive(buttons, activeButton) {
+      buttons.forEach(btn => btn.classList.remove('active'));
+      activeButton.classList.add('active');
+    }
+
+    function buildColorGrid(gridId, inputId, defaultName) {
+      const grid = document.getElementById(gridId);
+      const input = document.getElementById(inputId);
+
+      swatches.forEach(color => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'color-btn';
+        button.dataset.color = color.name;
+        button.title = color.name;
+        button.style.setProperty('--swatch', color.value);
+        button.textContent = color.name;
+
+        if (color.name === defaultName) button.classList.add('active');
+
+        button.addEventListener('click', () => {
+          setActive(Array.from(grid.querySelectorAll('.color-btn')), button);
+          input.value = color.name;
+          generatePrompt();
+        });
+
+        grid.appendChild(button);
+      });
+    }
+
+    function syncColorCustomInput(gridId, inputId) {
+      const grid = document.getElementById(gridId);
+      const input = document.getElementById(inputId);
+      const normalized = input.value.trim().toLowerCase();
+      grid.querySelectorAll('.color-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.color === normalized);
+      });
+    }
+
+    function getSubject() {
+      if (selectedSubject === 'custom') {
+        return clean(document.getElementById('subject').value, 'a mysterious fantasy character with glowing eyes');
+      }
+      return selectedSubject;
+    }
+
+    function getWeaponPrompt() {
+      if (!holdingEnabled) return '';
+      if (selectedWeapon === 'custom') {
+        return `, holding ${clean(document.getElementById('customWeapon').value, 'a crystal orb')}`;
+      }
+      return `, holding ${selectedWeapon}`;
+    }
+
+    function getTitleStyle() {
+      const color = clean(document.getElementById('textColor').value, 'white neon');
+      const texture = clean(document.getElementById('titleTexture').value, 'glowing molten neon');
+      const fontMood = clean(document.getElementById('fontMood').value, 'bold high-impact display lettering');
+
+      if (selectedTitleType === 'bubble') {
+        return `${color} bubble liquid title, ${texture} texture, smooth rounded inflated letters, soft reflections, dimensional glossy edges, ${fontMood}`;
+      }
+
+      if (selectedTitleType === 'graffiti') {
+        return `${color} graffiti style title, blocky bold letterforms, ${texture} texture, thick dimensional strokes, high-impact street lettering, ${fontMood}`;
+      }
+
+      return `${color} flame title, ${texture} texture, flowy liquid fiery flowing lettering, molten flame typography, smooth glowing text, ${fontMood}`;
+    }
+
+    function buildTextPrompt() {
+      if (!titleEnabled) return '';
+
+      const songTitle = String(document.getElementById('songTitle').value || '').trim();
+      if (!songTitle) return '';
+
+      const position = document.getElementById('textPosition').value;
+      const layer = document.getElementById('textLayer').value;
+      const titleStyle = getTitleStyle();
+
+      return `, include the exact title text "${songTitle}" at the ${position}, ${layer}, ${titleStyle}, title matches the artwork style`;
+    }
+
+    function buildFlamePrompt() {
+      if (!flameEnabled) return ', no flame aura';
+      const flameColor = clean(document.getElementById('flameColor').value, 'blue');
+      const flameAccentColor = clean(document.getElementById('flameAccentColor').value, 'pink');
+      const flameColors = flameAccentEnabled ? `${flameColor} and ${flameAccentColor}` : flameColor;
+      return `, soft ${flameColors} neon flame aura, glowing magical fire accents`;
+    }
+
+    function generatePrompt() {
+      const mainColor = clean(document.getElementById('mainColor').value, 'red');
+      const accentColor = clean(document.getElementById('accentColor').value, 'violet');
+      const subject = getSubject();
+      const weaponPrompt = getWeaponPrompt();
+      const flamePrompt = buildFlamePrompt();
+      const textPrompt = buildTextPrompt();
+
+      const prompt = `${subject}${weaponPrompt}, vibrant neon fantasy anime artwork, ${mainColor} main color palette, ${accentColor} accent color lighting${flamePrompt}, glowing eyes, cinematic close-up, dramatic rim lighting, clean dark background, smooth energy glow, subtle sparks, light embers, saturated colors, high contrast shadows, glossy highlights, expressive face, detailed illustration, modern medieval fantasy atmosphere, polished digital painting, sharp focus, clean composition${textPrompt}, masterpiece, best quality, no shattered glass, no broken glass, no shards, no excessive particles, no clutter, no extra text unless title is enabled, no watermark, no logo, aspect ratio ${selectedRatio}`;
+
+      output.value = prompt;
+      copied.textContent = '';
+    }
+
+    async function copyPrompt() {
+      if (!output.value.trim()) generatePrompt();
+
+      try {
+        await navigator.clipboard.writeText(output.value);
+        copied.textContent = 'Copied!';
+      } catch (error) {
+        output.select();
+        document.execCommand('copy');
+        copied.textContent = 'Copied!';
+      }
+
+      setTimeout(() => copied.textContent = '', 1600);
+    }
+
+    document.querySelectorAll('.ratio-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        setActive(Array.from(document.querySelectorAll('.ratio-btn')), button);
+        selectedRatio = button.dataset.ratio;
+        generatePrompt();
+      });
+    });
+
+    document.querySelectorAll('[data-subject]').forEach(button => {
+      button.addEventListener('click', () => {
+        setActive(Array.from(document.querySelectorAll('[data-subject]')), button);
+        selectedSubject = button.dataset.subject;
+        document.getElementById('otherSubjectPanel').classList.toggle('show', selectedSubject === 'custom');
+        generatePrompt();
+      });
+    });
+
+    document.querySelectorAll('[data-weapon]').forEach(button => {
+      button.addEventListener('click', () => {
+        setActive(Array.from(document.querySelectorAll('[data-weapon]')), button);
+        selectedWeapon = button.dataset.weapon;
+        document.getElementById('customWeaponPanel').classList.toggle('show', selectedWeapon === 'custom');
+        generatePrompt();
+      });
+    });
+
+    document.querySelectorAll('[data-title-type]').forEach(button => {
+      button.addEventListener('click', () => {
+        setActive(Array.from(document.querySelectorAll('[data-title-type]')), button);
+        selectedTitleType = button.dataset.titleType;
+        generatePrompt();
+      });
+    });
+
+    document.querySelectorAll('[data-toggle="holding"]').forEach(button => {
+      button.addEventListener('click', () => {
+        setActive(Array.from(document.querySelectorAll('[data-toggle="holding"]')), button);
+        holdingEnabled = button.dataset.value === 'on';
+        document.getElementById('holdingPanel').classList.toggle('show', holdingEnabled);
+        generatePrompt();
+      });
+    });
+
+    document.querySelectorAll('[data-toggle="flame"]').forEach(button => {
+      button.addEventListener('click', () => {
+        setActive(Array.from(document.querySelectorAll('[data-toggle="flame"]')), button);
+        flameEnabled = button.dataset.value === 'on';
+        document.getElementById('flamePanel').classList.toggle('show', flameEnabled);
+        generatePrompt();
+      });
+    });
+
+    document.querySelectorAll('[data-toggle="flameAccent"]').forEach(button => {
+      button.addEventListener('click', () => {
+        setActive(Array.from(document.querySelectorAll('[data-toggle="flameAccent"]')), button);
+        flameAccentEnabled = button.dataset.value === 'on';
+        document.getElementById('flameAccentPanel').classList.toggle('show', flameAccentEnabled);
+        generatePrompt();
+      });
+    });
+
+    document.querySelectorAll('[data-toggle="title"]').forEach(button => {
+      button.addEventListener('click', () => {
+        setActive(Array.from(document.querySelectorAll('[data-toggle="title"]')), button);
+        titleEnabled = button.dataset.value === 'on';
+        document.getElementById('titlePanel').classList.toggle('show', titleEnabled);
+        generatePrompt();
+      });
+    });
+
+    document.querySelectorAll('[data-texture]').forEach(button => {
+      button.addEventListener('click', () => {
+        document.getElementById('titleTexture').value = button.dataset.texture;
+        setActive(Array.from(document.querySelectorAll('[data-texture]')), button);
+        generatePrompt();
+      });
+    });
+
+    buildColorGrid('mainColorGrid', 'mainColor', 'red');
+    buildColorGrid('accentColorGrid', 'accentColor', 'violet');
+    buildColorGrid('flameColorGrid', 'flameColor', 'blue');
+    buildColorGrid('flameAccentColorGrid', 'flameAccentColor', 'pink');
+
+    ['mainColor', 'accentColor', 'flameColor', 'flameAccentColor'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        syncColorCustomInput(id + 'Grid', id);
+        generatePrompt();
+      });
+      document.getElementById(id).addEventListener('change', () => {
+        syncColorCustomInput(id + 'Grid', id);
+        generatePrompt();
+      });
+    });
+
+    ['subject', 'customWeapon', 'songTitle', 'textPosition', 'textLayer', 'textColor', 'titleTexture', 'fontMood'].forEach(id => {
+      document.getElementById(id).addEventListener('input', generatePrompt);
+      document.getElementById(id).addEventListener('change', generatePrompt);
+    });
+
+    generatePrompt();
+  </script>
+</body>
+</html>
