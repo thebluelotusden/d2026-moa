@@ -3214,14 +3214,26 @@
     }
 
     function emptySendCheckboxClicked(event, id) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.currentTarget.checked = false;
-        setTimeout(() => { event.currentTarget.checked = false; }, 0);
+      const artist = getArtistById(id);
+      const firstEntry = artist && artist.sendEntries && artist.sendEntries[0];
+      const hasValidDate = firstEntry && isValidSendDate(firstEntry.date);
+
+      if (!hasValidDate) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.currentTarget.checked = false;
+          setTimeout(() => { event.currentTarget.checked = false; }, 0);
+        }
+        showSendWarningForId(id);
+        return false;
       }
-      showSendWarningForId(id);
-      return false;
+
+      firstEntry.checked = event ? Boolean(event.currentTarget.checked) : true;
+      _dirtySendArtists.add(id);
+      saveSendStateAfterInlineEdit();
+      renderArtists();
+      return true;
     }
 
     function createFirstSendEntry(id, value, rerender = false) {
