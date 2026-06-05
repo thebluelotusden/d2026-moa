@@ -2776,22 +2776,17 @@
           : (Array.isArray(cloud.artists) ? cloud.artists : null);
 
         if (Array.isArray(cloudArtists)) {
-          if (saveTimer || isSaving) {
-            hasPendingUpdate = true;
-            saveStatus.textContent = "Updates available (applying when idle)...";
-          } else {
-            const newArtists = dedupeArtists(cloudArtists);
-            if (activeArtistId) {
-              const localActive = artists.find(a => a.id === activeArtistId);
-              if (localActive) {
-                const newActiveIdx = newArtists.findIndex(a => a.id === activeArtistId);
-                if (newActiveIdx !== -1) {
-                  newArtists[newActiveIdx] = localActive;
-                }
+          const newArtists = dedupeArtists(cloudArtists);
+          if (activeArtistId) {
+            const localActive = artists.find(a => a.id === activeArtistId);
+            if (localActive) {
+              const newActiveIdx = newArtists.findIndex(a => a.id === activeArtistId);
+              if (newActiveIdx !== -1) {
+                newArtists[newActiveIdx] = localActive;
               }
             }
-            artists = newArtists;
           }
+          artists = newArtists;
         }
 
         // 3b. Sync Sidebar Links
@@ -2861,81 +2856,76 @@
     }
 
     async function saveState() {
-      isSaving = true;
+      artists = dedupeArtists(artists);
+      const payload = buildStatePayload();
+      if (!FIREBASE_ENABLED) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        saveLocalArtists();
+      }
+      saveStatus.textContent = "Saved local " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+
+      if (!firebaseOnline || !firebaseDocRef) return;
+      if (!isCloudLoaded) {
+        console.warn("Firestore write blocked: Cloud data not yet loaded.");
+        return;
+      }
+
       try {
-        artists = dedupeArtists(artists);
-        const payload = buildStatePayload();
-        if (!FIREBASE_ENABLED) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-          saveLocalArtists();
+        // Fetch the latest state from Firestore to prevent overwriting other users' concurrent edits
+        const snap = await getDoc(firebaseDocRef);
+        let finalArtists = [...artists];
+        let finalDeletedArtistIds = [...deletedArtistIds];
+        let finalCustomArtists = artists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
+
+        if (snap.exists()) {
+          const cloud = snap.data();
+          
+          // Read with fallback to v1 fields
+          const cloudArtists = Array.isArray(cloud.artists_v2) 
+            ? cloud.artists_v2 
+            : (Array.isArray(cloud.artists) ? cloud.artists : []);
+          const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds_v2)
+            ? cloud.deletedArtistIds_v2
+            : (Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : []);
+
+          // 1. Union of deleted IDs
+          cloudDeletedArtistIds.forEach(id => {
+            if (!finalDeletedArtistIds.includes(id)) {
+              finalDeletedArtistIds.push(id);
+            }
+          });
+
+          // 2. Add any cloud artists that are not present locally and not deleted
+          cloudArtists.forEach(cloudArtist => {
+            const existsLocal = finalArtists.some(a => a.id === cloudArtist.id);
+            const isDeleted = finalDeletedArtistIds.includes(cloudArtist.id);
+            if (!existsLocal && !isDeleted) {
+              finalArtists.push(cloudArtist);
+            }
+          });
+
+          // 3. Re-calculate custom artists based on the merged list
+          finalCustomArtists = finalArtists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
         }
-        saveStatus.textContent = "Saved local " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
 
-        if (!firebaseOnline || !firebaseDocRef) return;
-        if (!isCloudLoaded) {
-          console.warn("Firestore write blocked: Cloud data not yet loaded.");
-          return;
-        }
+        const mergedPayload = buildStatePayload(finalArtists);
 
-        try {
-          // Fetch the latest state from Firestore to prevent overwriting other users' concurrent edits
-          const snap = await getDoc(firebaseDocRef);
-          let finalArtists = [...artists];
-          let finalDeletedArtistIds = [...deletedArtistIds];
-          let finalCustomArtists = artists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
+        await setDoc(firebaseDocRef, {
+          artists_v2: finalArtists.map(artist => normalizeArtist(artist, true)),
+          state_v2: mergedPayload,
+          customArtists_v2: finalCustomArtists,
+          deletedArtistIds_v2: finalDeletedArtistIds,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
 
-          if (snap.exists()) {
-            const cloud = snap.data();
-            
-            // Read with fallback to v1 fields
-            const cloudArtists = Array.isArray(cloud.artists_v2) 
-              ? cloud.artists_v2 
-              : (Array.isArray(cloud.artists) ? cloud.artists : []);
-            const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds_v2)
-              ? cloud.deletedArtistIds_v2
-              : (Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : []);
+        // Update in-memory collections to match the merged result
+        artists = finalArtists;
+        deletedArtistIds = finalDeletedArtistIds;
 
-            // 1. Union of deleted IDs
-            cloudDeletedArtistIds.forEach(id => {
-              if (!finalDeletedArtistIds.includes(id)) {
-                finalDeletedArtistIds.push(id);
-              }
-            });
-
-            // 2. Add any cloud artists that are not present locally and not deleted
-            cloudArtists.forEach(cloudArtist => {
-              const existsLocal = finalArtists.some(a => a.id === cloudArtist.id);
-              const isDeleted = finalDeletedArtistIds.includes(cloudArtist.id);
-              if (!existsLocal && !isDeleted) {
-                finalArtists.push(cloudArtist);
-              }
-            });
-
-            // 3. Re-calculate custom artists based on the merged list
-            finalCustomArtists = finalArtists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
-          }
-
-          const mergedPayload = buildStatePayload(finalArtists);
-
-          await setDoc(firebaseDocRef, {
-            artists_v2: finalArtists.map(artist => normalizeArtist(artist, true)),
-            state_v2: mergedPayload,
-            customArtists_v2: finalCustomArtists,
-            deletedArtistIds_v2: finalDeletedArtistIds,
-            updatedAt: serverTimestamp()
-          }, { merge: true });
-
-          // Update in-memory collections to match the merged result
-          artists = finalArtists;
-          deletedArtistIds = finalDeletedArtistIds;
-
-          saveStatus.textContent = "Saved shared cloud " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
-        } catch (error) {
-          console.error("Firebase save failed", error);
-          saveStatus.textContent = "Cloud save failed / local saved";
-        }
-      } finally {
-        isSaving = false;
+        saveStatus.textContent = "Saved shared cloud " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+      } catch (error) {
+        console.error("Firebase save failed", error);
+        saveStatus.textContent = "Cloud save failed / local saved";
       }
     }
 
@@ -3021,14 +3011,14 @@
         return `
         <div class="send-row">
           <input type="checkbox" class="${needsDateClass.trim()}" ${entry.checked ? "checked" : ""} onclick="return toggleSendEntryChecked(event, '${artist.id}', ${index})" aria-label="Mark send entry complete" />
-          <input type="date" value="${escapeHtml(entry.date)}" oninput="changeSendEntryDate('${artist.id}', ${index}, this.value, false)" onblur="setTimeout(() => window.renderArtists(), 150)" />
+          <input type="date" value="${escapeHtml(entry.date)}" oninput="changeSendEntryDate('${artist.id}', ${index}, this.value, false)" />
           <button class="send-remove-btn" type="button" title="Remove send entry" aria-label="Remove send entry" onclick="removeSendEntry('${artist.id}', ${index})">${sendRemoveIconSvg()}</button>
         </div>`;
       };
       const entryHtml = visibleEntries.map(rowHtml).join("");
       const emptyHtml = entries.length ? "" : `<div class="send-row">
         <input type="checkbox" class="needs-date" onclick="return emptySendCheckboxClicked(event, '${artist.id}')" aria-label="Add date first" />
-        <input type="date" oninput="createFirstSendEntry('${artist.id}', this.value, false)" onblur="setTimeout(() => window.renderArtists(), 150)" />
+        <input type="date" oninput="createFirstSendEntry('${artist.id}', this.value, false)" />
         <button class="send-remove-btn" type="button" title="Clear send entry" aria-label="Clear send entry" onclick="clearFirstSendEntry('${artist.id}')">${sendRemoveIconSvg()}</button>
       </div>`;
       const showAll = entries.length > 3 && !expanded ? `<button class="show-send-all" onclick="expandSendEntries('${artist.id}')">show all entry</button>` : "";
@@ -3206,25 +3196,14 @@
     }
 
     function emptySendCheckboxClicked(event, id) {
-      const artist = getArtistById(id);
-      const firstEntry = artist && artist.sendEntries && artist.sendEntries[0];
-      const hasValidDate = firstEntry && isValidSendDate(firstEntry.date);
-
-      if (!hasValidDate) {
-        if (event) {
-          event.preventDefault();
-          event.stopPropagation();
-          event.currentTarget.checked = false;
-          setTimeout(() => { event.currentTarget.checked = false; }, 0);
-        }
-        showSendWarningForId(id);
-        return false;
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.currentTarget.checked = false;
+        setTimeout(() => { event.currentTarget.checked = false; }, 0);
       }
-
-      firstEntry.checked = Boolean(event.currentTarget.checked);
-      saveSendStateAfterInlineEdit();
-      renderMapDots();
-      return true;
+      showSendWarningForId(id);
+      return false;
     }
 
     function createFirstSendEntry(id, value, rerender = false) {
@@ -3397,18 +3376,13 @@
       renderArtists();
     }
 
-    let isSaving = false;
     let saveTimer;
     function scheduleSave() {
       saveStatus.textContent = "Saving...";
       clearTimeout(saveTimer);
       saveTimer = setTimeout(async () => {
-        try {
-          await saveState();
-          updateStats();
-        } finally {
-          saveTimer = null;
-        }
+        await saveState();
+        updateStats();
       }, 420);
     }
 
@@ -4301,64 +4275,91 @@
     window.addSidebarLinkFromForm = addSidebarLinkFromForm;
     window.saveSidebarLinks = saveSidebarLinks;
     window.removeSidebarLink = removeSidebarLink;
-    window.renderArtists = renderArtists;
 
-    // Global UI Audio Feedback Manager
-    const AUDIO_FILES = {
-      click: new Audio('/assets/audio/btn-click.ogg'),
-      hover: new Audio('/assets/audio/hover.ogg')
-    };
+    // ─── Global UI Audio Feedback Manager (mobile-optimized) ───
+    const _audioRaw = {};      // pre-fetched ArrayBuffers (no gesture needed)
+    const _audioBuffers = {};  // decoded AudioBuffers (need AudioContext)
+    let _audioCtx = null;
+    const _isTouchDevice = matchMedia('(pointer: coarse)').matches;
 
-    // Preload audio files
-    Object.values(AUDIO_FILES).forEach(audio => {
-      audio.load();
+    // Pre-fetch raw audio bytes immediately (no user gesture required)
+    ['click', 'hover'].forEach(name => {
+      fetch(`/assets/audio/${name === 'click' ? 'btn-click' : name}.ogg`)
+        .then(r => r.arrayBuffer())
+        .then(buf => { _audioRaw[name] = buf; })
+        .catch(() => {});
     });
 
-    function playAudio(type) {
-      const audio = AUDIO_FILES[type];
-      if (!audio) return;
-      try {
-        audio.currentTime = 0;
-        audio.play().catch(err => {
-          console.debug(`Audio play failed for ${type}:`, err);
-        });
-      } catch (err) {
-        console.debug(`Audio play failed for ${type}:`, err);
+    function _getAudioCtx() {
+      if (!_audioCtx) {
+        _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
+      if (_audioCtx.state === 'suspended') _audioCtx.resume();
+      return _audioCtx;
+    }
+
+    // Decode pre-fetched buffers once AudioContext exists
+    let _decoded = false;
+    function _decodeBuffers() {
+      if (_decoded) return;
+      _decoded = true;
+      const ctx = _getAudioCtx();
+      Object.entries(_audioRaw).forEach(([name, raw]) => {
+        // slice() because decodeAudioData detaches the buffer
+        ctx.decodeAudioData(raw.slice(0)).then(buf => {
+          _audioBuffers[name] = buf;
+        }).catch(() => {});
+      });
+    }
+
+    // Cooldown per audio type to prevent rapid-fire stacking
+    const _lastPlayed = {};
+    const AUDIO_COOLDOWN = 80; // ms
+
+    function playAudio(type) {
+      const now = performance.now();
+      if (now - (_lastPlayed[type] || 0) < AUDIO_COOLDOWN) return;
+      _lastPlayed[type] = now;
+
+      _decodeBuffers();
+      const buffer = _audioBuffers[type];
+      if (!buffer) return;
+      try {
+        const ctx = _getAudioCtx();
+        const src = ctx.createBufferSource();
+        src.buffer = buffer;
+        src.connect(ctx.destination);
+        src.start(0);
+      } catch (_) {}
     }
     window.playAudio = playAudio;
 
-    // Delegated selectors for interactive elements
-    const interactiveSelector = 'a, button, [role="button"], .nav-btn, .auth-btn, .card, .card-back, .color-code-btn, .delete-artist-btn, .add-artist-btn, .mobile-filter-toggle, .summary-globe-btn, .send-remove-btn, .send-add-btn, .show-send-all, .visual-card, .horizontal-user-card, .action-link-btn, .sidebar-toggle-btn, .sidebar-link-btn, .footer-btn, .preset-btn, .weapon-btn, .material-btn, .toggle-btn, .ratio-btn, .color-btn, .generate, .copy, .icon-btn, .mobile-nav-toggle, .mobile-filter-toggle, .remove-btn, .close-btn';
-    
-    // Delegated click audio trigger (using capture phase to bypass stopPropagation)
-    document.addEventListener('click', event => {
-      const clickable = event.target.closest(interactiveSelector);
-      if (clickable) {
-        playAudio('click');
-      }
+    // Minimal selector — covers all <a>, <button>, [onclick], [role=button]
+    const _iSel = 'a, button, [onclick], [role="button"]';
+
+    // Bootstrap AudioContext on first touch/click (user-gesture gate)
+    document.addEventListener('pointerdown', () => {
+      _getAudioCtx();
+      _decodeBuffers();
+    }, { once: true, capture: true });
+
+    // Click audio (capture phase so stopPropagation doesn't block it)
+    document.addEventListener('click', e => {
+      if (e.target.closest(_iSel)) playAudio('click');
     }, true);
 
-    // Delegated hover audio trigger (using capture phase)
-    let lastHoveredElement = null;
-
-    document.addEventListener('mouseover', event => {
-      const hoverable = event.target.closest(interactiveSelector);
-      if (hoverable) {
-        if (lastHoveredElement !== hoverable) {
-          lastHoveredElement = hoverable;
-          playAudio('hover');
-        }
-      } else {
-        lastHoveredElement = null;
-      }
-    }, true);
-
-    document.addEventListener('mouseout', event => {
-      if (lastHoveredElement && !event.relatedTarget?.closest(interactiveSelector)) {
-        lastHoveredElement = null;
-      }
-    }, true);
+    // Hover audio — desktop only (touch devices fire fake mouseover = lag)
+    if (!_isTouchDevice) {
+      let _lastHover = null;
+      document.addEventListener('mouseover', e => {
+        const el = e.target.closest(_iSel);
+        if (el && _lastHover !== el) { _lastHover = el; playAudio('hover'); }
+        else if (!el) _lastHover = null;
+      }, true);
+      document.addEventListener('mouseout', e => {
+        if (_lastHover && !e.relatedTarget?.closest(_iSel)) _lastHover = null;
+      }, true);
+    }
 
     window.addEventListener("popstate", () => {
       routeToPage(getCurrentRoute());
