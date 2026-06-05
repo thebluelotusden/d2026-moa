@@ -1887,7 +1887,7 @@
       <button class="sidebar-toggle-btn" id="sidebarToggleBtn" type="button" aria-label="Open sidebar" onclick="openLeftSidebar()">
         <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter" fill="none" stroke="currentColor" style="width:20px;height:20px;display:block;"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
       </button>
-      <h1 class="site-logo" aria-label="MONEYOVERALL">
+      <h1 class="site-logo" aria-label="MONEYOVERALL" onclick="navigateTo('dashboard')" style="cursor: pointer;">
         <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
         <span class="logo-fallback">MONEYOVERALL</span>
       </h1>
@@ -1895,10 +1895,10 @@
         <svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M5 8l7 7 7-7"></path></svg>
       </button>
       <div class="hero-actions">
-        <button class="nav-btn" id="dashboardNavBtn" onclick="window.location.hash = 'dashboard'">Dashboard</button>
-        <button class="nav-btn" id="rosterNavBtn" onclick="window.location.hash = 'roster'">Roster</button>
-        <button class="nav-btn" id="visualsNavBtn" onclick="window.location.hash = 'visuals'">Visuals</button>
-        <button class="nav-btn" id="settingsNavBtn" onclick="window.location.hash = 'settings'">Settings</button>
+        <button class="nav-btn" id="dashboardNavBtn" onclick="navigateTo('dashboard')">Dashboard</button>
+        <button class="nav-btn" id="rosterNavBtn" onclick="navigateTo('roster')">Roster</button>
+        <button class="nav-btn" id="visualsNavBtn" onclick="window.location.href = '/visuals/'">Visuals</button>
+        <button class="nav-btn" id="settingsNavBtn" onclick="navigateTo('settings')">Settings</button>
         <button class="auth-btn" id="authBtn" onclick="toggleAuth()">Sign in Google</button>
       </div>
     </section>
@@ -1934,7 +1934,7 @@
     <section class="map-page hidden" id="mapPage">
       <div class="map-header">
         <h2>Artist Map</h2>
-        <button class="nav-btn" onclick="window.location.hash = 'roster'">Back to Roster</button>
+        <button class="nav-btn" onclick="navigateTo('roster')">Back to Roster</button>
       </div>
       <div class="map-shell">
         <svg class="world-map" id="worldMap" viewBox="0 0 1000 560" role="img" aria-label="World map of outreach artists">
@@ -1965,7 +1965,7 @@
     <section class="stats">
       <div class="stat"><strong id="totalStat">0</strong><span>Total</span></div>
       <div class="stat"><strong id="sentStat">0</strong><span>Sent</span></div>
-      <button class="summary-globe-btn" title="Open artist map" aria-label="Open artist map" onclick="window.location.hash = 'map'">
+      <button class="summary-globe-btn" title="Open artist map" aria-label="Open artist map" onclick="navigateTo('map')">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c3 3 3 15 0 18"></path><path d="M12 3c-3 3-3 15 0 18"></path></svg>
       </button>
       <button class="summary-globe-btn summary-list-btn" title="Copy artist list" aria-label="Copy artist list" onclick="copyArtistList()">
@@ -2600,7 +2600,7 @@
           await loadCloudDashboard();
           setupRealtimeSync();
           setSignedInUi(true);
-          routeFromHash();
+          routeToPage(getCurrentRoute());
         });
       } catch (error) {
         console.error("Firebase init failed", error);
@@ -4159,9 +4159,52 @@
       }
     }
 
-    function routeFromHash() {
+    function getCurrentRoute() {
+      // 1. Check sessionStorage redirect
+      const redirectPage = sessionStorage.getItem("redirect_page");
+      if (redirectPage) {
+        sessionStorage.removeItem("redirect_page");
+        history.replaceState(null, null, "/" + redirectPage);
+        return redirectPage;
+      }
+      
+      // 2. Check path routing
+      const path = window.location.pathname.replace(/^\/|\/$/g, "").toLowerCase();
+      if (path === "settings" || path === "visuals" || path === "roster" || path === "map" || path === "dashboard") {
+        return path;
+      }
+      
+      // 3. Fallback to hash routing
+      const hash = String(window.location.hash || "").replace("#", "").toLowerCase();
+      if (hash === "settings" || hash === "visuals" || hash === "roster" || hash === "map" || hash === "dashboard") {
+        return hash;
+      }
+      
+      return "dashboard";
+    }
+
+    function routeToPage(route) {
       applyPendingUpdatesIfNeeded();
-      const route = String(window.location.hash || "").replace("#", "").toLowerCase();
+      
+      // Update active nav button styling
+      const btnIdMap = {
+        dashboard: "dashboardNavBtn",
+        roster: "rosterNavBtn",
+        visuals: "visualsNavBtn",
+        settings: "settingsNavBtn"
+      };
+      
+      ["dashboardNavBtn", "rosterNavBtn", "visualsNavBtn", "settingsNavBtn"].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.remove("active");
+      });
+      
+      const activeBtnId = btnIdMap[route];
+      if (activeBtnId) {
+        const activeBtn = document.getElementById(activeBtnId);
+        if (activeBtn) activeBtn.classList.add("active");
+      }
+      
       if (route === "settings") {
         showSettingsPage();
       } else if (route === "visuals") {
@@ -4173,6 +4216,11 @@
       } else {
         showDashboardPage();
       }
+    }
+
+    function navigateTo(route) {
+      history.pushState(null, null, "/" + route);
+      routeToPage(route);
     }
 
     window.openAddArtistModal = openAddArtistModal;
@@ -4204,7 +4252,7 @@
     window.showDashboardPage = showDashboardPage;
     window.showRosterPage = showRosterPage;
     window.showVisualsPage = showVisualsPage;
-    window.routeFromHash = routeFromHash;
+    window.navigateTo = navigateTo;
     window.showMapPage = showMapPage;
     window.openSlideUpPanel = openSlideUpPanel;
     window.closeSlideUpPanel = closeSlideUpPanel;
@@ -4228,7 +4276,9 @@
     window.saveSidebarLinks = saveSidebarLinks;
     window.removeSidebarLink = removeSidebarLink;
 
-    window.addEventListener("hashchange", routeFromHash);
+    window.addEventListener("popstate", () => {
+      routeToPage(getCurrentRoute());
+    });
 
     window.addEventListener("resize", () => {
       if (window.innerWidth > 980) closeMobileOverlays();
