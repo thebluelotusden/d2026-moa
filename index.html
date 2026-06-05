@@ -2786,6 +2786,20 @@
               }
             }
           }
+          // Preserve locally-dirty sendEntries so user edits aren't wiped
+          if (_dirtySendArtists.size > 0) {
+            _dirtySendArtists.forEach(dirtyId => {
+              const localA = artists.find(a => a.id === dirtyId);
+              if (localA) {
+                const idx = newArtists.findIndex(a => a.id === dirtyId);
+                if (idx !== -1) {
+                  newArtists[idx].sendEntries = localA.sendEntries;
+                } else {
+                  newArtists.push(localA);
+                }
+              }
+            });
+          }
           artists = newArtists;
         }
 
@@ -3179,6 +3193,9 @@
       return artists.find(a => a.id === id);
     }
 
+    // Track artist IDs with locally-edited send entries (not yet confirmed by Firestore)
+    const _dirtySendArtists = new Set();
+
     function saveSendStateAfterInlineEdit() {
       scheduleSave();
       updateStats();
@@ -3191,6 +3208,7 @@
       artist.sendEntries = normalizeSendEntries(artist.sendEntries);
       artist.sendEntries.push({ checked: false, date: "" });
       sendExpandedCards.add(id);
+      _dirtySendArtists.add(id);
       saveSendStateAfterInlineEdit();
       renderArtists();
     }
@@ -3213,6 +3231,7 @@
       if (!artist.sendEntries.length) artist.sendEntries = [{ checked: false, date: "" }];
       artist.sendEntries[0].date = value || "";
       if (!isValidSendDate(artist.sendEntries[0].date)) artist.sendEntries[0].checked = false;
+      _dirtySendArtists.add(id);
       saveSendStateAfterInlineEdit();
       if (rerender) renderArtists();
       else {
@@ -3239,6 +3258,7 @@
       if (!artist.sendEntries[index]) artist.sendEntries[index] = { checked: false, date: "" };
       artist.sendEntries[index].date = value || "";
       if (!isValidSendDate(artist.sendEntries[index].date)) artist.sendEntries[index].checked = false;
+      _dirtySendArtists.add(id);
       saveSendStateAfterInlineEdit();
       if (rerender) renderArtists();
       else {
@@ -3263,6 +3283,7 @@
       } else {
         artist.sendEntries.splice(index, 1);
       }
+      _dirtySendArtists.add(id);
       saveSendStateAfterInlineEdit();
       renderArtists();
     }
@@ -3285,6 +3306,7 @@
         return false;
       }
       entry.checked = Boolean(event.currentTarget.checked);
+      _dirtySendArtists.add(id);
       saveSendStateAfterInlineEdit();
       renderMapDots();
       return true;
@@ -3382,6 +3404,8 @@
       clearTimeout(saveTimer);
       saveTimer = setTimeout(async () => {
         await saveState();
+        // Clear dirty tracking after successful save
+        _dirtySendArtists.clear();
         updateStats();
       }, 420);
     }
