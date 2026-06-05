@@ -1,9 +1,8 @@
 # CLAUDE.md - Developer & Agent Guidelines
 
-## Build & Run Instructions
-This is a static site project.
-- **Run Locally**: Open [index.html](file:///Users/druskhi/Desktop/Blue%20Lotus%20Den/money-over-all/index.html) in any web browser.
-- **No Build Step**: There are no npm packages or compilation requirements for the main web interface.
+## Development Policy
+- **No Local Testing/Running**: Do not run, test locally, or open the HTML in the browser. Simply edit the local files and deploy them directly to the remote repository. The user will handle testing on the live URL.
+- **No Build Step**: There are no npm packages or compilation requirements for this project.
 
 ## Git Deployment Guidelines
 When deploying to the remote repository, standard sandboxed terminal commands will fail to access the macOS Keychain (`osxkeychain`) and cause credential errors (`Device not configured`).
