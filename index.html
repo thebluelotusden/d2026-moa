@@ -1453,6 +1453,22 @@
       letter-spacing: 0.5px;
       margin-top: 2px;
     }
+    .edit-link-row input,
+    .add-link-form input {
+      background: var(--black);
+      border: 1px solid var(--line);
+      color: var(--text);
+      padding: 10px;
+      font-family: inherit;
+      font-size: 13px;
+      border-radius: 0;
+      transition: border-color 160ms ease;
+    }
+    .edit-link-row input:focus,
+    .add-link-form input:focus {
+      border-color: var(--white);
+      outline: 0;
+    }
 
     /* Slide up bottom sheet modal */
     .slide-up-modal {
@@ -1477,16 +1493,42 @@
     }
     .slide-up-panel {
       width: min(540px, 100%);
+      background: transparent;
+      border: 0;
+      padding: 0;
+      transform: translateY(100%);
+      transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+      perspective: 1200px;
+    }
+    .slide-up-modal.is-open .slide-up-panel {
+      transform: translateY(0);
+    }
+    .slide-up-flipper {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      transform-style: preserve-3d;
+      transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide-up-panel.is-editing .slide-up-flipper {
+      transform: rotateY(180deg);
+    }
+    .slide-up-front,
+    .slide-up-back {
+      position: absolute;
+      inset: 0;
       background: var(--panel);
       border: 1px solid var(--line);
       border-bottom: 0;
       padding: 24px;
-      transform: translateY(100%);
-      transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
     }
-    .slide-up-modal.is-open .slide-up-panel {
-      transform: translateY(0);
+    .slide-up-back {
+      transform: rotateY(180deg);
     }
     .slide-up-header {
       display: flex;
@@ -1687,28 +1729,53 @@
   </div>
 
   <div class="slide-up-modal" id="slideUpModal" onclick="closeSlideUpPanel(event)">
-    <div class="slide-up-panel" onclick="event.stopPropagation()">
-      <div class="slide-up-header">
-        <img class="user-pfp" src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578" alt="workingthatmagic pfp" />
-        <div class="user-details">
-          <span class="user-username">@workingthatmagic</span>
-          <span class="user-subtitle">Creator Studio / Dashboard Links</span>
+    <div class="slide-up-panel" id="slideUpPanelShell" onclick="event.stopPropagation()">
+      <div class="slide-up-flipper">
+        <div class="slide-up-front">
+          <div class="slide-up-header">
+            <img class="user-pfp" src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578" alt="workingthatmagic pfp" />
+            <div class="user-details">
+              <span class="user-username">@workingthatmagic</span>
+              <span class="user-subtitle">Creator Studio / Dashboard Links</span>
+            </div>
+            <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px; margin-right: 8px;" title="Edit Links" onclick="flipDashboardPanel(true)">✎</button>
+            <button class="icon-btn" style="width: 32px; height: 32px;" title="Close" onclick="closeSlideUpPanelForce()">✕</button>
+          </div>
+          <div class="action-links" style="display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto;">
+            <!-- Dynamically populated links -->
+          </div>
         </div>
-        <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px;" onclick="closeSlideUpPanelForce()">✕</button>
-      </div>
-      <div class="action-links">
-        <a class="action-link-btn" href="https://studio.beatstars.com/dashboard" target="_blank" rel="noreferrer">
-          <span>Beatstars</span>
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a class="action-link-btn" href="https://www.instagram.com/workingthatmagic/" target="_blank" rel="noreferrer">
-          <span>Instagram</span>
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a class="action-link-btn" href="https://studio.youtube.com/channel/UCvzPdWfZNKsvLfNPlMOwapQ" target="_blank" rel="noreferrer">
-          <span>YouTube Studio</span>
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        <div class="slide-up-back">
+          <div class="slide-up-header">
+            <img class="user-pfp" src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578" alt="workingthatmagic pfp" />
+            <div class="user-details">
+              <span class="user-username">@workingthatmagic</span>
+              <span class="user-subtitle">Edit Dashboard Links</span>
+            </div>
+            <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px; margin-right: 8px;" title="Cancel" onclick="flipDashboardPanel(false)">↩</button>
+            <button class="icon-btn" style="width: 32px; height: 32px;" title="Close" onclick="closeSlideUpPanelForce()">✕</button>
+          </div>
+          
+          <div class="edit-links-container" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 4px; margin-bottom: 16px;">
+            <div id="editLinksList" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Dynamically populated rows -->
+            </div>
+            
+            <div class="add-link-form" style="border-top: 1px solid var(--line-2); padding-top: 14px; margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
+              <strong style="font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px;">Add New Link</strong>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="newLinkName" placeholder="NAME (e.g. SPOTIFY)" style="flex: 1;" />
+                <input type="url" id="newLinkUrl" placeholder="URL (https://...)" style="flex: 2;" />
+                <button class="icon-btn" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 18px;" onclick="addDashboardLinkField()">+</button>
+              </div>
+            </div>
+          </div>
+          
+          <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button class="auth-btn" style="padding: 10px 20px; font-size: 12px;" onclick="flipDashboardPanel(false)">Cancel</button>
+            <button class="auth-btn" style="padding: 10px 20px; font-size: 12px; background: var(--white); color: var(--black);" onclick="saveDashboardLinks()">Save Changes</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2978,7 +3045,99 @@
 
 
 
+    const DEFAULT_DASHBOARD_LINKS = [
+      { label: "Beatstars", url: "https://studio.beatstars.com/dashboard" },
+      { label: "Instagram", url: "https://www.instagram.com/workingthatmagic/" },
+      { label: "YouTube Studio", url: "https://studio.youtube.com/channel/UCvzPdWfZNKsvLfNPlMOwapQ" }
+    ];
+
+    function loadDashboardLinks() {
+      try {
+        const stored = localStorage.getItem("dashboardLinks.v1");
+        if (stored) return JSON.parse(stored);
+      } catch (e) {
+        console.error("Failed to load dashboard links", e);
+      }
+      return DEFAULT_DASHBOARD_LINKS;
+    }
+
+    function renderDashboardLinks() {
+      const links = loadDashboardLinks();
+      const container = document.querySelector(".action-links");
+      if (!container) return;
+      container.innerHTML = links.map(link => `
+        <a class="action-link-btn" href="${escapeHtml(link.url)}" target="_blank" rel="noreferrer">
+          <span>${escapeHtml(link.label)}</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      `).join("");
+    }
+
+    function populateEditLinksForm() {
+      const links = loadDashboardLinks();
+      const list = document.getElementById("editLinksList");
+      if (!list) return;
+      list.innerHTML = links.map(link => `
+        <div class="edit-link-row" style="display: flex; gap: 8px; align-items: center;">
+          <input type="text" class="link-label-input" value="${escapeHtml(link.label)}" placeholder="NAME" style="flex: 1;" />
+          <input type="url" class="link-url-input" value="${escapeHtml(link.url)}" placeholder="URL" style="flex: 2;" />
+          <button class="icon-btn" style="width: 38px; height: 38px; color: #ff5555; display: flex; align-items: center; justify-content: center;" onclick="this.parentElement.remove()">✕</button>
+        </div>
+      `).join("");
+    }
+
+    function addDashboardLinkField() {
+      const nameInput = document.getElementById("newLinkName");
+      const urlInput = document.getElementById("newLinkUrl");
+      const name = nameInput.value.trim();
+      const url = urlInput.value.trim();
+      if (!name || !url) return;
+      
+      const list = document.getElementById("editLinksList");
+      const row = document.createElement("div");
+      row.className = "edit-link-row";
+      row.style.display = "flex";
+      row.style.gap = "8px";
+      row.style.alignItems = "center";
+      row.innerHTML = `
+        <input type="text" class="link-label-input" value="${escapeHtml(name)}" placeholder="NAME" style="flex: 1;" />
+        <input type="url" class="link-url-input" value="${escapeHtml(url)}" placeholder="URL" style="flex: 2;" />
+        <button class="icon-btn" style="width: 38px; height: 38px; color: #ff5555; display: flex; align-items: center; justify-content: center;" onclick="this.parentElement.remove()">✕</button>
+      `;
+      list.appendChild(row);
+      nameInput.value = "";
+      urlInput.value = "";
+    }
+
+    function saveDashboardLinks() {
+      const list = document.getElementById("editLinksList");
+      const rows = list.querySelectorAll(".edit-link-row");
+      const links = [];
+      rows.forEach(row => {
+        const label = row.querySelector(".link-label-input").value.trim();
+        const url = row.querySelector(".link-url-input").value.trim();
+        if (label && url) {
+          links.push({ label, url });
+        }
+      });
+      localStorage.setItem("dashboardLinks.v1", JSON.stringify(links));
+      renderDashboardLinks();
+      flipDashboardPanel(false);
+    }
+
+    function flipDashboardPanel(editing) {
+      const panel = document.getElementById("slideUpPanelShell");
+      if (!panel) return;
+      if (editing) {
+        populateEditLinksForm();
+        panel.classList.add("is-editing");
+      } else {
+        panel.classList.remove("is-editing");
+      }
+    }
+
     function openSlideUpPanel() {
+      renderDashboardLinks();
       const modal = document.getElementById("slideUpModal");
       if (modal) modal.classList.add("is-open");
     }
@@ -2986,11 +3145,13 @@
       if (event.target.id === "slideUpModal") {
         const modal = document.getElementById("slideUpModal");
         if (modal) modal.classList.remove("is-open");
+        flipDashboardPanel(false);
       }
     }
     function closeSlideUpPanelForce() {
       const modal = document.getElementById("slideUpModal");
       if (modal) modal.classList.remove("is-open");
+      flipDashboardPanel(false);
     }
 
     function routeFromHash() {
@@ -3042,6 +3203,9 @@
     window.openSlideUpPanel = openSlideUpPanel;
     window.closeSlideUpPanel = closeSlideUpPanel;
     window.closeSlideUpPanelForce = closeSlideUpPanelForce;
+    window.addDashboardLinkField = addDashboardLinkField;
+    window.saveDashboardLinks = saveDashboardLinks;
+    window.flipDashboardPanel = flipDashboardPanel;
     window.copyArtistList = copyArtistList;
     window.toggleMobileFilters = toggleMobileFilters;
     window.toggleMobileNav = toggleMobileNav;
@@ -3073,6 +3237,7 @@
           if (loadThemePreference() === "system") applyThemePreference("system");
         });
       }
+      renderDashboardLinks();
       setSignedInUi(false, "Checking sign-in...");
       await initFirebaseCloud();
       startPeriodicCloudSync();
