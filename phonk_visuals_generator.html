@@ -240,6 +240,7 @@
     }
 
     .nav-btn:hover,
+    .nav-btn.active,
     .auth-btn:hover { color: var(--white); background: transparent; }
 
     main {
@@ -571,7 +572,8 @@
       </button>
       <div class="hero-actions">
         <a class="nav-btn" href="index.html#dashboard">Dashboard</a>
-        <a class="nav-btn" href="index.html#visuals">Visuals</a>
+        <a class="nav-btn" href="index.html#roster">Roster</a>
+        <a class="nav-btn active" href="index.html#visuals">Visuals</a>
         <a class="nav-btn" href="index.html#settings">Settings</a>
         <button class="auth-btn" id="authBtn" type="button" onclick="toggleAuth()">Sign in Google</button>
       </div>

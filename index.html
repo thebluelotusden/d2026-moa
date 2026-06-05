@@ -204,7 +204,8 @@
     }
 
     .auth-btn:hover,
-    .nav-btn:hover {
+    .nav-btn:hover,
+    .nav-btn.active {
       background: transparent;
       color: var(--white);
     }
@@ -1390,6 +1391,154 @@
       .grid, .stats, .filters-grid { grid-template-columns: 1fr; }
       .count-row { flex-direction: column; align-items: flex-start; }
     }
+
+    /* New Dashboard Styles */
+    .dashboard-page {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+    .dashboard-page h2 {
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: -0.8px;
+      margin-bottom: 14px;
+    }
+    .user-card-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .horizontal-user-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    }
+    .horizontal-user-card:hover {
+      border-color: var(--white);
+      background: var(--panel-2);
+      transform: translateY(-2px);
+    }
+    .user-pfp {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--line-2);
+    }
+    .horizontal-user-card:hover .user-pfp {
+      border-color: var(--white);
+    }
+    .user-details {
+      display: flex;
+      flex-direction: column;
+    }
+    .user-username {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: -0.5px;
+    }
+    .user-subtitle {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
+
+    /* Slide up bottom sheet modal */
+    .slide-up-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.72);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(0px);
+      -webkit-backdrop-filter: blur(0px);
+      transition: opacity 280ms cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1), -webkit-backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide-up-modal.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .slide-up-panel {
+      width: min(540px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-bottom: 0;
+      padding: 24px;
+      transform: translateY(100%);
+      transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+    }
+    .slide-up-modal.is-open .slide-up-panel {
+      transform: translateY(0);
+    }
+    .slide-up-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid var(--line-2);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .slide-up-header .user-pfp {
+      width: 64px;
+      height: 64px;
+    }
+    .slide-up-header .user-username {
+      font-size: 18px;
+    }
+    .action-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .action-link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--line);
+      background: var(--black);
+      color: var(--text);
+      padding: 14px 18px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+    .action-link-btn:hover {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+      transform: translateY(-1px);
+    }
+    .action-link-btn svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      transition: transform 160ms ease;
+    }
+    .action-link-btn:hover svg {
+      transform: translateX(4px);
+    }
   </style>
 </head>
 <body>
@@ -1421,10 +1570,24 @@
         <svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M5 8l7 7 7-7"></path></svg>
       </button>
       <div class="hero-actions">
-        <button class="nav-btn" id="dashboardNavBtn" onclick="showDashboardPage()">Dashboard</button>
-        <button class="nav-btn" id="visualsNavBtn" onclick="showVisualsPage()">Visuals</button>
-        <button class="nav-btn" id="settingsNavBtn" onclick="showSettingsPage()">Settings</button>
+        <button class="nav-btn" id="dashboardNavBtn" onclick="window.location.hash = 'dashboard'">Dashboard</button>
+        <button class="nav-btn" id="rosterNavBtn" onclick="window.location.hash = 'roster'">Roster</button>
+        <button class="nav-btn" id="visualsNavBtn" onclick="window.location.hash = 'visuals'">Visuals</button>
+        <button class="nav-btn" id="settingsNavBtn" onclick="window.location.hash = 'settings'">Settings</button>
         <button class="auth-btn" id="authBtn" onclick="toggleAuth()">Sign in Google</button>
+      </div>
+    </section>
+
+    <section class="dashboard-page hidden" id="dashboardPage">
+      <h2>Dashboard</h2>
+      <div class="user-card-list">
+        <article class="horizontal-user-card" onclick="openSlideUpPanel()">
+          <img class="user-pfp" src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578" alt="workingthatmagic pfp" />
+          <div class="user-details">
+            <span class="user-username">@workingthatmagic</span>
+            <span class="user-subtitle">Manage socials & links</span>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -1443,7 +1606,7 @@
     <section class="map-page hidden" id="mapPage">
       <div class="map-header">
         <h2>Artist Map</h2>
-        <button class="nav-btn" onclick="showDashboardPage()">Back to Dashboard</button>
+        <button class="nav-btn" onclick="window.location.hash = 'roster'">Back to Roster</button>
       </div>
       <div class="map-shell">
         <svg class="world-map" id="worldMap" viewBox="0 0 1000 560" role="img" aria-label="World map of outreach artists">
@@ -1470,11 +1633,11 @@
       </div>
     </section>
 
-    <div id="dashboardPage">
+    <div id="rosterPage" class="hidden">
     <section class="stats">
       <div class="stat"><strong id="totalStat">0</strong><span>Total</span></div>
       <div class="stat"><strong id="sentStat">0</strong><span>Sent</span></div>
-      <button class="summary-globe-btn" title="Open artist map" aria-label="Open artist map" onclick="showMapPage()">
+      <button class="summary-globe-btn" title="Open artist map" aria-label="Open artist map" onclick="window.location.hash = 'map'">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c3 3 3 15 0 18"></path><path d="M12 3c-3 3-3 15 0 18"></path></svg>
       </button>
       <button class="summary-globe-btn summary-list-btn" title="Copy artist list" aria-label="Copy artist list" onclick="copyArtistList()">
@@ -1520,6 +1683,33 @@
     </div>
 
     <main class="grid" id="artistGrid"></main>
+    </div>
+  </div>
+
+  <div class="slide-up-modal" id="slideUpModal" onclick="closeSlideUpPanel(event)">
+    <div class="slide-up-panel" onclick="event.stopPropagation()">
+      <div class="slide-up-header">
+        <img class="user-pfp" src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578" alt="workingthatmagic pfp" />
+        <div class="user-details">
+          <span class="user-username">@workingthatmagic</span>
+          <span class="user-subtitle">Creator Studio / Dashboard Links</span>
+        </div>
+        <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px;" onclick="closeSlideUpPanelForce()">✕</button>
+      </div>
+      <div class="action-links">
+        <a class="action-link-btn" href="https://studio.beatstars.com/dashboard" target="_blank" rel="noreferrer">
+          <span>Beatstars</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="action-link-btn" href="https://www.instagram.com/workingthatmagic/" target="_blank" rel="noreferrer">
+          <span>Instagram</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a class="action-link-btn" href="https://studio.youtube.com/channel/UCvzPdWfZNKsvLfNPlMOwapQ" target="_blank" rel="noreferrer">
+          <span>YouTube Studio</span>
+          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -1676,6 +1866,7 @@
     const saveStatus = document.getElementById("saveStatus");
     const settingsPage = document.getElementById("settingsPage");
     const dashboardPage = document.getElementById("dashboardPage");
+    const rosterPage = document.getElementById("rosterPage");
     const mapPage = document.getElementById("mapPage");
     const visualsPage = document.getElementById("visualsPage");
     const themeSelect = document.getElementById("themeSelect");
@@ -1778,40 +1969,73 @@
       }
     }
 
+    function setActiveNavBtn(activeId) {
+      ["dashboardNavBtn", "rosterNavBtn", "visualsNavBtn", "settingsNavBtn"].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          btn.classList.toggle("active", id === activeId);
+        }
+      });
+    }
+
     function showSettingsPage() {
       document.title = "MONEYOVERALL";
       dashboardPage.classList.add("hidden");
+      rosterPage.classList.add("hidden");
       mapPage.classList.add("hidden");
       visualsPage.classList.add("hidden");
       settingsPage.classList.remove("hidden");
       setFloatingAddVisible(false);
+      setActiveNavBtn("settingsNavBtn");
+      closeMobileOverlays();
     }
 
     function showDashboardPage() {
-      document.title = "MONEYOVERALL";
+      document.title = "MONEYOVERALL / DASHBOARD";
       settingsPage.classList.add("hidden");
+      rosterPage.classList.add("hidden");
       mapPage.classList.add("hidden");
       visualsPage.classList.add("hidden");
       dashboardPage.classList.remove("hidden");
+      setFloatingAddVisible(false);
+      setActiveNavBtn("dashboardNavBtn");
+      closeMobileOverlays();
+    }
+
+    function showRosterPage() {
+      document.title = "MONEYOVERALL / ROSTER";
+      settingsPage.classList.add("hidden");
+      dashboardPage.classList.add("hidden");
+      mapPage.classList.add("hidden");
+      visualsPage.classList.add("hidden");
+      rosterPage.classList.remove("hidden");
       setFloatingAddVisible(true);
+      setActiveNavBtn("rosterNavBtn");
+      closeMobileOverlays();
     }
 
     function showVisualsPage() {
       document.title = "MONEYOVERALL / VISUALS";
       settingsPage.classList.add("hidden");
-      mapPage.classList.add("hidden");
+      rosterPage.classList.add("hidden");
       dashboardPage.classList.add("hidden");
+      mapPage.classList.add("hidden");
       visualsPage.classList.remove("hidden");
       setFloatingAddVisible(false);
+      setActiveNavBtn("visualsNavBtn");
+      closeMobileOverlays();
     }
 
     function showMapPage() {
       document.title = "MONEYOVERALL";
       settingsPage.classList.add("hidden");
+      rosterPage.classList.add("hidden");
       dashboardPage.classList.add("hidden");
       visualsPage.classList.add("hidden");
       mapPage.classList.remove("hidden");
       setFloatingAddVisible(false);
+      setActiveNavBtn("");
+      closeMobileOverlays();
       renderMapLand();
       renderMapDots();
     }
@@ -2754,12 +2978,31 @@
 
 
 
+    function openSlideUpPanel() {
+      const modal = document.getElementById("slideUpModal");
+      if (modal) modal.classList.add("is-open");
+    }
+    function closeSlideUpPanel(event) {
+      if (event.target.id === "slideUpModal") {
+        const modal = document.getElementById("slideUpModal");
+        if (modal) modal.classList.remove("is-open");
+      }
+    }
+    function closeSlideUpPanelForce() {
+      const modal = document.getElementById("slideUpModal");
+      if (modal) modal.classList.remove("is-open");
+    }
+
     function routeFromHash() {
       const route = String(window.location.hash || "").replace("#", "").toLowerCase();
       if (route === "settings") {
         showSettingsPage();
       } else if (route === "visuals") {
         showVisualsPage();
+      } else if (route === "roster") {
+        showRosterPage();
+      } else if (route === "map") {
+        showMapPage();
       } else {
         showDashboardPage();
       }
@@ -2792,9 +3035,13 @@
     window.changeTheme = changeTheme;
     window.showSettingsPage = showSettingsPage;
     window.showDashboardPage = showDashboardPage;
+    window.showRosterPage = showRosterPage;
     window.showVisualsPage = showVisualsPage;
     window.routeFromHash = routeFromHash;
     window.showMapPage = showMapPage;
+    window.openSlideUpPanel = openSlideUpPanel;
+    window.closeSlideUpPanel = closeSlideUpPanel;
+    window.closeSlideUpPanelForce = closeSlideUpPanelForce;
     window.copyArtistList = copyArtistList;
     window.toggleMobileFilters = toggleMobileFilters;
     window.toggleMobileNav = toggleMobileNav;
