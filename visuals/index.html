@@ -1279,12 +1279,16 @@
     }
 
     function closeLeftSidebar() {
-      document.getElementById("leftSidebar")?.classList.remove("is-open");
+      const sidebar = document.getElementById("leftSidebar");
+      const wasOpen = sidebar && sidebar.classList.contains("is-open");
+      sidebar?.classList.remove("is-open");
       document.getElementById("leftSidebarOverlay")?.classList.remove("is-open");
       document.body.classList.remove("left-sidebar-active");
       exitSidebarEditMode();
       applyPendingUpdatesIfNeeded();
-      playAudio("close");
+      if (wasOpen) {
+        playAudio("close");
+      }
     }
 
     function renderSidebarLinks() {
@@ -1490,12 +1494,12 @@
       const audio = AUDIO_FILES[type];
       if (!audio) return;
       try {
-        const clone = audio.cloneNode();
-        clone.play().catch(err => {
+        audio.currentTime = 0;
+        audio.play().catch(err => {
           console.debug(`Audio play failed for ${type}:`, err);
         });
       } catch (err) {
-        console.debug(`Audio clone/play failed for ${type}:`, err);
+        console.debug(`Audio play failed for ${type}:`, err);
       }
     }
     window.playAudio = playAudio;
@@ -1523,7 +1527,7 @@
       return false;
     }
 
-    // Delegated click audio trigger
+    // Delegated click audio trigger (using capture phase to bypass stopPropagation)
     const clickableSelector = 'a, button, [role="button"], .card, .card-back, .color-code-btn, .summary-globe-btn, .preset-btn, .weapon-btn, .material-btn, .toggle-btn, .ratio-btn, .color-btn, .generate, .copy, .icon-btn, .mobile-nav-toggle, .mobile-filter-toggle, .remove-btn';
     
     document.addEventListener('click', event => {
@@ -1534,9 +1538,9 @@
         }
         playAudio('click');
       }
-    });
+    }, true);
 
-    // Delegated hover audio trigger
+    // Delegated hover audio trigger (using capture phase)
     const hoverableSelector = 'a, button, [role="button"], .nav-btn, .auth-btn, .card, .card-back, .color-code-btn, .delete-artist-btn, .add-artist-btn, .mobile-filter-toggle, .summary-globe-btn, .send-remove-btn, .send-add-btn, .show-send-all, .visual-card, .horizontal-user-card, .action-link-btn, .sidebar-toggle-btn, .sidebar-link-btn, .footer-btn, .preset-btn, .weapon-btn, .material-btn, .toggle-btn, .ratio-btn, .color-btn, .generate, .copy, .icon-btn, .mobile-nav-toggle, .mobile-filter-toggle, .remove-btn, .close-btn';
     
     let lastHoveredElement = null;
@@ -1551,13 +1555,13 @@
       } else {
         lastHoveredElement = null;
       }
-    });
+    }, true);
 
     document.addEventListener('mouseout', event => {
       if (lastHoveredElement && !event.relatedTarget?.closest(hoverableSelector)) {
         lastHoveredElement = null;
       }
-    });
+    }, true);
 
     setAuthButton(false);
     initFirebaseAuth();
