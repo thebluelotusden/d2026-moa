@@ -2776,17 +2776,22 @@
           : (Array.isArray(cloud.artists) ? cloud.artists : null);
 
         if (Array.isArray(cloudArtists)) {
-          const newArtists = dedupeArtists(cloudArtists);
-          if (activeArtistId) {
-            const localActive = artists.find(a => a.id === activeArtistId);
-            if (localActive) {
-              const newActiveIdx = newArtists.findIndex(a => a.id === activeArtistId);
-              if (newActiveIdx !== -1) {
-                newArtists[newActiveIdx] = localActive;
+          if (saveTimer || isSaving) {
+            hasPendingUpdate = true;
+            saveStatus.textContent = "Updates available (applying when idle)...";
+          } else {
+            const newArtists = dedupeArtists(cloudArtists);
+            if (activeArtistId) {
+              const localActive = artists.find(a => a.id === activeArtistId);
+              if (localActive) {
+                const newActiveIdx = newArtists.findIndex(a => a.id === activeArtistId);
+                if (newActiveIdx !== -1) {
+                  newArtists[newActiveIdx] = localActive;
+                }
               }
             }
+            artists = newArtists;
           }
-          artists = newArtists;
         }
 
         // 3b. Sync Sidebar Links
@@ -2856,76 +2861,81 @@
     }
 
     async function saveState() {
-      artists = dedupeArtists(artists);
-      const payload = buildStatePayload();
-      if (!FIREBASE_ENABLED) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-        saveLocalArtists();
-      }
-      saveStatus.textContent = "Saved local " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
-
-      if (!firebaseOnline || !firebaseDocRef) return;
-      if (!isCloudLoaded) {
-        console.warn("Firestore write blocked: Cloud data not yet loaded.");
-        return;
-      }
-
+      isSaving = true;
       try {
-        // Fetch the latest state from Firestore to prevent overwriting other users' concurrent edits
-        const snap = await getDoc(firebaseDocRef);
-        let finalArtists = [...artists];
-        let finalDeletedArtistIds = [...deletedArtistIds];
-        let finalCustomArtists = artists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
+        artists = dedupeArtists(artists);
+        const payload = buildStatePayload();
+        if (!FIREBASE_ENABLED) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+          saveLocalArtists();
+        }
+        saveStatus.textContent = "Saved local " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
 
-        if (snap.exists()) {
-          const cloud = snap.data();
-          
-          // Read with fallback to v1 fields
-          const cloudArtists = Array.isArray(cloud.artists_v2) 
-            ? cloud.artists_v2 
-            : (Array.isArray(cloud.artists) ? cloud.artists : []);
-          const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds_v2)
-            ? cloud.deletedArtistIds_v2
-            : (Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : []);
-
-          // 1. Union of deleted IDs
-          cloudDeletedArtistIds.forEach(id => {
-            if (!finalDeletedArtistIds.includes(id)) {
-              finalDeletedArtistIds.push(id);
-            }
-          });
-
-          // 2. Add any cloud artists that are not present locally and not deleted
-          cloudArtists.forEach(cloudArtist => {
-            const existsLocal = finalArtists.some(a => a.id === cloudArtist.id);
-            const isDeleted = finalDeletedArtistIds.includes(cloudArtist.id);
-            if (!existsLocal && !isDeleted) {
-              finalArtists.push(cloudArtist);
-            }
-          });
-
-          // 3. Re-calculate custom artists based on the merged list
-          finalCustomArtists = finalArtists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
+        if (!firebaseOnline || !firebaseDocRef) return;
+        if (!isCloudLoaded) {
+          console.warn("Firestore write blocked: Cloud data not yet loaded.");
+          return;
         }
 
-        const mergedPayload = buildStatePayload(finalArtists);
+        try {
+          // Fetch the latest state from Firestore to prevent overwriting other users' concurrent edits
+          const snap = await getDoc(firebaseDocRef);
+          let finalArtists = [...artists];
+          let finalDeletedArtistIds = [...deletedArtistIds];
+          let finalCustomArtists = artists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
 
-        await setDoc(firebaseDocRef, {
-          artists_v2: finalArtists.map(artist => normalizeArtist(artist, true)),
-          state_v2: mergedPayload,
-          customArtists_v2: finalCustomArtists,
-          deletedArtistIds_v2: finalDeletedArtistIds,
-          updatedAt: serverTimestamp()
-        }, { merge: true });
+          if (snap.exists()) {
+            const cloud = snap.data();
+            
+            // Read with fallback to v1 fields
+            const cloudArtists = Array.isArray(cloud.artists_v2) 
+              ? cloud.artists_v2 
+              : (Array.isArray(cloud.artists) ? cloud.artists : []);
+            const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds_v2)
+              ? cloud.deletedArtistIds_v2
+              : (Array.isArray(cloud.deletedArtistIds) ? cloud.deletedArtistIds : []);
 
-        // Update in-memory collections to match the merged result
-        artists = finalArtists;
-        deletedArtistIds = finalDeletedArtistIds;
+            // 1. Union of deleted IDs
+            cloudDeletedArtistIds.forEach(id => {
+              if (!finalDeletedArtistIds.includes(id)) {
+                finalDeletedArtistIds.push(id);
+              }
+            });
 
-        saveStatus.textContent = "Saved shared cloud " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
-      } catch (error) {
-        console.error("Firebase save failed", error);
-        saveStatus.textContent = "Cloud save failed / local saved";
+            // 2. Add any cloud artists that are not present locally and not deleted
+            cloudArtists.forEach(cloudArtist => {
+              const existsLocal = finalArtists.some(a => a.id === cloudArtist.id);
+              const isDeleted = finalDeletedArtistIds.includes(cloudArtist.id);
+              if (!existsLocal && !isDeleted) {
+                finalArtists.push(cloudArtist);
+              }
+            });
+
+            // 3. Re-calculate custom artists based on the merged list
+            finalCustomArtists = finalArtists.filter(artist => !baseArtists.some(baseArtist => slug(baseArtist.name) === artist.id)).map(artist => normalizeArtist(artist, true));
+          }
+
+          const mergedPayload = buildStatePayload(finalArtists);
+
+          await setDoc(firebaseDocRef, {
+            artists_v2: finalArtists.map(artist => normalizeArtist(artist, true)),
+            state_v2: mergedPayload,
+            customArtists_v2: finalCustomArtists,
+            deletedArtistIds_v2: finalDeletedArtistIds,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+
+          // Update in-memory collections to match the merged result
+          artists = finalArtists;
+          deletedArtistIds = finalDeletedArtistIds;
+
+          saveStatus.textContent = "Saved shared cloud " + new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit", second: "2-digit" });
+        } catch (error) {
+          console.error("Firebase save failed", error);
+          saveStatus.textContent = "Cloud save failed / local saved";
+        }
+      } finally {
+        isSaving = false;
       }
     }
 
@@ -3011,14 +3021,14 @@
         return `
         <div class="send-row">
           <input type="checkbox" class="${needsDateClass.trim()}" ${entry.checked ? "checked" : ""} onclick="return toggleSendEntryChecked(event, '${artist.id}', ${index})" aria-label="Mark send entry complete" />
-          <input type="date" value="${escapeHtml(entry.date)}" oninput="changeSendEntryDate('${artist.id}', ${index}, this.value, false)" />
+          <input type="date" value="${escapeHtml(entry.date)}" oninput="changeSendEntryDate('${artist.id}', ${index}, this.value, false)" onblur="setTimeout(() => window.renderArtists(), 150)" />
           <button class="send-remove-btn" type="button" title="Remove send entry" aria-label="Remove send entry" onclick="removeSendEntry('${artist.id}', ${index})">${sendRemoveIconSvg()}</button>
         </div>`;
       };
       const entryHtml = visibleEntries.map(rowHtml).join("");
       const emptyHtml = entries.length ? "" : `<div class="send-row">
         <input type="checkbox" class="needs-date" onclick="return emptySendCheckboxClicked(event, '${artist.id}')" aria-label="Add date first" />
-        <input type="date" oninput="createFirstSendEntry('${artist.id}', this.value, false)" />
+        <input type="date" oninput="createFirstSendEntry('${artist.id}', this.value, false)" onblur="setTimeout(() => window.renderArtists(), 150)" />
         <button class="send-remove-btn" type="button" title="Clear send entry" aria-label="Clear send entry" onclick="clearFirstSendEntry('${artist.id}')">${sendRemoveIconSvg()}</button>
       </div>`;
       const showAll = entries.length > 3 && !expanded ? `<button class="show-send-all" onclick="expandSendEntries('${artist.id}')">show all entry</button>` : "";
@@ -3196,14 +3206,25 @@
     }
 
     function emptySendCheckboxClicked(event, id) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.currentTarget.checked = false;
-        setTimeout(() => { event.currentTarget.checked = false; }, 0);
+      const artist = getArtistById(id);
+      const firstEntry = artist && artist.sendEntries && artist.sendEntries[0];
+      const hasValidDate = firstEntry && isValidSendDate(firstEntry.date);
+
+      if (!hasValidDate) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.currentTarget.checked = false;
+          setTimeout(() => { event.currentTarget.checked = false; }, 0);
+        }
+        showSendWarningForId(id);
+        return false;
       }
-      showSendWarningForId(id);
-      return false;
+
+      firstEntry.checked = Boolean(event.currentTarget.checked);
+      saveSendStateAfterInlineEdit();
+      renderMapDots();
+      return true;
     }
 
     function createFirstSendEntry(id, value, rerender = false) {
@@ -3376,13 +3397,18 @@
       renderArtists();
     }
 
+    let isSaving = false;
     let saveTimer;
     function scheduleSave() {
       saveStatus.textContent = "Saving...";
       clearTimeout(saveTimer);
       saveTimer = setTimeout(async () => {
-        await saveState();
-        updateStats();
+        try {
+          await saveState();
+          updateStats();
+        } finally {
+          saveTimer = null;
+        }
       }, 420);
     }
 
@@ -4275,6 +4301,7 @@
     window.addSidebarLinkFromForm = addSidebarLinkFromForm;
     window.saveSidebarLinks = saveSidebarLinks;
     window.removeSidebarLink = removeSidebarLink;
+    window.renderArtists = renderArtists;
 
     // Global UI Audio Feedback Manager
     const AUDIO_FILES = {
