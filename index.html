@@ -1612,6 +1612,11 @@
     </section>
 
     <section class="dashboard-page hidden" id="dashboardPage">
+      <div class="count-row" style="margin-bottom: 12px; justify-content: flex-end; display: flex;">
+        <div class="status-actions">
+          <p class="save-status" id="dashboardSaveStatus">Autosave ready</p>
+        </div>
+      </div>
       <div class="user-card-list">
         <article class="horizontal-user-card" onclick="openSlideUpPanel()">
           <img class="user-pfp" src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578" alt="workingthatmagic pfp" />
@@ -1950,7 +1955,17 @@
     const mobileFilterToggle = document.getElementById("mobileFilterToggle");
     const mobileNavToggle = document.getElementById("mobileNavToggle");
     const resultCount = document.getElementById("resultCount");
-    const saveStatus = document.getElementById("saveStatus");
+    const saveStatusElement1 = document.getElementById("saveStatus");
+    const saveStatusElement2 = document.getElementById("dashboardSaveStatus");
+    const saveStatus = {
+      set textContent(text) {
+        if (saveStatusElement1) saveStatusElement1.textContent = text;
+        if (saveStatusElement2) saveStatusElement2.textContent = text;
+      },
+      get textContent() {
+        return saveStatusElement1 ? saveStatusElement1.textContent : "";
+      }
+    };
     const settingsPage = document.getElementById("settingsPage");
     const dashboardPage = document.getElementById("dashboardPage");
     const rosterPage = document.getElementById("rosterPage");
@@ -2280,9 +2295,10 @@
           firebaseUid = user.uid;
           firebaseDocRef = doc(firebaseDb, "dashboards", "druskhi-outreach");
           firebaseOnline = true;
-          setSignedInUi(true);
+          setSignedInUi(false, "Loading cloud database...");
 
           await loadCloudDashboard();
+          setSignedInUi(true);
           routeFromHash();
         });
       } catch (error) {
