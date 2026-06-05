@@ -2712,7 +2712,7 @@
     }
 
     function applyPendingUpdatesIfNeeded() {
-      if (hasPendingUpdate && !isUserInteracting()) {
+      if (hasPendingUpdate && !isUserInteracting() && !saveTimer && _dirtySendArtists.size === 0) {
         hasPendingUpdate = false;
         renderDashboardUsers();
         populateRegions();
