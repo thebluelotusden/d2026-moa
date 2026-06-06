@@ -2494,7 +2494,7 @@
     }
 
     function persistableSendEntries(entries) {
-      return normalizeSendEntries(entries).filter(entry => entry.checked || (entry.date && String(entry.date).trim() !== ""));
+      return normalizeSendEntries(entries);
     }
 
     function hasSent(artist) {
