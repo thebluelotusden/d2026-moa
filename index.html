@@ -210,6 +210,31 @@
       color: var(--white);
     }
 
+    body.role-readonly #addArtistFloatingBtn,
+    body.role-readonly .sidebar-footer .footer-btn,
+    body.role-readonly .add-new-link-section,
+    body.role-readonly .sidebar-edit-mode,
+    body.role-readonly .delete-artist-btn,
+    body.role-readonly #adminDashboardBtn,
+    body.role-readonly .color-code-wrap,
+    body.role-readonly .send-add-btn,
+    body.role-readonly .send-remove-btn,
+    body.role-readonly .icon-btn[title*="Edit"] {
+      display: none !important;
+    }
+
+    body.role-readonly .priority-select,
+    body.role-readonly .send-row input,
+    body.role-readonly .send-row checkbox,
+    body.role-readonly .send-row input[type="checkbox"],
+    body.role-readonly .note-wrap textarea,
+    body.role-readonly .edit-grid input {
+      pointer-events: none !important;
+      background: transparent !important;
+      border: 1px dashed rgba(255,255,255,0.1) !important;
+      cursor: default !important;
+    }
+
 
 
     .site-logo,
@@ -1856,6 +1881,7 @@
           </div>
           <div class="sidebar-footer">
             <button class="footer-btn" onclick="enterSidebarEditMode()">✎ Edit Links</button>
+            <button class="footer-btn" id="adminDashboardBtn" onclick="openAdminDashboardModal()" style="margin-top: 8px;">⚙ Admin Dashboard</button>
           </div>
         </div>
 
@@ -2158,6 +2184,38 @@
     </div>
   </div>
 
+  <div class="modal" id="adminDashboardModal">
+    <div class="modal-panel" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2>Admin Dashboard</h2>
+        <button class="close-btn" onclick="closeAdminDashboardModal()">Close</button>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; color: var(--white);">Whitelist New Gmail Account</h3>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <input id="adminNewEmailInput" type="email" placeholder="example@gmail.com" style="flex: 1; min-width: 200px; background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0; box-sizing: border-box;" />
+          <select id="adminNewRoleSelect" style="background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0;">
+            <option value="read-write">Read & Write</option>
+            <option value="read-only">Read Only</option>
+          </select>
+          <button onclick="addAuthorizedUserFromModal()" style="background: var(--white); color: var(--black); font-weight: 800; border: 0; padding: 10px 20px; font-family: inherit; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">+ Whitelist Email</button>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; color: var(--white);">Whitelisted Accounts</h3>
+        <div id="adminUserList" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--line); background: rgba(255,255,255,0.02); padding: 12px;">
+          <!-- Authorized users listed dynamically here -->
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 24px;">
+        <button onclick="closeAdminDashboardModal()" style="background: transparent; border: 1px solid var(--line); color: var(--muted); font-weight: 800; padding: 10px 20px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">Close</button>
+      </div>
+    </div>
+  </div>
+
     <footer class="footer">
       <div>MONEYOVERALL © 2026 All Rights Reserved.</div>
       <div>Authorized internal use only.</div>
@@ -2189,6 +2247,8 @@
     let firebaseDocRef = null;
     let firebaseOnline = false;
     let isCloudLoaded = false;
+    let userRole = "read-only";
+    let authorizedUsers = [];
 
     const STORAGE_KEY = "artistOutreachDashboard.v4";
     const THEME_KEY = "artistOutreachDashboard.theme.v1";
@@ -2555,18 +2615,29 @@
       localStorage.setItem(CUSTOM_ARTISTS_KEY, JSON.stringify(customArtists));
     }
 
-    function setSignedInUi(isSignedIn, message = "Sign in to view dashboard.") {
+    function setSignedInUi(isSignedIn, message = "Sign in to view dashboard.", isAccessDenied = false) {
       if (isSignedIn) {
         authGate.classList.add("hidden");
         appShell.classList.remove("hidden");
         if (authBtn) authBtn.textContent = "Sign out";
         if (gateAuthBtn) gateAuthBtn.textContent = "Sign out";
+        if (userRole === "read-only") {
+          document.body.classList.add("role-readonly");
+        } else {
+          document.body.classList.remove("role-readonly");
+        }
       } else {
         appShell.classList.add("hidden");
         authGate.classList.remove("hidden");
         authGateNotice.textContent = message;
-        if (authBtn) authBtn.textContent = "Sign in Google";
-        if (gateAuthBtn) gateAuthBtn.textContent = "Sign in Google";
+        document.body.classList.remove("role-readonly");
+        if (isAccessDenied) {
+          if (authBtn) authBtn.textContent = "Sign out of Google";
+          if (gateAuthBtn) gateAuthBtn.textContent = "Sign out of Google";
+        } else {
+          if (authBtn) authBtn.textContent = "Sign in Google";
+          if (gateAuthBtn) gateAuthBtn.textContent = "Sign in Google";
+        }
       }
     }
 
@@ -2599,12 +2670,46 @@
           firebaseUid = user.uid;
           firebaseDocRef = doc(firebaseDb, "dashboards", "druskhi-outreach");
           firebaseOnline = true;
-          setSignedInUi(false, "Loading cloud database...");
+          setSignedInUi(false, "Checking credentials...");
 
-          await loadCloudDashboard();
-          setupRealtimeSync();
-          setSignedInUi(true);
-          routeToPage(getCurrentRoute());
+          try {
+            const snap = await getDoc(firebaseDocRef);
+            let authedList = [];
+            if (snap.exists()) {
+              const data = snap.data();
+              authedList = Array.isArray(data.authorizedUsers) ? data.authorizedUsers : [];
+            }
+            
+            if (authedList.length === 0) {
+              authedList = [{ email: "andrcooks@gmail.com", role: "read-write" }];
+              await setDoc(firebaseDocRef, { authorizedUsers: authedList }, { merge: true });
+            }
+
+            authorizedUsers = authedList;
+            const userEmail = (user.email || "").toLowerCase().trim();
+            const matchedUser = authedList.find(u => (u.email || "").toLowerCase().trim() === userEmail);
+            
+            if (!matchedUser) {
+              if (unsubscribeRealtime) {
+                unsubscribeRealtime();
+                unsubscribeRealtime = null;
+              }
+              // Force logout from Firebase to prevent session hijack, but show access denied message
+              setSignedInUi(false, "This platform is invitation only. You do not have access to its content.", true);
+              return;
+            }
+
+            userRole = matchedUser.role || "read-only";
+
+            setSignedInUi(false, "Loading cloud database...");
+            await loadCloudDashboard();
+            setupRealtimeSync();
+            setSignedInUi(true);
+            routeToPage(getCurrentRoute());
+          } catch (err) {
+            console.error("Auth validation failed", err);
+            setSignedInUi(false, "Auth validation failed. Database offline or permissions issue.", false);
+          }
         });
       } catch (error) {
         console.error("Firebase init failed", error);
@@ -2816,6 +2921,40 @@
           sidebarLinks = cloudSidebarLinks;
         }
 
+        // 3c. Sync Whitelist / Roles
+        const cloudAuthorizedUsers = Array.isArray(cloud.authorizedUsers) ? cloud.authorizedUsers : null;
+        if (cloudAuthorizedUsers) {
+          authorizedUsers = cloudAuthorizedUsers;
+          const userEmail = (firebaseAuth.currentUser?.email || "").toLowerCase().trim();
+          const matchedUser = authorizedUsers.find(u => (u.email || "").toLowerCase().trim() === userEmail);
+          
+          if (!matchedUser) {
+            if (unsubscribeRealtime) {
+              unsubscribeRealtime();
+              unsubscribeRealtime = null;
+            }
+            setSignedInUi(false, "This platform is invitation only. You do not have access to its content.", true);
+            return;
+          }
+          
+          const oldRole = userRole;
+          userRole = matchedUser.role || "read-only";
+          
+          if (oldRole !== userRole) {
+            if (userRole === "read-only") {
+              document.body.classList.add("role-readonly");
+            } else {
+              document.body.classList.remove("role-readonly");
+            }
+            renderArtists();
+          }
+
+          const adminModal = document.getElementById("adminDashboardModal");
+          if (adminModal && adminModal.classList.contains("is-open")) {
+            renderAuthorizedUsersList();
+          }
+        }
+
         // 4. Render or Defer
         if (!isUserInteracting()) {
           hasPendingUpdate = false;
@@ -2874,6 +3013,10 @@
     }
 
     async function saveState() {
+      if (userRole === "read-only") {
+        console.warn("Save blocked: read-only user.");
+        return;
+      }
       artists = dedupeArtists(artists);
       const payload = buildStatePayload();
       if (!FIREBASE_ENABLED) {
@@ -3775,6 +3918,7 @@
     }
 
     async function saveSidebarLinks() {
+      if (userRole === "read-only") return;
       const editList = document.getElementById("sidebarEditLinksContainer");
       if (!editList) return;
       
@@ -3917,6 +4061,7 @@
     }
 
     async function saveDashboardLinks() {
+      if (userRole === "read-only") return;
       const list = document.getElementById("editLinksList");
       const rows = list.querySelectorAll(".edit-link-row");
       const links = [];
@@ -4068,6 +4213,7 @@
     }
 
     async function deleteDashboardUser() {
+      if (userRole === "read-only") return;
       const username = currentOpenUsername;
       if (!username) return;
       if (!confirm(`Are you sure you want to delete @${username} and all their links?`)) return;
@@ -4130,6 +4276,7 @@
     }
 
     async function addUserFromModal() {
+      if (userRole === "read-only") return;
       const usernameInput = document.getElementById("newUserNameInput");
       const pfpInput = document.getElementById("newUserPfpInput");
       const username = usernameInput.value.trim().replace(/^@/, "");
@@ -4264,6 +4411,141 @@
       routeToPage(route);
     }
 
+    function renderAuthorizedUsersList() {
+      const container = document.getElementById("adminUserList");
+      if (!container) return;
+      
+      if (authorizedUsers.length === 0) {
+        container.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 16px 0;">No authorized accounts.</div>';
+        return;
+      }
+      
+      container.innerHTML = authorizedUsers.map((user, index) => {
+        const isSelf = (user.email || "").toLowerCase().trim() === (firebaseAuth.currentUser?.email || "").toLowerCase().trim();
+        const roleText = user.role === "read-write" ? "Read & Write" : "Read Only";
+        
+        return `
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding: 10px 0; gap: 8px;">
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-weight: 800; color: var(--white); font-size: 14px;">${escapeHtml(user.email)}</span>
+              <span style="font-size: 11px; color: ${user.role === 'read-write' ? '#55ff55' : 'var(--muted)'}; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">${roleText}</span>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              ${isSelf ? '<span style="font-size: 11px; color: var(--muted); font-style: italic; padding: 6px 12px;">You</span>' : `
+                <select onchange="updateAuthorizedUserRole('${escapeHtml(user.email)}', this.value)" style="background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 4px 8px; font-family: inherit; font-size: 12px; border-radius: 0;">
+                  <option value="read-write" ${user.role === 'read-write' ? 'selected' : ''}>Read & Write</option>
+                  <option value="read-only" ${user.role === 'read-only' ? 'selected' : ''}>Read Only</option>
+                </select>
+                <button onclick="removeAuthorizedUser('${escapeHtml(user.email)}')" style="background: rgba(220,53,69,0.15); color: #ff5555; border: 1px solid rgba(220,53,69,0.3); padding: 4px 10px; font-family: inherit; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">Remove</button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function openAdminDashboardModal() {
+      if (userRole !== "read-write") return;
+      renderAuthorizedUsersList();
+      document.getElementById("adminDashboardModal").classList.add("is-open");
+    }
+
+    function closeAdminDashboardModal() {
+      document.getElementById("adminDashboardModal").classList.remove("is-open");
+    }
+
+    async function addAuthorizedUserFromModal() {
+      if (userRole !== "read-write") return;
+      const emailInput = document.getElementById("adminNewEmailInput");
+      const roleSelect = document.getElementById("adminNewRoleSelect");
+      const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
+      const role = roleSelect ? roleSelect.value : "read-only";
+      
+      if (!email) {
+        alert("Please enter a valid Gmail address.");
+        return;
+      }
+      
+      if (!email.includes("@")) {
+        alert("Please enter a complete email address.");
+        return;
+      }
+
+      if (authorizedUsers.some(u => (u.email || "").toLowerCase().trim() === email)) {
+        alert("This email is already in the whitelist.");
+        return;
+      }
+
+      authorizedUsers.push({ email, role });
+      
+      try {
+        if (firebaseOnline && firebaseDocRef) {
+          saveStatus.textContent = "Updating whitelist...";
+          await setDoc(firebaseDocRef, {
+            authorizedUsers: authorizedUsers,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+          saveStatus.textContent = "Whitelist updated";
+        }
+        renderAuthorizedUsersList();
+        if (emailInput) emailInput.value = "";
+      } catch (err) {
+        console.error("Failed to add user to whitelist", err);
+        alert("Save failed. Make sure you are connected to database.");
+      }
+    }
+
+    async function updateAuthorizedUserRole(email, newRole) {
+      if (userRole !== "read-write") return;
+      
+      const idx = authorizedUsers.findIndex(u => (u.email || "").toLowerCase().trim() === email.toLowerCase().trim());
+      if (idx === -1) return;
+      
+      authorizedUsers[idx].role = newRole;
+      
+      try {
+        if (firebaseOnline && firebaseDocRef) {
+          saveStatus.textContent = "Updating role...";
+          await setDoc(firebaseDocRef, {
+            authorizedUsers: authorizedUsers,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+          saveStatus.textContent = "Role updated";
+        }
+        renderAuthorizedUsersList();
+      } catch (err) {
+        console.error("Failed to update role", err);
+        alert("Failed to update role in database.");
+      }
+    }
+
+    async function removeAuthorizedUser(email) {
+      if (userRole !== "read-write") return;
+      if (!confirm(`Are you sure you want to remove ${email} from the whitelist?`)) return;
+      
+      authorizedUsers = authorizedUsers.filter(u => (u.email || "").toLowerCase().trim() !== email.toLowerCase().trim());
+      
+      try {
+        if (firebaseOnline && firebaseDocRef) {
+          saveStatus.textContent = "Removing user...";
+          await setDoc(firebaseDocRef, {
+            authorizedUsers: authorizedUsers,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+          saveStatus.textContent = "User removed";
+        }
+        renderAuthorizedUsersList();
+      } catch (err) {
+        console.error("Failed to remove user", err);
+        alert("Failed to remove user from database.");
+      }
+    }
+
+    window.openAdminDashboardModal = openAdminDashboardModal;
+    window.closeAdminDashboardModal = closeAdminDashboardModal;
+    window.addAuthorizedUserFromModal = addAuthorizedUserFromModal;
+    window.updateAuthorizedUserRole = updateAuthorizedUserRole;
+    window.removeAuthorizedUser = removeAuthorizedUser;
     window.openAddArtistModal = openAddArtistModal;
     window.closeAddArtistModal = closeAddArtistModal;
     window.clearAddArtistForm = clearAddArtistForm;
@@ -4425,6 +4707,9 @@
       renderDashboardUsers();
       document.getElementById("addUserModal").addEventListener("click", function(event) {
         if (event.target.id === "addUserModal") closeAddUserModal();
+      });
+      document.getElementById("adminDashboardModal").addEventListener("click", function(event) {
+        if (event.target.id === "adminDashboardModal") closeAdminDashboardModal();
       });
       setSignedInUi(false, "Checking sign-in...");
       await initFirebaseCloud();
