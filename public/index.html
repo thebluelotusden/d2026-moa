@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MONEYOVERALL</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  
+  <!-- Header & Navbar -->
+  <header class="header">
+    <div class="container navbar">
+      <button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Open navigation" aria-expanded="false" onclick="toggleMobileNav()">
+        <svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      
+      <nav class="nav-links" id="navLinks">
+        <a href="#services" class="nav-btn" onclick="closeMobileNav()">Services</a>
+        <a href="#listen" class="nav-btn" onclick="closeMobileNav()">Listen</a>
+        <a href="#pricing" class="nav-btn" onclick="closeMobileNav()">Pricing</a>
+        <a href="#presets" class="nav-btn" onclick="closeMobileNav()">Presets</a>
+        <a href="#credits" class="nav-btn" onclick="closeMobileNav()">Credits</a>
+      </nav>
+      
+      <a class="site-logo" href="#" aria-label="MONEYOVERALL">
+        <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
+        <span class="logo-fallback">MONEYOVERALL</span>
+      </a>
+      
+      <a href="#get-started" class="cta-btn header-cta" onclick="closeMobileNav()">Get Started</a>
+    </div>
+  </header>
+  
+  <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="closeMobileNav()"></div>
+
+  <main class="container">
+    
+    <!-- Hero Section -->
+    <section class="hero-wrapper" id="hero">
+      <div class="hero-content">
+        <div class="hero-subtitle">MONEYOVERALL</div>
+        <h1 class="hero-title"><span id="typewriter-text"></span><span class="typewriter-cursor">|</span></h1>
+        <div class="hero-actions">
+          <a href="#get-started" class="cta-btn">Get Started</a>
+          <a href="#listen" class="secondary-btn">Listen to Previews</a>
+        </div>
+      </div>
+      <div class="hero-image-container">
+        <img class="hero-img-file" src="assets/hero.png" alt="MONEYOVERALL Production" />
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="main-section" id="services">
+      <div class="section-header">
+        <span class="section-tag">Services</span>
+        <h2 class="section-title">Songwriting & Vocal Services</h2>
+      </div>
+      
+      <div class="grid">
+        <!-- Service 1: Beat Production -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Beat Production</h3>
+            <span class="card-badge">Production</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Catchy, industry-level, chart-ready beats built around melody, bounce, and emotion.</p>
+          </div>
+        </div>
+
+        <!-- Service 2: Hook Writing -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Hook Writing</h3>
+            <span class="card-badge">Songwriting</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">We write the part that sticks. Catchy, repeatable hooks designed to elevate a record and make it memorable.</p>
+          </div>
+        </div>
+
+        <!-- Service 3: Songwriting -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Songwriting</h3>
+            <span class="card-badge">Writing</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Full rap, R&B, or pop records written from scratch with a strong concept, structure, and emotional direction. Ghostwriting available.</p>
+          </div>
+        </div>
+
+        <!-- Service 4: Full Record Creation -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Full Record Creation</h3>
+            <span class="card-badge">Full Package</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">A full song built from the ground up, including beat production, writing, vocal direction, delivery coaching, and performance shaping. Focus on tone, emotion, polish, and release-ready execution.</p>
+          </div>
+        </div>
+
+        <!-- Service 5: Feature / Open Verse -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Feature / Open Verse</h3>
+            <span class="card-badge">Vocal Feature</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">A custom verse or hook for an existing track. Collaborative, not transactional. Built to bring energy, melody, and identity to the record.</p>
+          </div>
+        </div>
+
+        <!-- Service 6: Custom Work -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Custom Work</h3>
+            <span class="card-badge">Tailored</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Have something specific in mind? Send the idea, beat, or concept and we will go from there. We adapt to any creative workflow.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Listen Section -->
+    <section class="main-section" id="listen">
+      <div class="section-header">
+        <span class="section-tag">Audio Previews</span>
+        <h2 class="section-title">Listen</h2>
+      </div>
+
+      <div class="grid-3">
+        <!-- Preview 1 -->
+        <div class="card audio-card" id="audio1" data-preview="0">
+          <div class="card-header">
+            <h3 class="card-title">Preview 01</h3>
+            <span class="card-badge">R&B / Soul</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Melodic hook demonstration featuring rich vocal stacks and warm chord progressions.</p>
+            <div class="audio-player-widget">
+              <button class="play-trigger" aria-label="Play sample" onclick="togglePlay('audio1', 220)">
+                <svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"/></svg>
+                <svg viewBox="0 0 24 24" class="pause-icon is-hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              </button>
+              <div class="waveform-placeholder">
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview 2 -->
+        <div class="card audio-card" id="audio2" data-preview="1">
+          <div class="card-header">
+            <h3 class="card-title">Preview 02</h3>
+            <span class="card-badge">Hip Hop / Trap</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Heavy bass knock beat showcase with melodic vocal chants and fast hi-hat patterns.</p>
+            <div class="audio-player-widget">
+              <button class="play-trigger" aria-label="Play sample" onclick="togglePlay('audio2', 330)">
+                <svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"/></svg>
+                <svg viewBox="0 0 24 24" class="pause-icon is-hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              </button>
+              <div class="waveform-placeholder">
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview 3 -->
+        <div class="card audio-card" id="audio3" data-preview="2">
+          <div class="card-header">
+            <h3 class="card-title">Preview 03</h3>
+            <span class="card-badge">Pop / Dance</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Up-tempo vocal arrangement showing clean mixing chains and energetic production layering.</p>
+            <div class="audio-player-widget">
+              <button class="play-trigger" aria-label="Play sample" onclick="togglePlay('audio3', 440)">
+                <svg viewBox="0 0 24 24" class="play-icon"><path d="M8 5v14l11-7z"/></svg>
+                <svg viewBox="0 0 24 24" class="pause-icon is-hidden"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              </button>
+              <div class="waveform-placeholder">
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="main-section" id="pricing">
+      <div class="section-header">
+        <span class="section-tag">Pricing</span>
+        <h2 class="section-title">Packages & Tiers</h2>
+      </div>
+
+      <div class="grid">
+        <!-- Tier 1: Hook -->
+        <div class="card pricing-card">
+          <div class="card-header">
+            <h3 class="card-title">Hook Tier</h3>
+            <span class="card-badge">Writing / Vocal</span>
+          </div>
+          <div class="card-body">
+            <div class="price-display">
+              <div class="price-subtitle">Starting at</div>
+              <div class="price-val">$350</div>
+            </div>
+            <ul class="feature-list">
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Custom hook songwriting</li>
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Studio vocal recording & layering</li>
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Raw stems + reference mix</li>
+            </ul>
+            <a href="mailto:?subject=MONEYOVERALL%20Inquiry%20-%20Hook%20Tier" class="card-action-btn">Inquire</a>
+          </div>
+        </div>
+
+        <!-- Tier 2: Songwriting -->
+        <div class="card pricing-card">
+          <div class="card-header">
+            <h3 class="card-title">Songwriting Tier</h3>
+            <span class="card-badge">Full Write</span>
+          </div>
+          <div class="card-body">
+            <div class="price-display">
+              <div class="price-subtitle">Starting at</div>
+              <div class="price-val">$650</div>
+            </div>
+            <ul class="feature-list">
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Full track writing (verse & hooks)</li>
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Vocal arrangement mapping</li>
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Reference vocal tracks (stems)</li>
+            </ul>
+            <a href="mailto:?subject=MONEYOVERALL%20Inquiry%20-%20Songwriting%20Tier" class="card-action-btn">Inquire</a>
+          </div>
+        </div>
+
+        <!-- Tier 3: Full Record -->
+        <div class="card pricing-card">
+          <div class="card-header">
+            <h3 class="card-title">Full Record</h3>
+            <span class="card-badge">Song + Production</span>
+          </div>
+          <div class="card-body">
+            <div class="price-display">
+              <div class="price-subtitle">Starting at</div>
+              <div class="price-val">$1,200</div>
+            </div>
+            <ul class="feature-list">
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Custom production built around you</li>
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Full songwriting & vocal recording</li>
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Delivery coaching & performance shaping</li>
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Professional stems + release reference</li>
+            </ul>
+            <a href="mailto:?subject=MONEYOVERALL%20Inquiry%20-%20Full%20Record" class="card-action-btn">Inquire</a>
+          </div>
+        </div>
+
+        <!-- Tier 4: Custom -->
+        <div class="card pricing-card">
+          <div class="card-header">
+            <h3 class="card-title">Custom Tier</h3>
+            <span class="card-badge">Tailored Package</span>
+          </div>
+          <div class="card-body">
+            <div class="price-display">
+              <div class="price-subtitle">Pricing</div>
+              <div class="price-val">Contact</div>
+            </div>
+            <ul class="feature-list">
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Features & guest verses</li>
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Mixing templates & vocal chains</li>
+              <li class="feature-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Large production bundles</li>
+            </ul>
+            <a href="mailto:?subject=MONEYOVERALL%20Inquiry%20-%20Custom%20Project" class="card-action-btn">Get a Quote</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Presets Section -->
+    <section class="main-section" id="presets">
+      <div class="section-header">
+        <span class="section-tag">Digital Tools</span>
+        <h2 class="section-title">Presets & Templates</h2>
+      </div>
+
+      <div class="grid">
+        <!-- Vocal Presets -->
+        <div class="card preset-card">
+          <div class="card-header">
+            <h3 class="card-title">Vocal Presets</h3>
+            <span class="card-badge">Pro Tools / Logic</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Instantly shape lead and background vocals with custom compression, eq routing, and space designs.</p>
+            <button class="card-action-btn" onclick="alert('Preset downloads coming soon!')">Coming Soon</button>
+          </div>
+        </div>
+
+        <!-- Mixing Presets -->
+        <div class="card preset-card">
+          <div class="card-header">
+            <h3 class="card-title">Mixing Presets</h3>
+            <span class="card-badge">FL Studio / Ableton</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Bus processing chains, master mastering chains, and sub-group leveling tools built for modern records.</p>
+            <button class="card-action-btn" onclick="alert('Preset downloads coming soon!')">Coming Soon</button>
+          </div>
+        </div>
+
+        <!-- Mixing Templates -->
+        <div class="card preset-card">
+          <div class="card-header">
+            <h3 class="card-title">Mixing Templates</h3>
+            <span class="card-badge">DAW Sessions</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Pre-routed sessions optimized for performance, delay-compensation, and clean spatial separation.</p>
+            <button class="card-action-btn" onclick="alert('Templates coming soon!')">Coming Soon</button>
+          </div>
+        </div>
+
+        <!-- Production Templates -->
+        <div class="card preset-card">
+          <div class="card-header">
+            <h3 class="card-title">Production Templates</h3>
+            <span class="card-badge">Arrangement</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Quick-launch beat sessions pre-mapped with drum patterns, transit FX, and structural sections.</p>
+            <button class="card-action-btn" onclick="alert('Templates coming soon!')">Coming Soon</button>
+          </div>
+        </div>
+
+        <!-- Recording Chains -->
+        <div class="card preset-card">
+          <div class="card-header">
+            <h3 class="card-title">Recording Chains</h3>
+            <span class="card-badge">Zero Latency</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Input monitoring chains designed for tracking vocals and instruments with clean color and low latency.</p>
+            <button class="card-action-btn" onclick="alert('Chains coming soon!')">Coming Soon</button>
+          </div>
+        </div>
+
+        <!-- Custom Preset Packs -->
+        <div class="card preset-card">
+          <div class="card-header">
+            <h3 class="card-title">Custom Preset Packs</h3>
+            <span class="card-badge">Tailored</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Need a signature preset pack created specifically for your voice, mic model, or hardware preamp? Let's build it.</p>
+            <a href="mailto:?subject=MONEYOVERALL%20Inquiry%20-%20Custom%20Preset%20Pack" class="card-action-btn">Request Pack</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Credits Section -->
+    <section class="main-section" id="credits">
+      <div class="section-header">
+        <span class="section-tag">Portfolio</span>
+        <h2 class="section-title">Credits & Placements</h2>
+      </div>
+
+      <div class="grid">
+        <!-- Credit 1 -->
+        <div class="card credit-card">
+          <div class="card-header">
+            <h3 class="card-title">Overtime</h3>
+            <span class="card-badge">Placement</span>
+          </div>
+          <div class="card-body">
+            <div class="credit-meta">
+              <span class="credit-role">Production & Hook</span>
+              <p class="card-text">Independent Release (Artist Reference Showcase)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Credit 2 -->
+        <div class="card credit-card">
+          <div class="card-header">
+            <h3 class="card-title">Visions</h3>
+            <span class="card-badge">Single</span>
+          </div>
+          <div class="card-body">
+            <div class="credit-meta">
+              <span class="credit-role">Full Songwriting</span>
+              <p class="card-text">Collaboration (Pop/R&B Release)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Credit 3 -->
+        <div class="card credit-card">
+          <div class="card-header">
+            <h3 class="card-title">New Horizon</h3>
+            <span class="card-badge">Album Track</span>
+          </div>
+          <div class="card-body">
+            <div class="credit-meta">
+              <span class="credit-role">Vocal Arrangement</span>
+              <p class="card-text">Co-Production (Hip Hop Placement)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Credit 4 -->
+        <div class="card credit-card">
+          <div class="card-header">
+            <h3 class="card-title">Late Shift</h3>
+            <span class="card-badge">EP Track</span>
+          </div>
+          <div class="card-body">
+            <div class="credit-meta">
+              <span class="credit-role">Beat Production & Mix</span>
+              <p class="card-text">Independent Placement (Trap Showcase)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process & Q&A Section -->
+    <section class="main-section" id="process">
+      <div class="section-header">
+        <span class="section-tag">F.A.Q.</span>
+        <h2 class="section-title">Workflow & F.A.Q.</h2>
+      </div>
+
+      <div class="process-wrapper">
+        <!-- Timeline Workflow -->
+        <div class="timeline">
+          <div class="timeline-step">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <h3 class="step-title">Send the idea, beat, or reference</h3>
+              <p class="step-desc">Share your concept, rough drafts, instrumentals, or tracks that represent the sonic direction you want to take.</p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <h3 class="step-title">Choose the service</h3>
+              <p class="step-desc">Pick from our production, songwriting, vocal recording, or preset services depending on your current needs.</p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <h3 class="step-title">Build the concept</h3>
+              <p class="step-desc">We align on theme, structure, tempo, energy, and overall creative targets to make sure we share the same vision.</p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="step-num">04</div>
+            <div class="step-content">
+              <h3 class="step-title">Draft the record</h3>
+              <p class="step-desc">We compile initial vocal recordings, beat loops, or lyrical outlines and send them over to verify alignment.</p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="step-num">05</div>
+            <div class="step-content">
+              <h3 class="step-title">Review and revise</h3>
+              <p class="step-desc">Review the draft, send feedback, and we will refine the arrangement, delivery, or track mix accordingly.</p>
+            </div>
+          </div>
+
+          <div class="timeline-step">
+            <div class="step-num">06</div>
+            <div class="step-content">
+              <h3 class="step-title">Final delivery</h3>
+              <p class="step-desc">Receive professional high-fidelity stems, dry/wet tracks, and reference mixes ready to be finalized or exported.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ Accordion -->
+        <div class="faq-accordion">
+          <!-- FAQ 1 -->
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              What should I send to start?
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                Send whatever you have! A phone voice note, a beat, reference tracks, or written notes detailing the concept. The more context you provide, the faster we can bring the record to life.
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Can you work from just a beat?
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                Yes, we write full songs, hooks, or verses directly to your instrumental files. If you don't have a beat yet, we can produce a custom instrumental from scratch based on references.
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Do you offer ghostwriting?
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                Yes, ghostwriting services are available under all songwriting packages. We can handle publishing agreements and rights ownership according to your preference.
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Can you help with vocal delivery?
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                Yes, under full record packages, we offer vocal coaching, guide tracks, pronunciation maps, and performance shaping to help you execute the vocal delivery cleanly.
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ 5 -->
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Do you make the beat too?
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" fill="none"><path d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">
+                Yes! We offer beat production separately, or bundled inside the Full Record Creation tier, providing a unified creative experience.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="main-section" id="get-started">
+      <div class="final-cta-wrapper">
+        <h2 class="final-cta-title">Let's work.</h2>
+        <p class="final-cta-text">
+          Ready to make something? Send your beat, idea, reference, or concept to get started. Let's build something worth hearing.
+        </p>
+        <a href="mailto:?subject=MONEYOVERALL%20Inquiry" class="cta-btn final-cta-btn">Get in touch</a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>MONEYOVERALL &copy; 2026 ALL RIGHTS RESERVED.</div>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/workingthatmagic/" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </a>
+        <a href="https://www.tiktok.com/@moneyoverall.org" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+        </a>
+        <a href="https://www.youtube.com/channel/UCXrWzJNjTT9E8C9zkC4-aBw" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+        </a>
+        <a href="https://www.beatstars.com/workingthatmagic" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="BeatStars">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </a>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    // ─── Typewriter Animation ───
+    const typewriterWords = ["SONGWRITING", "VOCAL", "PRODUCTION"];
+    let typewriterWordIndex = 0;
+    let typewriterCharIndex = 0;
+    let typewriterIsDeleting = false;
+    const typewriterTypeSpeed = 120;
+    const typewriterDeleteSpeed = 60;
+    const typewriterPauseTime = 2500;
+
+    function runTypewriter() {
+      const currentWord = typewriterWords[typewriterWordIndex];
+      const textEl = document.getElementById("typewriter-text");
+      if (!textEl) return;
+
+      if (typewriterIsDeleting) {
+        textEl.textContent = currentWord.substring(0, typewriterCharIndex - 1);
+        typewriterCharIndex--;
+      } else {
+        textEl.textContent = currentWord.substring(0, typewriterCharIndex + 1);
+        typewriterCharIndex++;
+      }
+
+      let delta = typewriterIsDeleting ? typewriterDeleteSpeed : typewriterTypeSpeed;
+
+      if (!typewriterIsDeleting && typewriterCharIndex === currentWord.length) {
+        delta = typewriterPauseTime;
+        typewriterIsDeleting = true;
+      } else if (typewriterIsDeleting && typewriterCharIndex === 0) {
+        typewriterIsDeleting = false;
+        typewriterWordIndex = (typewriterWordIndex + 1) % typewriterWords.length;
+        delta = 400;
+      }
+
+      setTimeout(runTypewriter, delta);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      runTypewriter();
+    });
+
+    // ─── Mobile Navigation Toggle ───
+    function toggleMobileNav() {
+      const toggle = document.getElementById('mobileNavToggle');
+      const links = document.getElementById('navLinks');
+      const overlay = document.getElementById('mobileNavOverlay');
+      
+      const isOpen = links.classList.toggle('is-open');
+      toggle.classList.toggle('is-open');
+      overlay.classList.toggle('is-active', isOpen);
+      toggle.setAttribute('aria-expanded', isOpen);
+    }
+
+    function closeMobileNav() {
+      const toggle = document.getElementById('mobileNavToggle');
+      const links = document.getElementById('navLinks');
+      const overlay = document.getElementById('mobileNavOverlay');
+      
+      links.classList.remove('is-open');
+      toggle.classList.remove('is-open');
+      overlay.classList.remove('is-active');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    // ─── FAQ Dropdown Toggle ───
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const isOpen = item.classList.contains('open');
+      
+      // Close all other items
+      document.querySelectorAll('.faq-item').forEach(i => {
+        i.classList.remove('open');
+      });
+
+      if (!isOpen) {
+        item.classList.add('open');
+      }
+    }
+
+    // ─── Web Audio API synthesized audio player (Melody generator) ───
+    let synthActiveCtx = null;
+    let synthPlayingCardId = null;
+    let synthIntervalId = null;
+    let synthNotesPlayed = 0;
+
+    function togglePlay(cardId, rootFreq) {
+      const card = document.getElementById(cardId);
+      const isPlaying = card.classList.contains('playing');
+      
+      // Stop currently playing
+      stopSynthPlayer();
+
+      if (!isPlaying) {
+        card.classList.add('playing');
+        card.querySelector('.play-icon').classList.add('is-hidden');
+        card.querySelector('.pause-icon').classList.remove('is-hidden');
+        startSynthPlayer(cardId, rootFreq);
+      }
+    }
+
+    function startSynthPlayer(cardId, rootFreq) {
+      synthPlayingCardId = cardId;
+      synthNotesPlayed = 0;
+      
+      // Initialize AudioContext
+      synthActiveCtx = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Master filter to make it sound warm/lofi
+      const filter = synthActiveCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 1000;
+      
+      // Master gain node
+      const masterGain = synthActiveCtx.createGain();
+      masterGain.gain.setValueAtTime(0.12, synthActiveCtx.currentTime);
+      
+      filter.connect(masterGain);
+      masterGain.connect(synthActiveCtx.destination);
+      
+      // Note frequency sequences based on minor pentatonic
+      const freqs = [rootFreq, rootFreq * 1.2, rootFreq * 1.5, rootFreq * 1.8, rootFreq * 2.0];
+      
+      function playStep() {
+        if (!synthActiveCtx || synthActiveCtx.state === 'closed') return;
+        
+        const now = synthActiveCtx.currentTime;
+        
+        // Lead synth note
+        const osc = synthActiveCtx.createOscillator();
+        const oscGain = synthActiveCtx.createGain();
+        
+        // Randomly play triangle/sine/sawtooth for variety
+        osc.type = (synthNotesPlayed % 4 === 0) ? 'sine' : 'triangle';
+        const noteIndex = Math.floor(Math.random() * freqs.length);
+        osc.frequency.setValueAtTime(freqs[noteIndex], now);
+        
+        // Envelope: pluck
+        oscGain.gain.setValueAtTime(0, now);
+        oscGain.gain.linearRampToValueAtTime(1.0, now + 0.02);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        
+        osc.connect(oscGain);
+        oscGain.connect(filter);
+        
+        osc.start(now);
+        osc.stop(now + 0.5);
+        
+        // Sub-bass note every 4 steps
+        if (synthNotesPlayed % 4 === 0) {
+          const bass = synthActiveCtx.createOscillator();
+          const bassGain = synthActiveCtx.createGain();
+          
+          bass.type = 'sine';
+          bass.frequency.setValueAtTime(rootFreq * 0.5, now);
+          
+          bassGain.gain.setValueAtTime(0, now);
+          bassGain.gain.linearRampToValueAtTime(0.8, now + 0.05);
+          bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+          
+          bass.connect(bassGain);
+          bassGain.connect(masterGain);
+          
+          bass.start(now);
+          bass.stop(now + 0.9);
+        }
+        
+        synthNotesPlayed++;
+      }
+      
+      // Schedule loop
+      playStep();
+      synthIntervalId = setInterval(playStep, 240);
+    }
+
+    function stopSynthPlayer() {
+      if (synthIntervalId) {
+        clearInterval(synthIntervalId);
+        synthIntervalId = null;
+      }
+      if (synthActiveCtx) {
+        synthActiveCtx.close();
+        synthActiveCtx = null;
+      }
+      
+      // Update UI
+      document.querySelectorAll('.audio-card').forEach(c => {
+        c.classList.remove('playing');
+        c.querySelector('.play-icon').classList.remove('is-hidden');
+        c.querySelector('.pause-icon').classList.add('is-hidden');
+      });
+      synthPlayingCardId = null;
+    }
+
+    // ─── Global UI Audio Feedback Manager (copied from artist site layout) ───
+    const _audioRaw = {};
+    const _audioBuffers = {};
+    let _audioCtx = null;
+    const _isTouchDevice = matchMedia('(pointer: coarse)').matches;
+
+    // Pre-fetch raw audio bytes immediately
+    ['click', 'hover'].forEach(name => {
+      fetch(`/assets/audio/${name === 'click' ? 'btn-click' : name}.ogg`)
+        .then(r => r.arrayBuffer())
+        .then(buf => { _audioRaw[name] = buf; })
+        .catch(() => {});
+    });
+
+    function _getAudioCtx() {
+      if (!_audioCtx) {
+        _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (_audioCtx.state === 'suspended') _audioCtx.resume();
+      return _audioCtx;
+    }
+
+    let _decoded = false;
+    function _decodeBuffers() {
+      if (_decoded) return;
+      _decoded = true;
+      const ctx = _getAudioCtx();
+      Object.entries(_audioRaw).forEach(([name, raw]) => {
+        ctx.decodeAudioData(raw.slice(0)).then(buf => {
+          _audioBuffers[name] = buf;
+        }).catch(() => {});
+      });
+    }
+
+    const _lastPlayed = {};
+    const AUDIO_COOLDOWN = 80; // ms
+
+    function playAudio(type) {
+      const now = performance.now();
+      if (now - (_lastPlayed[type] || 0) < AUDIO_COOLDOWN) return;
+      _lastPlayed[type] = now;
+
+      _decodeBuffers();
+      const buffer = _audioBuffers[type];
+      if (!buffer) return;
+      try {
+        const ctx = _getAudioCtx();
+        const src = ctx.createBufferSource();
+        src.buffer = buffer;
+        src.connect(ctx.destination);
+        src.start(0);
+      } catch (_) {}
+    }
+
+    // Minimal selector covering interactive elements
+    const _iSel = 'a, button, [onclick], [role="button"]';
+
+    document.addEventListener('pointerdown', () => {
+      _getAudioCtx();
+      _decodeBuffers();
+    }, { once: true, capture: true });
+
+    document.addEventListener('click', e => {
+      if (e.target.closest(_iSel)) playAudio('click');
+    }, true);
+
+    if (!_isTouchDevice) {
+      let _lastHover = null;
+      document.addEventListener('mouseover', e => {
+        const el = e.target.closest(_iSel);
+        if (el && _lastHover !== el) { _lastHover = el; playAudio('hover'); }
+        else if (!el) _lastHover = null;
+      }, true);
+      document.addEventListener('mouseout', e => {
+        if (_lastHover && !e.relatedTarget?.closest(_iSel)) _lastHover = null;
+      }, true);
+    }
+  </script>
+</body>
+</html>

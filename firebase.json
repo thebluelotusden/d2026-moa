@@ -1,0 +1,40 @@
+{
+  "hosting": [
+    {
+      "target": "artist",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        ".firebaserc",
+        "CLAUDE.md",
+        "CNAME",
+        "CNAME.txt",
+        "public/**",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "public",
+      "public": "public",
+      "ignore": [
+        "firebase.json",
+        ".firebaserc",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

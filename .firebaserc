@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "druskhi-outreach-dashboard"
+  },
+  "targets": {
+    "druskhi-outreach-dashboard": {
+      "hosting": {
+        "artist": [
+          "moneyoverall-artist"
+        ],
+        "public": [
+          "moneyoverall-public"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MONEYOVERALL</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #080808;
@@ -64,11 +65,15 @@
       --danger-border: #ff3b3b;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       min-height: 100vh;
-      font-family: "Red Hat Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-family: "SF Pro", "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Open Sans", sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.45;
@@ -76,7 +81,10 @@
       font-size: 13px;
     }
 
-    .container { max-width: 1680px; margin: 0 auto; }
+    .container {
+      max-width: 1680px;
+      margin: 0 auto;
+    }
 
     .hero {
       position: relative;
@@ -84,7 +92,7 @@
       background: transparent;
       border: 0;
       border-bottom: 1px solid var(--line);
-      padding: 18px 0 20px;
+      padding: 18px 0 28px;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -135,7 +143,7 @@
       position: sticky;
       top: 10px;
       z-index: 10;
-      background: rgba(16,16,16,0.96);
+      background: rgba(16, 16, 16, 0.96);
       border: 1px solid var(--line);
       padding: 10px;
       margin-bottom: 12px;
@@ -149,7 +157,9 @@
       gap: 8px;
     }
 
-    input, select, textarea {
+    input,
+    select,
+    textarea {
       width: 100%;
       border: 1px solid var(--line);
       padding: 10px;
@@ -161,10 +171,26 @@
       border-radius: 0;
     }
 
-    textarea { min-height: 78px; resize: vertical; }
-    option { color: var(--text); background: var(--black); }
-    input::placeholder, textarea::placeholder { color: var(--faint); }
-    input:focus, select:focus, textarea:focus { border-color: var(--white); }
+    textarea {
+      min-height: 78px;
+      resize: vertical;
+    }
+
+    option {
+      color: var(--text);
+      background: var(--black);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--faint);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--white);
+    }
 
     .count-row {
       display: flex;
@@ -178,7 +204,10 @@
       letter-spacing: 0.4px;
     }
 
-    .save-status { color: var(--muted); font-size: 12px; }
+    .save-status {
+      color: var(--muted);
+      font-size: 12px;
+    }
 
     .status-actions {
       display: flex;
@@ -231,7 +260,7 @@
     body.role-readonly .edit-grid input {
       pointer-events: none !important;
       background: transparent !important;
-      border: 1px dashed rgba(255,255,255,0.1) !important;
+      border: 1px dashed rgba(255, 255, 255, 0.1) !important;
       cursor: default !important;
     }
 
@@ -265,14 +294,18 @@
       filter: invert(1);
     }
 
-    body.theme-light .logo-img { filter: none; }
+    body.theme-light .logo-img {
+      filter: none;
+    }
 
     .auth-panel .logo-img {
       width: min(260px, 82vw);
       margin: 0 auto 14px;
     }
 
-    .logo-img.is-hidden { display: none; }
+    .logo-img.is-hidden {
+      display: none;
+    }
 
     .logo-fallback {
       display: none;
@@ -289,7 +322,9 @@
       margin-bottom: 14px;
     }
 
-    .logo-fallback.is-visible { display: inline-block; }
+    .logo-fallback.is-visible {
+      display: inline-block;
+    }
 
     .hero-actions {
       display: flex;
@@ -348,6 +383,63 @@
       text-transform: uppercase;
       letter-spacing: -0.8px;
       margin-bottom: 14px;
+    }
+
+    .mindset-page {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+
+    .mindset-page h2 {
+      font-size: 22px;
+      text-transform: uppercase;
+      letter-spacing: -0.8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+
+    .mindset-section {
+      margin-bottom: 24px;
+    }
+
+    .mindset-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .mindset-section h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--white);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .mindset-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mindset-list li {
+      margin-bottom: 0;
+    }
+
+    .mindset-list li a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 150ms ease;
+      display: inline-block;
+    }
+
+    .mindset-list li a:hover {
+      color: var(--white);
+      text-decoration: underline;
     }
 
     .settings-row {
@@ -453,7 +545,9 @@
       transition: transform 0.32s ease;
     }
 
-    .card-shell.is-editing .card-flipper { transform: rotateY(180deg); }
+    .card-shell.is-editing .card-flipper {
+      transform: rotateY(180deg);
+    }
 
     .card,
     .card-back {
@@ -472,18 +566,45 @@
       overflow: visible;
     }
 
-    .card:hover, .card-back:hover {
+    .card:hover,
+    .card-back:hover {
       border-color: var(--white);
       background: linear-gradient(135deg, var(--card-tint-hover, var(--card-tint, transparent)), transparent 58%), var(--panel-2);
     }
 
-    .card.color-red, .card-back.color-red { --card-tint: rgba(200, 75, 75, 0.18); --card-tint-hover: rgba(200, 75, 75, 0.24); }
-    .card.color-gold, .card-back.color-gold { --card-tint: rgba(200, 155, 60, 0.16); --card-tint-hover: rgba(200, 155, 60, 0.23); }
-    .card.color-green, .card-back.color-green { --card-tint: rgba(58, 166, 106, 0.16); --card-tint-hover: rgba(58, 166, 106, 0.23); }
-    .card.color-blue, .card-back.color-blue { --card-tint: rgba(76, 127, 209, 0.17); --card-tint-hover: rgba(76, 127, 209, 0.24); }
-    .card.color-purple, .card-back.color-purple { --card-tint: rgba(138, 91, 209, 0.17); --card-tint-hover: rgba(138, 91, 209, 0.24); }
+    .card.color-red,
+    .card-back.color-red {
+      --card-tint: rgba(200, 75, 75, 0.18);
+      --card-tint-hover: rgba(200, 75, 75, 0.24);
+    }
 
-    .card-back { transform: rotateY(180deg); }
+    .card.color-gold,
+    .card-back.color-gold {
+      --card-tint: rgba(200, 155, 60, 0.16);
+      --card-tint-hover: rgba(200, 155, 60, 0.23);
+    }
+
+    .card.color-green,
+    .card-back.color-green {
+      --card-tint: rgba(58, 166, 106, 0.16);
+      --card-tint-hover: rgba(58, 166, 106, 0.23);
+    }
+
+    .card.color-blue,
+    .card-back.color-blue {
+      --card-tint: rgba(76, 127, 209, 0.17);
+      --card-tint-hover: rgba(76, 127, 209, 0.24);
+    }
+
+    .card.color-purple,
+    .card-back.color-purple {
+      --card-tint: rgba(138, 91, 209, 0.17);
+      --card-tint-hover: rgba(138, 91, 209, 0.24);
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+    }
 
     .card-header {
       display: flex;
@@ -500,7 +621,8 @@
       gap: 8px;
     }
 
-    .card h2, .card-back h2 {
+    .card h2,
+    .card-back h2 {
       font-size: 18px;
       letter-spacing: -0.7px;
       color: var(--white);
@@ -554,12 +676,35 @@
       border-radius: 0;
     }
 
-    .priority-user { background-color: var(--white); color: var(--black); border-color: var(--white); }
-    .priority-high { background-color: #cfcfcf; color: var(--black); border-color: #cfcfcf; }
-    .priority-medium { background-color: #303030; color: var(--text); border-color: #555; }
-    .priority-low { background-color: var(--black); color: var(--muted); border-color: var(--line); }
+    .priority-user {
+      background-color: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
 
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .priority-high {
+      background-color: #cfcfcf;
+      color: var(--black);
+      border-color: #cfcfcf;
+    }
+
+    .priority-medium {
+      background-color: #303030;
+      color: var(--text);
+      border-color: #555;
+    }
+
+    .priority-low {
+      background-color: var(--black);
+      color: var(--muted);
+      border-color: var(--line);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
 
     .tag {
       background: var(--black);
@@ -570,8 +715,18 @@
       text-transform: uppercase;
     }
 
-    .card p, .card-back p { color: var(--muted); font-size: 12px; }
-    .card p strong, .card-back p strong { color: var(--text); text-transform: uppercase; font-size: 11px; }
+    .card p,
+    .card-back p {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card p strong,
+    .card-back p strong {
+      color: var(--text);
+      text-transform: uppercase;
+      font-size: 11px;
+    }
 
     .email-display {
       border: 1px solid var(--line);
@@ -584,9 +739,15 @@
       word-break: break-word;
     }
 
-    .email-display.empty-email { color: var(--faint); }
+    .email-display.empty-email {
+      color: var(--faint);
+    }
 
-    .links { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .links {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
 
     .links a {
       border: 1px solid var(--line);
@@ -599,14 +760,20 @@
       text-transform: uppercase;
     }
 
-    .links a:hover { background: var(--white); color: var(--black); border-color: var(--white); }
+    .links a:hover {
+      background: var(--white);
+      color: var(--black);
+      border-color: var(--white);
+    }
 
-    .note-wrap, .edit-block {
+    .note-wrap,
+    .edit-block {
       border-top: 1px solid var(--line-2);
       padding-top: 10px;
     }
 
-    .note-label, .edit-label {
+    .note-label,
+    .edit-label {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -617,7 +784,10 @@
       letter-spacing: 0.4px;
     }
 
-    .note-label span:last-child, .edit-label span:last-child { color: var(--faint); }
+    .note-label span:last-child,
+    .edit-label span:last-child {
+      color: var(--faint);
+    }
 
 
     .color-code-wrap {
@@ -647,21 +817,44 @@
       transition: opacity 140ms ease, background 140ms ease, border-color 140ms ease, transform 140ms ease;
     }
 
-    body.theme-light .color-code-btn { background: #d7d7d7; }
+    body.theme-light .color-code-btn {
+      background: #d7d7d7;
+    }
 
     .color-code-wrap:hover .color-code-btn,
     .color-code-btn:focus-visible {
       opacity: 1;
     }
 
-    .color-code-btn:hover { transform: translateY(-1px); border-color: var(--white); }
-    .color-code-btn.is-active { border-color: var(--white); box-shadow: 0 0 0 1px var(--black), 0 0 0 2px var(--white); }
+    .color-code-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--white);
+    }
 
-    .color-code-btn[data-color="red"] { --swatch: var(--code-red); }
-    .color-code-btn[data-color="gold"] { --swatch: var(--code-gold); }
-    .color-code-btn[data-color="green"] { --swatch: var(--code-green); }
-    .color-code-btn[data-color="blue"] { --swatch: var(--code-blue); }
-    .color-code-btn[data-color="purple"] { --swatch: var(--code-purple); }
+    .color-code-btn.is-active {
+      border-color: var(--white);
+      box-shadow: 0 0 0 1px var(--black), 0 0 0 2px var(--white);
+    }
+
+    .color-code-btn[data-color="red"] {
+      --swatch: var(--code-red);
+    }
+
+    .color-code-btn[data-color="gold"] {
+      --swatch: var(--code-gold);
+    }
+
+    .color-code-btn[data-color="green"] {
+      --swatch: var(--code-green);
+    }
+
+    .color-code-btn[data-color="blue"] {
+      --swatch: var(--code-blue);
+    }
+
+    .color-code-btn[data-color="purple"] {
+      --swatch: var(--code-purple);
+    }
 
     .color-code-wrap:hover .color-code-btn[data-color]:not([data-color="none"]),
     .color-code-btn[data-color]:not([data-color="none"]):focus-visible {
@@ -766,8 +959,13 @@
       letter-spacing: 0.5px;
     }
 
-    .delete-artist-btn:hover .delete-icon { opacity: 0; }
-    .delete-artist-btn:hover .delete-text { opacity: 1; }
+    .delete-artist-btn:hover .delete-icon {
+      opacity: 0;
+    }
+
+    .delete-artist-btn:hover .delete-text {
+      opacity: 1;
+    }
 
     .empty {
       grid-column: 1 / -1;
@@ -790,7 +988,7 @@
       inset: 0;
       z-index: 997;
       display: none;
-      background: rgba(0,0,0,0.58);
+      background: rgba(0, 0, 0, 0.58);
       opacity: 0;
       pointer-events: none;
       backdrop-filter: blur(0);
@@ -798,7 +996,10 @@
       transition: opacity 180ms ease, backdrop-filter 180ms ease, -webkit-backdrop-filter 180ms ease;
     }
 
-    body.theme-light .mobile-ui-backdrop { background: rgba(0,0,0,0.38); }
+    body.theme-light .mobile-ui-backdrop {
+      background: rgba(0, 0, 0, 0.38);
+    }
+
     body.mobile-filter-active .mobile-ui-backdrop,
     body.mobile-nav-active .mobile-ui-backdrop {
       display: block;
@@ -843,7 +1044,7 @@
       position: fixed;
       inset: 0;
       z-index: 1000;
-      background: rgba(0,0,0,0.68);
+      background: rgba(0, 0, 0, 0.68);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -855,7 +1056,9 @@
       transition: opacity 180ms ease, backdrop-filter 180ms ease, -webkit-backdrop-filter 180ms ease;
     }
 
-    body.theme-light .modal { background: rgba(0,0,0,0.46); }
+    body.theme-light .modal {
+      background: rgba(0, 0, 0, 0.46);
+    }
 
     .modal.is-open {
       opacity: 1;
@@ -869,7 +1072,9 @@
       transition: transform 180ms ease;
     }
 
-    .modal.is-open .modal-panel { transform: translateY(0) scale(1); }
+    .modal.is-open .modal-panel {
+      transform: translateY(0) scale(1);
+    }
 
     .modal-panel {
       width: min(720px, 100%);
@@ -902,7 +1107,9 @@
       gap: 8px;
     }
 
-    .form-grid .full { grid-column: 1 / -1; }
+    .form-grid .full {
+      grid-column: 1 / -1;
+    }
 
     .form-label {
       display: block;
@@ -961,7 +1168,11 @@
       background: var(--panel-2);
     }
 
-    .summary-globe-btn svg { width: 18px; height: 18px; stroke: currentColor; }
+    .summary-globe-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
 
     .summary-list-btn svg {
       width: 17px;
@@ -991,7 +1202,10 @@
       letter-spacing: 0.4px;
     }
 
-    .send-entries { display: grid; gap: 6px; }
+    .send-entries {
+      display: grid;
+      gap: 6px;
+    }
 
     .send-row {
       display: grid;
@@ -1025,7 +1239,10 @@
       transform: rotate(-45deg) translate(1px, -1px);
     }
 
-    .send-row input[type="date"] { padding: 7px; font-size: 11px; }
+    .send-row input[type="date"] {
+      padding: 7px;
+      font-size: 11px;
+    }
 
     .send-remove-btn {
       width: 24px;
@@ -1092,7 +1309,9 @@
       width: auto;
     }
 
-    .show-send-all:hover { color: var(--white); }
+    .show-send-all:hover {
+      color: var(--white);
+    }
 
     .send-warning {
       position: absolute;
@@ -1162,7 +1381,7 @@
     }
 
     .map-land {
-      fill: rgba(255,255,255,0.035);
+      fill: rgba(255, 255, 255, 0.035);
       stroke: var(--line);
       stroke-width: 0.72;
       vector-effect: non-scaling-stroke;
@@ -1187,11 +1406,22 @@
       transform-origin: center;
     }
 
-    .map-dot.unsent { fill: var(--white); }
+    .map-dot.unsent {
+      fill: var(--white);
+    }
 
     @keyframes sentPulse {
-      0%, 100% { opacity: 0.45; r: 4; }
-      50% { opacity: 1; r: 7; }
+
+      0%,
+      100% {
+        opacity: 0.45;
+        r: 4;
+      }
+
+      50% {
+        opacity: 1;
+        r: 7;
+      }
     }
 
     .map-legend {
@@ -1219,8 +1449,13 @@
       border: 1px solid var(--line);
     }
 
-    .legend-dot.sent { background: #37d16f; }
-    .legend-dot.unsent { background: var(--white); }
+    .legend-dot.sent {
+      background: #37d16f;
+    }
+
+    .legend-dot.unsent {
+      background: var(--white);
+    }
 
 
     .visuals-page {
@@ -1292,7 +1527,9 @@
     }
 
     @media (max-width: 980px) {
-      .visuals-grid { grid-template-columns: 1fr; }
+      .visuals-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .footer {
@@ -1307,19 +1544,31 @@
     }
 
     @media (max-width: 1320px) {
-      .grid { grid-template-columns: repeat(3, 1fr); }
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
     @media (max-width: 980px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-      .filters-grid { grid-template-columns: 1fr 1fr; }
-      .links { grid-template-columns: repeat(2, 1fr); }
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filters-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .links {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
 
 
     @media (max-width: 980px) {
-      body { padding-bottom: 146px; }
+      body {
+        padding-bottom: 146px;
+      }
 
       .filters {
         position: fixed;
@@ -1368,20 +1617,32 @@
     }
 
     @media (max-width: 760px) {
-      body { padding: 10px; }
+      body {
+        padding: 10px;
+      }
+
       .hero {
         min-height: 66px;
         padding: 14px 0;
         justify-content: flex-end;
         align-items: center;
       }
+
       .site-logo {
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
       }
-      .logo-img { width: min(190px, 58vw); max-height: 44px; }
-      .mobile-nav-toggle { display: inline-flex; }
+
+      .logo-img {
+        width: min(190px, 58vw);
+        max-height: 44px;
+      }
+
+      .mobile-nav-toggle {
+        display: inline-flex;
+      }
+
       .hero-actions {
         position: fixed;
         top: 76px;
@@ -1393,7 +1654,7 @@
         align-items: stretch;
         gap: 0;
         padding: 10px;
-        background: rgba(16,16,16,0.96);
+        background: rgba(16, 16, 16, 0.96);
         border: 1px solid var(--line);
         opacity: 0;
         pointer-events: none;
@@ -1401,24 +1662,45 @@
         transform-origin: top right;
         transition: opacity 180ms ease, transform 180ms ease;
       }
-      body.theme-light .hero-actions { background: rgba(255,255,255,0.96); }
+
+      body.theme-light .hero-actions {
+        background: rgba(255, 255, 255, 0.96);
+      }
+
       body.mobile-nav-active .hero-actions {
         opacity: 1;
         pointer-events: auto;
         transform: translateY(0) scale(1);
       }
-      .hero .auth-btn, .hero .nav-btn {
+
+      .hero .auth-btn,
+      .hero .nav-btn {
         width: 100%;
         text-align: left;
         padding: 12px 10px;
       }
-      .settings-row { grid-template-columns: 1fr; }
-      .grid, .stats, .filters-grid { grid-template-columns: 1fr; }
-      .count-row { flex-direction: column; align-items: flex-start; }
+
+      .settings-row {
+        grid-template-columns: 1fr;
+      }
+
+      .grid,
+      .stats,
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .count-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
       .sidebar-toggle-btn {
         display: none !important;
       }
-      .left-sidebar, .left-sidebar-overlay {
+
+      .left-sidebar,
+      .left-sidebar-overlay {
         display: none !important;
       }
     }
@@ -1429,6 +1711,7 @@
       gap: 12px;
       margin-top: 18px;
     }
+
     .horizontal-user-card {
       display: flex;
       align-items: center;
@@ -1442,11 +1725,13 @@
       min-height: 100px;
       box-sizing: border-box;
     }
+
     .horizontal-user-card:hover {
       border-color: var(--white);
       background: var(--panel-2);
       transform: translateY(-2px);
     }
+
     .user-pfp {
       width: 56px;
       height: 56px;
@@ -1454,13 +1739,16 @@
       object-fit: cover;
       border: 2px solid var(--line-2);
     }
+
     .horizontal-user-card:hover .user-pfp {
       border-color: var(--white);
     }
+
     .user-details {
       display: flex;
       flex-direction: column;
     }
+
     .user-username {
       font-size: 16px;
       font-weight: 700;
@@ -1468,6 +1756,7 @@
       text-transform: uppercase;
       letter-spacing: -0.5px;
     }
+
     .user-subtitle {
       font-size: 11px;
       color: var(--muted);
@@ -1475,6 +1764,7 @@
       letter-spacing: 0.5px;
       margin-top: 2px;
     }
+
     .edit-link-row input,
     .add-link-form input {
       background: var(--black);
@@ -1486,6 +1776,7 @@
       border-radius: 0;
       transition: border-color 160ms ease;
     }
+
     .edit-link-row input:focus,
     .add-link-form input:focus {
       border-color: var(--white);
@@ -1497,7 +1788,7 @@
       position: fixed;
       inset: 0;
       z-index: 1000;
-      background: rgba(0,0,0,0.72);
+      background: rgba(0, 0, 0, 0.72);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1508,12 +1799,14 @@
       -webkit-backdrop-filter: blur(0px);
       transition: opacity 280ms cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1), -webkit-backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     .slide-up-modal.is-open {
       opacity: 1;
       pointer-events: auto;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
+
     .slide-up-panel {
       width: min(540px, 100%);
       background: transparent;
@@ -1523,9 +1816,11 @@
       transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
       perspective: 1200px;
     }
+
     .slide-up-modal.is-open .slide-up-panel {
       transform: translateY(0) scale(1);
     }
+
     .slide-up-flipper {
       position: relative;
       width: 100%;
@@ -1533,9 +1828,11 @@
       transform-style: preserve-3d;
       transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     .slide-up-panel.is-editing .slide-up-flipper {
       transform: rotateY(180deg);
     }
+
     .slide-up-front,
     .slide-up-back {
       position: absolute;
@@ -1549,9 +1846,11 @@
       flex-direction: column;
       box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
     }
+
     .slide-up-back {
       transform: rotateY(180deg);
     }
+
     .slide-up-header {
       display: flex;
       align-items: center;
@@ -1560,18 +1859,22 @@
       padding-bottom: 16px;
       margin-bottom: 20px;
     }
+
     .slide-up-header .user-pfp {
       width: 64px;
       height: 64px;
     }
+
     .slide-up-header .user-username {
       font-size: 18px;
     }
+
     .action-links {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
+
     .action-link-btn {
       display: flex;
       align-items: center;
@@ -1587,12 +1890,14 @@
       letter-spacing: 0.5px;
       transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
     }
+
     .action-link-btn:hover {
       background: var(--white);
       color: var(--black);
       border-color: var(--white);
       transform: translateY(-1px);
     }
+
     .action-link-btn svg {
       width: 16px;
       height: 16px;
@@ -1600,6 +1905,7 @@
       fill: none;
       transition: transform 160ms ease;
     }
+
     .action-link-btn:hover svg {
       transform: translateX(4px);
     }
@@ -1621,34 +1927,40 @@
       margin-right: auto;
       transition: color 180ms ease, opacity 180ms ease;
     }
+
     .sidebar-toggle-btn:hover {
       background: transparent;
       color: var(--white);
     }
+
     body.left-sidebar-active .sidebar-toggle-btn {
       opacity: 0;
       pointer-events: none;
     }
+
     .left-sidebar-overlay {
       position: fixed;
       inset: 0;
       z-index: 999;
-      background: rgba(0,0,0,0.72);
+      background: rgba(0, 0, 0, 0.72);
       opacity: 0;
       pointer-events: none;
       backdrop-filter: blur(0px);
       -webkit-backdrop-filter: blur(0px);
       transition: opacity 280ms cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1), -webkit-backdrop-filter 280ms cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     body.theme-light .left-sidebar-overlay {
-      background: rgba(0,0,0,0.46);
+      background: rgba(0, 0, 0, 0.46);
     }
+
     .left-sidebar-overlay.is-open {
       opacity: 1;
       pointer-events: auto;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
     }
+
     .left-sidebar {
       position: fixed;
       left: 0;
@@ -1665,9 +1977,11 @@
       box-sizing: border-box;
       padding: 20px;
     }
+
     .left-sidebar.is-open {
       transform: translateX(0);
     }
+
     .sidebar-header {
       display: flex;
       justify-content: space-between;
@@ -1676,6 +1990,7 @@
       padding-bottom: 12px;
       margin-bottom: 16px;
     }
+
     .sidebar-header h2 {
       margin: 0;
       font-size: 18px;
@@ -1684,9 +1999,11 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
+
     body.theme-light .sidebar-header h2 {
       color: var(--black);
     }
+
     .sidebar-content {
       flex: 1;
       display: flex;
@@ -1694,12 +2011,14 @@
       overflow: auto;
       min-height: 0;
     }
+
     .sidebar-links-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
       margin-bottom: 16px;
     }
+
     .sidebar-link-btn {
       display: flex;
       align-items: center;
@@ -1715,12 +2034,14 @@
       letter-spacing: 0.5px;
       transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
     }
+
     .sidebar-link-btn:hover {
       background: var(--white);
       color: var(--black);
       border-color: var(--white);
       transform: translateY(-1px);
     }
+
     .sidebar-footer {
       margin-top: auto;
       border-top: 1px solid var(--line);
@@ -1729,6 +2050,7 @@
       flex-direction: column;
       gap: 8px;
     }
+
     .sidebar-edit-footer {
       margin-top: auto;
       border-top: 1px solid var(--line);
@@ -1736,6 +2058,7 @@
       display: flex;
       gap: 10px;
     }
+
     .footer-btn {
       flex: 1;
       padding: 12px;
@@ -1749,18 +2072,22 @@
       letter-spacing: 0.5px;
       transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
     }
+
     .footer-btn:hover {
       background: var(--line);
       color: var(--white);
     }
+
     .footer-btn.save-btn {
       border-color: var(--white);
       color: var(--white);
     }
+
     body.theme-light .footer-btn.save-btn {
       border-color: var(--black);
       color: var(--black);
     }
+
     .edit-links-container {
       display: flex;
       flex-direction: column;
@@ -1769,6 +2096,7 @@
       overflow-y: auto;
       flex: 1;
     }
+
     .edit-link-row-vertical {
       display: flex;
       flex-direction: column;
@@ -1778,9 +2106,11 @@
       background: rgba(255, 255, 255, 0.02);
       position: relative;
     }
+
     body.theme-light .edit-link-row-vertical {
       background: rgba(0, 0, 0, 0.02);
     }
+
     .edit-link-row-vertical .remove-btn {
       position: absolute;
       top: 8px;
@@ -1797,6 +2127,7 @@
       font-size: 14px;
       padding: 0;
     }
+
     .edit-link-row-vertical input {
       width: 100%;
       box-sizing: border-box;
@@ -1806,16 +2137,19 @@
       background: var(--panel);
       color: var(--text);
     }
+
     .add-new-link-section {
       margin-top: auto;
       padding: 14px;
       border: 1px dashed var(--line);
       margin-bottom: 16px;
-      background: rgba(255,255,255,0.01);
+      background: rgba(255, 255, 255, 0.01);
     }
+
     body.theme-light .add-new-link-section {
-      background: rgba(0,0,0,0.01);
+      background: rgba(0, 0, 0, 0.01);
     }
+
     .add-new-link-section h3 {
       margin: 0 0 12px 0;
       font-size: 13px;
@@ -1823,11 +2157,13 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
+
     .add-link-form {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
+
     .add-link-form input {
       width: 100%;
       box-sizing: border-box;
@@ -1837,6 +2173,7 @@
       background: var(--panel);
       color: var(--text);
     }
+
     .add-link-form button {
       padding: 8px;
       background: var(--panel);
@@ -1849,18 +2186,43 @@
       letter-spacing: 0.5px;
       transition: background 160ms ease, color 160ms ease;
     }
+
     .add-link-form button:hover {
       background: var(--line);
       color: var(--white);
     }
+
+    /* Targeted overrides to fix the artist navbar vertical layout and spacing */
+    @media (min-width: 761px) {
+      body .hero {
+        display: flex !important;
+        align-items: center !important;
+        padding-top: 18px !important;
+        padding-bottom: 18px !important;
+        margin-bottom: 18px !important;
+      }
+
+      body .hero .site-logo,
+      body .hero .brand-logo {
+        line-height: 0 !important;
+        margin: 0 !important;
+      }
+
+      body .hero .site-logo .logo-img,
+      body .hero .brand-logo .logo-img {
+        display: block !important;
+      }
+    }
   </style>
 </head>
+
 <body>
   <section class="auth-gate" id="authGate">
     <div class="container auth-container">
       <section class="hero auth-hero">
         <h1 class="site-logo" aria-label="MONEYOVERALL">
-          <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
+          <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL"
+            onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
           <span class="logo-fallback">MONEYOVERALL</span>
         </h1>
       </section>
@@ -1880,7 +2242,7 @@
       <div class="sidebar-header">
         <h2>External</h2>
       </div>
-      
+
       <div class="sidebar-content">
         <!-- View Mode -->
         <div class="sidebar-view-mode" id="sidebarViewMode">
@@ -1889,7 +2251,8 @@
           </div>
           <div class="sidebar-footer">
             <button class="footer-btn" onclick="enterSidebarEditMode()">✎ Edit Links</button>
-            <button class="footer-btn" id="adminDashboardBtn" onclick="openAdminDashboardModal()">⚙ Admin Dashboard</button>
+            <button class="footer-btn" id="adminDashboardBtn" onclick="openAdminDashboardModal()">⚙ Admin
+              Dashboard</button>
           </div>
         </div>
 
@@ -1898,7 +2261,7 @@
           <div class="edit-links-container" id="sidebarEditLinksContainer">
             <!-- Dynamic edit inputs -->
           </div>
-          
+
           <div class="add-new-link-section">
             <h3>+ Add Link</h3>
             <div class="add-link-form" style="display:flex; flex-direction:column; gap:8px;">
@@ -1908,7 +2271,7 @@
               <button type="button" onclick="addSidebarLinkFromForm()" style="width:100%; padding:10px;">Add</button>
             </div>
           </div>
-          
+
           <div class="sidebar-edit-footer">
             <button class="footer-btn save-btn" onclick="saveSidebarLinks()">Save Changes</button>
             <button class="footer-btn cancel-btn" onclick="exitSidebarEditMode()">Cancel</button>
@@ -1917,313 +2280,448 @@
       </div>
     </aside>
 
-  <div class="container">
-    <section class="hero">
-      <button class="sidebar-toggle-btn" id="sidebarToggleBtn" type="button" aria-label="Open sidebar" onclick="openLeftSidebar()">
-        <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter" fill="none" stroke="currentColor" style="width:20px;height:20px;display:block;"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-      </button>
-      <h1 class="site-logo" aria-label="MONEYOVERALL" onclick="navigateTo('dashboard')" style="cursor: pointer;">
-        <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL" onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
-        <span class="logo-fallback">MONEYOVERALL</span>
-      </h1>
-      <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open navigation" aria-expanded="false" onclick="toggleMobileNav()">
-        <svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M5 8l7 7 7-7"></path></svg>
-      </button>
-      <div class="hero-actions">
-        <button class="nav-btn" id="dashboardNavBtn" onclick="navigateTo('dashboard')">Dashboard</button>
-        <button class="nav-btn" id="rosterNavBtn" onclick="navigateTo('roster')">Roster</button>
-        <button class="nav-btn" id="visualsNavBtn" onclick="window.location.href = '/visuals/'">Visuals</button>
-        <button class="nav-btn" id="settingsNavBtn" onclick="navigateTo('settings')">Settings</button>
-        <button class="auth-btn" id="authBtn" onclick="toggleAuth()">Sign in Google</button>
-      </div>
-    </section>
-
-    <section class="dashboard-page hidden" id="dashboardPage">
-      <div class="count-row" style="margin-bottom: 12px; justify-content: flex-end; display: flex;">
-        <div class="status-actions">
-          <p class="save-status" id="dashboardSaveStatus">Autosave ready</p>
+    <div class="container">
+      <section class="hero">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn" type="button" aria-label="Open sidebar"
+          onclick="openLeftSidebar()">
+          <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter" fill="none"
+            stroke="currentColor" style="width:20px;height:20px;display:block;">
+            <path d="M3 12h18M3 6h18M3 18h18" />
+          </svg>
+        </button>
+        <h1 class="site-logo" aria-label="MONEYOVERALL" onclick="navigateTo('dashboard')" style="cursor: pointer;">
+          <img class="logo-img" src="MOA-logo.svg" alt="MONEYOVERALL"
+            onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.add('is-visible');" />
+          <span class="logo-fallback">MONEYOVERALL</span>
+        </h1>
+        <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-label="Open navigation"
+          aria-expanded="false" onclick="toggleMobileNav()">
+          <svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="square" stroke-linejoin="miter"
+            aria-hidden="true">
+            <path d="M5 8l7 7 7-7"></path>
+          </svg>
+        </button>
+        <div class="hero-actions">
+          <button class="nav-btn" id="dashboardNavBtn" onclick="navigateTo('dashboard')">Dashboard</button>
+          <button class="nav-btn" id="rosterNavBtn" onclick="navigateTo('roster')">Roster</button>
+          <button class="nav-btn" id="visualsNavBtn" onclick="window.location.href = '/visuals/'">Visuals</button>
+          <button class="nav-btn" id="settingsNavBtn" onclick="navigateTo('settings')">Settings</button>
+          <button class="nav-btn" id="mindsetNavBtn" onclick="navigateTo('mindset')">Mindset</button>
+          <button class="auth-btn" id="authBtn" onclick="toggleAuth()">Sign in Google</button>
         </div>
-      </div>
-      <div class="user-card-list">
-        <article class="horizontal-user-card" onclick="openSlideUpPanel()">
-          <img class="user-pfp" src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578" alt="workingthatmagic pfp" />
-          <div class="user-details">
-            <span class="user-username">@workingthatmagic</span>
+      </section>
+
+      <section class="dashboard-page hidden" id="dashboardPage">
+        <div class="count-row" style="margin-bottom: 12px; justify-content: flex-end; display: flex;">
+          <div class="status-actions">
+            <p class="save-status" id="dashboardSaveStatus">Autosave ready</p>
           </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="settings-page hidden" id="settingsPage">
-      <h2>Settings</h2>
-      <div class="settings-row">
-        <label for="themeSelect">Theme</label>
-        <select id="themeSelect" onchange="changeTheme(this.value)">
-          <option value="system">Use system default</option>
-          <option value="dark">Dark</option>
-          <option value="light">Light</option>
-        </select>
-      </div>
-    </section>
-
-    <section class="map-page hidden" id="mapPage">
-      <div class="map-header">
-        <h2>Artist Map</h2>
-        <button class="nav-btn" onclick="navigateTo('roster')">Back to Roster</button>
-      </div>
-      <div class="map-shell">
-        <svg class="world-map" id="worldMap" viewBox="0 0 1000 560" role="img" aria-label="World map of outreach artists">
-          <rect x="0" y="0" width="1000" height="560" fill="transparent"></rect>
-          <g class="map-graticule">
-            <path d="M40 280H960"></path><path d="M500 30V530"></path>
-            <path d="M40 113.3H960"></path><path d="M40 196.7H960"></path><path d="M40 363.3H960"></path><path d="M40 446.7H960"></path>
-            <path d="M166.7 30V530"></path><path d="M333.3 30V530"></path><path d="M666.7 30V530"></path><path d="M833.3 30V530"></path>
-          </g>
-          <g id="mapLandLayer"></g>
-          <g id="mapBorderLayer"></g>
-          <g id="mapDots"></g>
-        </svg>
-      </div>
-      <div class="map-legend"><span class="legend-item"><span class="legend-dot sent"></span>SENT</span><span class="legend-item"><span class="legend-dot unsent"></span>NOT SENT</span></div>
-    </section>
-
-
-    <section class="visuals-page hidden" id="visualsPage">
-      <div class="visuals-grid">
-        <a class="visual-card" href="visuals/">
-          <strong>Phonk Visuals</strong>
-        </a>
-      </div>
-    </section>
-
-    <div id="rosterPage" class="hidden">
-    <section class="stats">
-      <div class="stat"><strong id="totalStat">0</strong><span>Total</span></div>
-      <div class="stat"><strong id="sentStat">0</strong><span>Sent</span></div>
-      <button class="summary-globe-btn" title="Open artist map" aria-label="Open artist map" onclick="navigateTo('map')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3c3 3 3 15 0 18"></path><path d="M12 3c-3 3-3 15 0 18"></path></svg>
-      </button>
-      <button class="summary-globe-btn summary-list-btn" title="Copy artist list" aria-label="Copy artist list" onclick="copyArtistList()">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h1"></path><path d="M3 12h1"></path><path d="M3 18h1"></path></svg>
-      </button>
-      <div class="send-warning artist-list-bubble" id="artistListBubble">ARTIST LIST COPIED</div>
-    </section>
-
-    <section class="filters" id="filtersPanel">
-      <div class="filters-grid">
-        <input id="searchInput" type="text" placeholder="SEARCH" />
-        <select id="regionFilter"><option value="All">ALL REGIONS</option></select>
-        <select id="priorityFilter">
-          <option value="All">ALL PRIORITIES</option>
-          <option value="SENT">SENT</option>
-          <option value="USER">USER</option>
-          <option value="High">HIGH</option>
-          <option value="Medium">MEDIUM</option>
-          <option value="Low">LOW</option>
-        </select>
-        <select id="colorFilter">
-          <option value="All">ALL COLORS</option>
-          <option value="none">NO COLOR</option>
-          <option value="red">RED</option>
-          <option value="gold">GOLD</option>
-          <option value="green">GREEN</option>
-          <option value="blue">BLUE</option>
-          <option value="purple">PURPLE</option>
-        </select>
-        <select id="sortSelect">
-          <option value="auto">PRIORITY + A-Z</option>
-          <option value="name">A-Z</option>
-          <option value="region">REGION + A-Z</option>
-        </select>
-      </div>
-    </section>
-
-    <div class="count-row">
-      <p id="resultCount">Showing 0 artists</p>
-      <div class="status-actions">
-        <p class="save-status" id="saveStatus">Autosave ready</p>
-      </div>
-    </div>
-
-    <main class="grid" id="artistGrid"></main>
-    </div>
-  </div>
-
-  <div class="slide-up-modal" id="slideUpModal" onclick="closeSlideUpPanel(event)">
-    <div class="slide-up-panel" id="slideUpPanelShell" onclick="event.stopPropagation()">
-      <div class="slide-up-flipper">
-        <div class="slide-up-front">
-          <div class="slide-up-header">
-            <img class="user-pfp" src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578" alt="workingthatmagic pfp" />
+        </div>
+        <div class="user-card-list">
+          <article class="horizontal-user-card" onclick="openSlideUpPanel()">
+            <img class="user-pfp"
+              src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578"
+              alt="workingthatmagic pfp" />
             <div class="user-details">
               <span class="user-username">@workingthatmagic</span>
             </div>
-            <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px; margin-right: 8px;" title="Edit Links" onclick="flipDashboardPanel(true)">✎</button>
-            <button class="icon-btn" style="width: 32px; height: 32px;" title="Close" onclick="closeSlideUpPanelForce()">✕</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="settings-page hidden" id="settingsPage">
+        <h2>Settings</h2>
+        <div class="settings-row">
+          <label for="themeSelect">Theme</label>
+          <select id="themeSelect" onchange="changeTheme(this.value)">
+            <option value="system">Use system default</option>
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="mindset-page hidden" id="mindsetPage">
+        <h2>Mindset</h2>
+        
+        <div class="mindset-section">
+          <h3>Abundance & Money Mindset</h3>
+          <ul class="mindset-list">
+            <li><a href="https://www.youtube.com/watch?v=xLB06GMAbVc" target="_blank" rel="noopener noreferrer">Scarcity to Abundance Hypnosis Session</a></li>
+            <li><a href="https://www.youtube.com/watch?v=AxQQ9sViIrQ" target="_blank" rel="noopener noreferrer">Sleep Hypnosis for Wealth and Gratitude / Abundance</a></li>
+            <li><a href="https://www.youtube.com/watch?v=SB1goPdrEcg" target="_blank" rel="noopener noreferrer">Sleep Hypnosis for Manifesting Holistic Abundance (7 Dimensions)</a></li>
+            <li><a href="https://www.youtube.com/watch?v=kSj8GfHnwtk" target="_blank" rel="noopener noreferrer">Sleep Hypnosis for Success and Abundance (Wealth Mindset)</a></li>
+          </ul>
+        </div>
+
+        <div class="mindset-section">
+          <h3>Identity & Self-Worth</h3>
+          <ul class="mindset-list">
+            <li><a href="https://www.youtube.com/watch?v=jM0zdCrWlzo" target="_blank" rel="noopener noreferrer">Step Into Your Highest Self — Confidence, Self-Worth & Identity Shift</a></li>
+            <li><a href="https://www.youtube.com/watch?v=DHwgBCx0uNs" target="_blank" rel="noopener noreferrer">Sleep Hypnosis for Confidence & Self-Worth</a></li>
+            <li><a href="https://www.youtube.com/watch?v=1858_nLpBi0" target="_blank" rel="noopener noreferrer">Heal Your Self Worth While You Sleep</a></li>
+            <li><a href="https://www.youtube.com/watch?v=ohs33Ybf9BY" target="_blank" rel="noopener noreferrer">Self-Worth Hypnosis — Stop Seeking External Validation</a></li>
+          </ul>
+        </div>
+
+        <div class="mindset-section">
+          <h3>Charisma & On-Camera Presence</h3>
+          <ul class="mindset-list">
+            <li><a href="https://www.youtube.com/watch?v=MNUK3FFHSbU" target="_blank" rel="noopener noreferrer">POWERFUL Increase Charisma Self Hypnosis (3 Hour)</a></li>
+            <li><a href="https://www.youtube.com/watch?v=AiURMMJZY5c" target="_blank" rel="noopener noreferrer">Powerful Sleep Hypnosis to Increase Charisma</a></li>
+            <li><a href="https://www.youtube.com/watch?v=gT559a4ZpBE" target="_blank" rel="noopener noreferrer">Deep Sleep Hypnosis for Self Confidence</a></li>
+          </ul>
+        </div>
+
+        <div class="mindset-section">
+          <h3>Selling & Closing Clients</h3>
+          <ul class="mindset-list">
+            <li><a href="https://www.youtube.com/watch?v=dbJtH9I1Fnw" target="_blank" rel="noopener noreferrer">Hypnosis for Sales Mastery</a></li>
+            <li><a href="https://www.youtube.com/watch?v=n--wEh0h6eI" target="_blank" rel="noopener noreferrer">Hypnosis for Salespeople — Close More Deals</a></li>
+            <li><a href="https://www.youtube.com/watch?v=cGTQgdBPszs" target="_blank" rel="noopener noreferrer">Hypnosis to Sell Emotionally and Intuitively</a></li>
+          </ul>
+        </div>
+
+        <div class="mindset-section">
+          <h3>Massive Action & Focus</h3>
+          <ul class="mindset-list">
+            <li><a href="https://www.youtube.com/watch?v=dpUCywju5lI" target="_blank" rel="noopener noreferrer">Sleep Hypnosis for Procrastination & Motivation (4 Hour)</a></li>
+            <li><a href="https://www.youtube.com/watch?v=h2Y4vaqTJj8" target="_blank" rel="noopener noreferrer">Deep Sleep Hypnosis to Stop Procrastination (Creativity)</a></li>
+            <li><a href="https://www.youtube.com/watch?v=4IkGnAzqKwY" target="_blank" rel="noopener noreferrer">Overcome Procrastination with Deep Sleep Hypnosis</a></li>
+          </ul>
+        </div>
+
+        <div class="mindset-section">
+          <h3>Calm Under Pressure / Nervous System</h3>
+          <ul class="mindset-list">
+            <li><a href="https://www.youtube.com/watch?v=twJyV6EX49E" target="_blank" rel="noopener noreferrer">Sleep Hypnosis to Calm Anxiety & Relax an Anxious Mind</a></li>
+            <li><a href="https://www.youtube.com/watch?v=twJyV6EX49E" target="_blank" rel="noopener noreferrer">Hypnosis for Stress Relief — Calm Your Nervous System</a></li>
+            <li><a href="https://www.youtube.com/watch?v=q-AzgjYQrzo" target="_blank" rel="noopener noreferrer">Hypnosis for Social Anxiety / Self Confidence (1 Hour)</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="map-page hidden" id="mapPage">
+        <div class="map-header">
+          <h2>Artist Map</h2>
+          <button class="nav-btn" onclick="navigateTo('roster')">Back to Roster</button>
+        </div>
+        <div class="map-shell">
+          <svg class="world-map" id="worldMap" viewBox="0 0 1000 560" role="img"
+            aria-label="World map of outreach artists">
+            <rect x="0" y="0" width="1000" height="560" fill="transparent"></rect>
+            <g class="map-graticule">
+              <path d="M40 280H960"></path>
+              <path d="M500 30V530"></path>
+              <path d="M40 113.3H960"></path>
+              <path d="M40 196.7H960"></path>
+              <path d="M40 363.3H960"></path>
+              <path d="M40 446.7H960"></path>
+              <path d="M166.7 30V530"></path>
+              <path d="M333.3 30V530"></path>
+              <path d="M666.7 30V530"></path>
+              <path d="M833.3 30V530"></path>
+            </g>
+            <g id="mapLandLayer"></g>
+            <g id="mapBorderLayer"></g>
+            <g id="mapDots"></g>
+          </svg>
+        </div>
+        <div class="map-legend"><span class="legend-item"><span class="legend-dot sent"></span>SENT</span><span
+            class="legend-item"><span class="legend-dot unsent"></span>NOT SENT</span></div>
+      </section>
+
+
+      <section class="visuals-page hidden" id="visualsPage">
+        <div class="visuals-grid">
+          <a class="visual-card" href="visuals/">
+            <strong>Phonk Visuals</strong>
+          </a>
+        </div>
+      </section>
+
+      <div id="rosterPage" class="hidden">
+        <section class="stats">
+          <div class="stat"><strong id="totalStat">0</strong><span>Total</span></div>
+          <div class="stat"><strong id="sentStat">0</strong><span>Sent</span></div>
+          <button class="summary-globe-btn" title="Open artist map" aria-label="Open artist map"
+            onclick="navigateTo('map')">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"
+              aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M3 12h18"></path>
+              <path d="M12 3c3 3 3 15 0 18"></path>
+              <path d="M12 3c-3 3-3 15 0 18"></path>
+            </svg>
+          </button>
+          <button class="summary-globe-btn summary-list-btn" title="Copy artist list" aria-label="Copy artist list"
+            onclick="copyArtistList()">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter"
+              aria-hidden="true">
+              <path d="M8 6h13"></path>
+              <path d="M8 12h13"></path>
+              <path d="M8 18h13"></path>
+              <path d="M3 6h1"></path>
+              <path d="M3 12h1"></path>
+              <path d="M3 18h1"></path>
+            </svg>
+          </button>
+          <div class="send-warning artist-list-bubble" id="artistListBubble">ARTIST LIST COPIED</div>
+        </section>
+
+        <section class="filters" id="filtersPanel">
+          <div class="filters-grid">
+            <input id="searchInput" type="text" placeholder="SEARCH" />
+            <select id="regionFilter">
+              <option value="All">ALL REGIONS</option>
+            </select>
+            <select id="priorityFilter">
+              <option value="All">ALL PRIORITIES</option>
+              <option value="SENT">SENT</option>
+              <option value="USER">USER</option>
+              <option value="High">HIGH</option>
+              <option value="Medium">MEDIUM</option>
+              <option value="Low">LOW</option>
+            </select>
+            <select id="colorFilter">
+              <option value="All">ALL COLORS</option>
+              <option value="none">NO COLOR</option>
+              <option value="red">RED</option>
+              <option value="gold">GOLD</option>
+              <option value="green">GREEN</option>
+              <option value="blue">BLUE</option>
+              <option value="purple">PURPLE</option>
+            </select>
+            <select id="sortSelect">
+              <option value="auto">PRIORITY + A-Z</option>
+              <option value="name">A-Z</option>
+              <option value="region">REGION + A-Z</option>
+            </select>
           </div>
-          <div class="action-links" style="display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto;">
-            <!-- Dynamically populated links -->
+        </section>
+
+        <div class="count-row">
+          <p id="resultCount">Showing 0 artists</p>
+          <div class="status-actions">
+            <p class="save-status" id="saveStatus">Autosave ready</p>
           </div>
         </div>
-        <div class="slide-up-back">
-          <div class="slide-up-header">
-            <img class="user-pfp" src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578" alt="workingthatmagic pfp" />
-            <div class="user-details">
-              <span class="user-username">@workingthatmagic</span>
+
+        <main class="grid" id="artistGrid"></main>
+      </div>
+    </div>
+
+    <div class="slide-up-modal" id="slideUpModal" onclick="closeSlideUpPanel(event)">
+      <div class="slide-up-panel" id="slideUpPanelShell" onclick="event.stopPropagation()">
+        <div class="slide-up-flipper">
+          <div class="slide-up-front">
+            <div class="slide-up-header">
+              <img class="user-pfp"
+                src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578"
+                alt="workingthatmagic pfp" />
+              <div class="user-details">
+                <span class="user-username">@workingthatmagic</span>
+              </div>
+              <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px; margin-right: 8px;"
+                title="Edit Links" onclick="flipDashboardPanel(true)">✎</button>
+              <button class="icon-btn" style="width: 32px; height: 32px;" title="Close"
+                onclick="closeSlideUpPanelForce()">✕</button>
             </div>
-            <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px; margin-right: 8px;" title="Cancel" onclick="flipDashboardPanel(false)">↩</button>
-            <button class="icon-btn" style="width: 32px; height: 32px;" title="Close" onclick="closeSlideUpPanelForce()">✕</button>
+            <div class="action-links"
+              style="display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto;">
+              <!-- Dynamically populated links -->
+            </div>
           </div>
-          
-          <div class="edit-links-container" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 4px; margin-bottom: 16px;">
-            <div id="editLinksList" style="display: flex; flex-direction: column; gap: 12px;">
-              <!-- Dynamically populated rows -->
+          <div class="slide-up-back">
+            <div class="slide-up-header">
+              <img class="user-pfp"
+                src="https://cdn5.beatstars.com/eyJidWNrZXQiOiJwcm9kLWJ0cy1wcm9maWxlIiwia2V5IjoicHJvZC9wcm9maWxlL2F2YXRhci9NUE1SODkyNjUxNy9hdmF0YXIuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImZpbGwiLCJ3aWR0aCI6MjQwLCJoZWlnaHQiOjI0MH0sInRvRm9ybWF0Ijoid2VicCJ9fQ==?t=1780447494578"
+                alt="workingthatmagic pfp" />
+              <div class="user-details">
+                <span class="user-username">@workingthatmagic</span>
+              </div>
+              <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px; margin-right: 8px;"
+                title="Cancel" onclick="flipDashboardPanel(false)">↩</button>
+              <button class="icon-btn" style="width: 32px; height: 32px;" title="Close"
+                onclick="closeSlideUpPanelForce()">✕</button>
             </div>
-            
-            <div class="add-link-form" style="border-top: 1px solid var(--line-2); padding-top: 14px; margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
-              <strong style="font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px;">Add New Link</strong>
-              <div style="display: flex; gap: 8px;">
-                <input type="text" id="newLinkName" placeholder="NAME (e.g. SPOTIFY)" style="flex: 1;" onkeydown="if(event.key === 'Enter') addDashboardLinkField()" />
-                <input type="url" id="newLinkUrl" placeholder="URL (https://...)" style="flex: 2;" onkeydown="if(event.key === 'Enter') addDashboardLinkField()" />
-                <button class="icon-btn" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 18px;" onclick="addDashboardLinkField()">+</button>
+
+            <div class="edit-links-container"
+              style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 4px; margin-bottom: 16px;">
+              <div id="editLinksList" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Dynamically populated rows -->
+              </div>
+
+              <div class="add-link-form"
+                style="border-top: 1px solid var(--line-2); padding-top: 14px; margin-top: 6px; display: flex; flex-direction: column; gap: 8px;">
+                <strong
+                  style="font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px;">Add
+                  New Link</strong>
+                <div style="display: flex; gap: 8px;">
+                  <input type="text" id="newLinkName" placeholder="NAME (e.g. SPOTIFY)" style="flex: 1;"
+                    onkeydown="if(event.key === 'Enter') addDashboardLinkField()" />
+                  <input type="url" id="newLinkUrl" placeholder="URL (https://...)" style="flex: 2;"
+                    onkeydown="if(event.key === 'Enter') addDashboardLinkField()" />
+                  <button class="icon-btn"
+                    style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 18px;"
+                    onclick="addDashboardLinkField()">+</button>
+                </div>
+              </div>
+            </div>
+
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; gap: 10px;">
+              <button class="auth-btn"
+                style="padding: 10px 20px; font-size: 12px; background: rgba(220,53,69,0.15); color: #ff5555; border: 1px solid rgba(220,53,69,0.3);"
+                onclick="deleteDashboardUser()">Delete User</button>
+              <div style="display: flex; gap: 10px;">
+                <button class="auth-btn" style="padding: 10px 20px; font-size: 12px;"
+                  onclick="flipDashboardPanel(false)">Cancel</button>
+                <button class="auth-btn"
+                  style="padding: 10px 20px; font-size: 12px; background: var(--white); color: var(--black);"
+                  onclick="saveDashboardLinks()">Save Changes</button>
               </div>
             </div>
           </div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; gap: 10px;">
-            <button class="auth-btn" style="padding: 10px 20px; font-size: 12px; background: rgba(220,53,69,0.15); color: #ff5555; border: 1px solid rgba(220,53,69,0.3);" onclick="deleteDashboardUser()">Delete User</button>
-            <div style="display: flex; gap: 10px;">
-              <button class="auth-btn" style="padding: 10px 20px; font-size: 12px;" onclick="flipDashboardPanel(false)">Cancel</button>
-              <button class="auth-btn" style="padding: 10px 20px; font-size: 12px; background: var(--white); color: var(--black);" onclick="saveDashboardLinks()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-ui-backdrop" id="mobileUiBackdrop" onclick="closeMobileOverlays()"></div>
+    <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button" aria-controls="filtersPanel"
+      aria-expanded="false" onclick="toggleMobileFilters()">Filters</button>
+    <button class="add-artist-btn" id="addArtistFloatingBtn" onclick="openAddArtistModal()">+ Add Artist</button>
+    <button class="add-artist-btn hidden" id="addDashboardUserBtn" onclick="openAddUserModal()">+ Add User</button>
+
+    <div class="modal" id="addArtistModal">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2>Add Artist</h2>
+          <button class="close-btn" onclick="closeAddArtistModal()">Close</button>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            <span class="form-label">Name</span>
+            <input id="newName" type="text" placeholder="ARTIST NAME" />
+          </label>
+          <label>
+            <span class="form-label">Region</span>
+            <input id="newRegion" type="text" placeholder="REGION" value="User Added" />
+          </label>
+          <label>
+            <span class="form-label">Lane</span>
+            <input id="newLane" type="text" placeholder="LANE" value="User-added artist" />
+          </label>
+          <label>
+            <span class="form-label">Priority</span>
+            <select id="newPriority">
+              <option value="USER">USER</option>
+              <option value="High">HIGH</option>
+              <option value="Medium">MEDIUM</option>
+              <option value="Low">LOW</option>
+            </select>
+          </label>
+          <label class="full">
+            <span class="form-label">Email</span>
+            <input id="newEmail" type="text" placeholder="EMAIL" />
+          </label>
+          <label class="full">
+            <span class="form-label">Instagram</span>
+            <input id="newInstagram" type="url" placeholder="INSTAGRAM URL" />
+          </label>
+          <label class="full">
+            <span class="form-label">TikTok</span>
+            <input id="newTikTok" type="url" placeholder="TIKTOK URL" />
+          </label>
+          <label class="full">
+            <span class="form-label">Spotify</span>
+            <input id="newSpotify" type="url" placeholder="SPOTIFY URL" />
+          </label>
+          <label class="full">
+            <span class="form-label">YouTube</span>
+            <input id="newYouTube" type="url" placeholder="YOUTUBE URL" />
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button onclick="addArtistFromModal()">Add Artist</button>
+          <button onclick="clearAddArtistForm()">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="addUserModal">
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2>Add User</h2>
+          <button class="close-btn" onclick="closeAddUserModal()">Close</button>
+        </div>
+
+        <div class="form-grid">
+          <label class="full">
+            <span class="form-label">Username</span>
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <span style="font-weight: 800; color: var(--white); font-size: 16px;">@</span>
+              <input id="newUserNameInput" type="text" placeholder="username"
+                style="flex: 1; background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0;" />
             </div>
+          </label>
+          <label class="full">
+            <span class="form-label">Profile Picture URL (Optional)</span>
+            <input id="newUserPfpInput" type="url" placeholder="https://..."
+              style="background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0;" />
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button onclick="addUserFromModal()">Add User</button>
+          <button onclick="closeAddUserModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="adminDashboardModal">
+      <div class="modal-panel" style="max-width: 600px;">
+        <div class="modal-header">
+          <h2>Admin Dashboard</h2>
+          <button class="close-btn" onclick="closeAdminDashboardModal()">Close</button>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <h3
+            style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; color: var(--white);">
+            Whitelist New Gmail Account</h3>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input id="adminNewEmailInput" type="email" placeholder="example@gmail.com"
+              style="flex: 1; min-width: 200px; background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0; box-sizing: border-box;" />
+            <select id="adminNewRoleSelect"
+              style="background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0;">
+              <option value="read-write">Read & Write</option>
+              <option value="read-only">Read Only</option>
+            </select>
+            <button onclick="addAuthorizedUserFromModal()"
+              style="background: var(--white); color: var(--black); font-weight: 800; border: 0; padding: 10px 20px; font-family: inherit; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">+
+              Whitelist Email</button>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="mobile-ui-backdrop" id="mobileUiBackdrop" onclick="closeMobileOverlays()"></div>
-  <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button" aria-controls="filtersPanel" aria-expanded="false" onclick="toggleMobileFilters()">Filters</button>
-  <button class="add-artist-btn" id="addArtistFloatingBtn" onclick="openAddArtistModal()">+ Add Artist</button>
-  <button class="add-artist-btn hidden" id="addDashboardUserBtn" onclick="openAddUserModal()">+ Add User</button>
-
-  <div class="modal" id="addArtistModal">
-    <div class="modal-panel">
-      <div class="modal-header">
-        <h2>Add Artist</h2>
-        <button class="close-btn" onclick="closeAddArtistModal()">Close</button>
-      </div>
-
-      <div class="form-grid">
-        <label>
-          <span class="form-label">Name</span>
-          <input id="newName" type="text" placeholder="ARTIST NAME" />
-        </label>
-        <label>
-          <span class="form-label">Region</span>
-          <input id="newRegion" type="text" placeholder="REGION" value="User Added" />
-        </label>
-        <label>
-          <span class="form-label">Lane</span>
-          <input id="newLane" type="text" placeholder="LANE" value="User-added artist" />
-        </label>
-        <label>
-          <span class="form-label">Priority</span>
-          <select id="newPriority">
-            <option value="USER">USER</option>
-            <option value="High">HIGH</option>
-            <option value="Medium">MEDIUM</option>
-            <option value="Low">LOW</option>
-          </select>
-        </label>
-        <label class="full">
-          <span class="form-label">Email</span>
-          <input id="newEmail" type="text" placeholder="EMAIL" />
-        </label>
-        <label class="full">
-          <span class="form-label">Instagram</span>
-          <input id="newInstagram" type="url" placeholder="INSTAGRAM URL" />
-        </label>
-        <label class="full">
-          <span class="form-label">TikTok</span>
-          <input id="newTikTok" type="url" placeholder="TIKTOK URL" />
-        </label>
-        <label class="full">
-          <span class="form-label">Spotify</span>
-          <input id="newSpotify" type="url" placeholder="SPOTIFY URL" />
-        </label>
-        <label class="full">
-          <span class="form-label">YouTube</span>
-          <input id="newYouTube" type="url" placeholder="YOUTUBE URL" />
-        </label>
-      </div>
-
-      <div class="modal-actions">
-        <button onclick="addArtistFromModal()">Add Artist</button>
-        <button onclick="clearAddArtistForm()">Clear</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="addUserModal">
-    <div class="modal-panel">
-      <div class="modal-header">
-        <h2>Add User</h2>
-        <button class="close-btn" onclick="closeAddUserModal()">Close</button>
-      </div>
-
-      <div class="form-grid">
-        <label class="full">
-          <span class="form-label">Username</span>
-          <div style="display: flex; align-items: center; gap: 4px;">
-            <span style="font-weight: 800; color: var(--white); font-size: 16px;">@</span>
-            <input id="newUserNameInput" type="text" placeholder="username" style="flex: 1; background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0;" />
+        <div>
+          <h3
+            style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; color: var(--white);">
+            Whitelisted Accounts</h3>
+          <div id="adminUserList"
+            style="max-height: 300px; overflow-y: auto; border: 1px solid var(--line); background: rgba(255,255,255,0.02); padding: 12px;">
+            <!-- Authorized users listed dynamically here -->
           </div>
-        </label>
-        <label class="full">
-          <span class="form-label">Profile Picture URL (Optional)</span>
-          <input id="newUserPfpInput" type="url" placeholder="https://..." style="background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0;" />
-        </label>
-      </div>
+        </div>
 
-      <div class="modal-actions">
-        <button onclick="addUserFromModal()">Add User</button>
-        <button onclick="closeAddUserModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="adminDashboardModal">
-    <div class="modal-panel" style="max-width: 600px;">
-      <div class="modal-header">
-        <h2>Admin Dashboard</h2>
-        <button class="close-btn" onclick="closeAdminDashboardModal()">Close</button>
-      </div>
-
-      <div style="margin-bottom: 24px;">
-        <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; color: var(--white);">Whitelist New Gmail Account</h3>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <input id="adminNewEmailInput" type="email" placeholder="example@gmail.com" style="flex: 1; min-width: 200px; background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0; box-sizing: border-box;" />
-          <select id="adminNewRoleSelect" style="background: var(--black); border: 1px solid var(--line); color: var(--text); padding: 10px; font-family: inherit; font-size: 13px; border-radius: 0;">
-            <option value="read-write">Read & Write</option>
-            <option value="read-only">Read Only</option>
-          </select>
-          <button onclick="addAuthorizedUserFromModal()" style="background: var(--white); color: var(--black); font-weight: 800; border: 0; padding: 10px 20px; font-family: inherit; font-size: 13px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">+ Whitelist Email</button>
+        <div class="modal-actions" style="margin-top: 24px;">
+          <button onclick="closeAdminDashboardModal()"
+            style="background: transparent; border: 1px solid var(--line); color: var(--muted); font-weight: 800; padding: 10px 20px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">Close</button>
         </div>
       </div>
-
-      <div>
-        <h3 style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; color: var(--white);">Whitelisted Accounts</h3>
-        <div id="adminUserList" style="max-height: 300px; overflow-y: auto; border: 1px solid var(--line); background: rgba(255,255,255,0.02); padding: 12px;">
-          <!-- Authorized users listed dynamically here -->
-        </div>
-      </div>
-
-      <div class="modal-actions" style="margin-top: 24px;">
-        <button onclick="closeAdminDashboardModal()" style="background: transparent; border: 1px solid var(--line); color: var(--muted); font-weight: 800; padding: 10px 20px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;">Close</button>
-      </div>
     </div>
-  </div>
 
     <footer class="footer">
       <div>MONEYOVERALL © 2026 All Rights Reserved.</div>
@@ -2332,6 +2830,7 @@
     const rosterPage = document.getElementById("rosterPage");
     const mapPage = document.getElementById("mapPage");
     const visualsPage = document.getElementById("visualsPage");
+    const mindsetPage = document.getElementById("mindsetPage");
     const themeSelect = document.getElementById("themeSelect");
     const appShell = document.getElementById("appShell");
     const authGate = document.getElementById("authGate");
@@ -2437,7 +2936,7 @@
     }
 
     function setActiveNavBtn(activeId) {
-      ["dashboardNavBtn", "rosterNavBtn", "visualsNavBtn", "settingsNavBtn"].forEach(id => {
+      ["dashboardNavBtn", "rosterNavBtn", "visualsNavBtn", "settingsNavBtn", "mindsetNavBtn"].forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
           btn.classList.toggle("active", id === activeId);
@@ -2451,6 +2950,7 @@
       rosterPage.classList.add("hidden");
       mapPage.classList.add("hidden");
       visualsPage.classList.add("hidden");
+      mindsetPage.classList.add("hidden");
       settingsPage.classList.remove("hidden");
       setFloatingAddVisible(false);
       setActiveNavBtn("settingsNavBtn");
@@ -2463,6 +2963,7 @@
       rosterPage.classList.add("hidden");
       mapPage.classList.add("hidden");
       visualsPage.classList.add("hidden");
+      mindsetPage.classList.add("hidden");
       dashboardPage.classList.remove("hidden");
       setFloatingAddVisible(false);
       document.getElementById("addDashboardUserBtn")?.classList.remove("hidden");
@@ -2477,6 +2978,7 @@
       dashboardPage.classList.add("hidden");
       mapPage.classList.add("hidden");
       visualsPage.classList.add("hidden");
+      mindsetPage.classList.add("hidden");
       rosterPage.classList.remove("hidden");
       setFloatingAddVisible(true);
       document.getElementById("addDashboardUserBtn")?.classList.add("hidden");
@@ -2490,6 +2992,7 @@
       rosterPage.classList.add("hidden");
       dashboardPage.classList.add("hidden");
       mapPage.classList.add("hidden");
+      mindsetPage.classList.add("hidden");
       visualsPage.classList.remove("hidden");
       setFloatingAddVisible(false);
       setActiveNavBtn("visualsNavBtn");
@@ -2502,12 +3005,26 @@
       rosterPage.classList.add("hidden");
       dashboardPage.classList.add("hidden");
       visualsPage.classList.add("hidden");
+      mindsetPage.classList.add("hidden");
       mapPage.classList.remove("hidden");
       setFloatingAddVisible(false);
       setActiveNavBtn("");
       closeMobileOverlays();
       renderMapLand();
       renderMapDots();
+    }
+
+    function showMindsetPage() {
+      document.title = "MONEYOVERALL / MINDSET";
+      settingsPage.classList.add("hidden");
+      rosterPage.classList.add("hidden");
+      mapPage.classList.add("hidden");
+      visualsPage.classList.add("hidden");
+      dashboardPage.classList.add("hidden");
+      mindsetPage.classList.remove("hidden");
+      setFloatingAddVisible(false);
+      setActiveNavBtn("mindsetNavBtn");
+      closeMobileOverlays();
     }
     function escapeHtml(value) { return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;"); }
 
@@ -2688,7 +3205,7 @@
               const data = snap.data();
               authedList = Array.isArray(data.authorizedUsers) ? data.authorizedUsers : [];
             }
-            
+
             if (authedList.length === 0) {
               authedList = [{ email: "andrcooks@gmail.com", role: "read-write" }];
               await setDoc(firebaseDocRef, { authorizedUsers: authedList }, { merge: true });
@@ -2697,7 +3214,7 @@
             authorizedUsers = authedList;
             const userEmail = (user.email || "").toLowerCase().trim();
             const matchedUser = authedList.find(u => (u.email || "").toLowerCase().trim() === userEmail);
-            
+
             if (!matchedUser) {
               if (unsubscribeRealtime) {
                 unsubscribeRealtime();
@@ -2736,8 +3253,8 @@
           const cloud = snap.data();
 
           // Read dashboardUsers with fallback
-          const cloudDashboardUsers = Array.isArray(cloud.dashboardUsers_v2) 
-            ? cloud.dashboardUsers_v2 
+          const cloudDashboardUsers = Array.isArray(cloud.dashboardUsers_v2)
+            ? cloud.dashboardUsers_v2
             : (Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : null);
 
           if (cloudDashboardUsers) {
@@ -2781,8 +3298,8 @@
           }
 
           // Read sidebarLinks with fallback
-          const cloudSidebarLinks = Array.isArray(cloud.sidebarLinks_v2) 
-            ? cloud.sidebarLinks_v2 
+          const cloudSidebarLinks = Array.isArray(cloud.sidebarLinks_v2)
+            ? cloud.sidebarLinks_v2
             : (Array.isArray(cloud.sidebarLinks) ? cloud.sidebarLinks : null);
 
           if (cloudSidebarLinks) {
@@ -2845,7 +3362,7 @@
 
       unsubscribeRealtime = onSnapshot(firebaseDocRef, (snap) => {
         if (!isCloudLoaded || !snap.exists()) return;
-        
+
         const cloud = snap.data();
         const activeEl = document.activeElement;
         const activeCardShell = activeEl ? activeEl.closest(".card-shell") : null;
@@ -2936,7 +3453,7 @@
           authorizedUsers = cloudAuthorizedUsers;
           const userEmail = (firebaseAuth.currentUser?.email || "").toLowerCase().trim();
           const matchedUser = authorizedUsers.find(u => (u.email || "").toLowerCase().trim() === userEmail);
-          
+
           if (!matchedUser) {
             if (unsubscribeRealtime) {
               unsubscribeRealtime();
@@ -2945,10 +3462,10 @@
             setSignedInUi(false, "This platform is invitation only. You do not have access to its content.", true);
             return;
           }
-          
+
           const oldRole = userRole;
           userRole = matchedUser.role || "read-only";
-          
+
           if (oldRole !== userRole) {
             if (userRole === "read-only") {
               document.body.classList.add("role-readonly");
@@ -3049,10 +3566,10 @@
 
         if (snap.exists()) {
           const cloud = snap.data();
-          
+
           // Read with fallback to v1 fields
-          const cloudArtists = Array.isArray(cloud.artists_v2) 
-            ? cloud.artists_v2 
+          const cloudArtists = Array.isArray(cloud.artists_v2)
+            ? cloud.artists_v2
             : (Array.isArray(cloud.artists) ? cloud.artists : []);
           const cloudDeletedArtistIds = Array.isArray(cloud.deletedArtistIds_v2)
             ? cloud.deletedArtistIds_v2
@@ -3796,7 +4313,7 @@
       renderArtists();
     }
 
-    document.getElementById("addArtistModal").addEventListener("click", function(event) {
+    document.getElementById("addArtistModal").addEventListener("click", function (event) {
       if (event.target.id === "addArtistModal") closeAddArtistModal();
     });
 
@@ -3848,10 +4365,10 @@
         }
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;flex-shrink:0;"><path d="${iconTrimmed}"/></svg>`;
       }
-      
+
       const label = (link.label || "").toLowerCase().trim();
       const url = (link.url || "").toLowerCase().trim();
-      
+
       if (label === "discord" || url.includes("discord.com") || url.includes("discord.gg")) {
         return `<svg viewBox="0 0 127.14 96.36" fill="currentColor" style="width:20px;height:20px;flex-shrink:0;"><path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.4-5c.87-.64,1.71-1.32,2.51-2a75.52,75.52,0,0,0,72.63,0c.8.71,1.64,1.39,2.51,2a68.43,68.43,0,0,1-10.4,5,77.7,77.7,0,0,0,6.63,10.85,105.73,105.73,0,0,0,31-18.83C129,54.65,123.5,31.58,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/></svg>`;
       }
@@ -3888,7 +4405,7 @@
       if (label === "untitled" || url.includes("untitled")) {
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>`;
       }
-      
+
       return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>`;
     }
 
@@ -3937,14 +4454,14 @@
     function exitSidebarEditMode() {
       document.getElementById("sidebarEditMode")?.classList.add("hidden");
       document.getElementById("sidebarViewMode")?.classList.remove("hidden");
-      
+
       const newLabel = document.getElementById("newSidebarLinkLabel");
       const newUrl = document.getElementById("newSidebarLinkUrl");
       const newIcon = document.getElementById("newSidebarLinkIcon");
       if (newLabel) newLabel.value = "";
       if (newUrl) newUrl.value = "";
       if (newIcon) newIcon.value = "";
-      
+
       renderSidebarLinks();
     }
 
@@ -3962,7 +4479,7 @@
       const label = labelInput ? labelInput.value.trim() : "";
       const url = urlInput ? urlInput.value.trim() : "";
       const icon = iconInput ? iconInput.value.trim() : "";
-      
+
       if (!label || !url) {
         alert("Please enter both Name and URL.");
         return;
@@ -3991,7 +4508,7 @@
         </div>
       `;
       editList.appendChild(row);
-      
+
       labelInput.value = "";
       urlInput.value = "";
       if (iconInput) iconInput.value = "";
@@ -4001,7 +4518,7 @@
       if (userRole === "read-only") return;
       const editList = document.getElementById("sidebarEditLinksContainer");
       if (!editList) return;
-      
+
       const rows = editList.querySelectorAll(".edit-link-row-vertical");
       const newLinks = [];
       rows.forEach(row => {
@@ -4128,7 +4645,7 @@
       const name = nameInput.value.trim();
       const url = urlInput.value.trim();
       if (!name || !url) return;
-      
+
       const list = document.getElementById("editLinksList");
       const row = document.createElement("div");
       row.className = "edit-link-row";
@@ -4157,7 +4674,7 @@
           links.push({ label, url });
         }
       });
-      
+
       const nameInput = document.getElementById("newLinkName");
       const urlInput = document.getElementById("newLinkUrl");
       const name = nameInput ? nameInput.value.trim() : "";
@@ -4167,7 +4684,7 @@
         if (nameInput) nameInput.value = "";
         if (urlInput) urlInput.value = "";
       }
-      
+
       let users = loadDashboardUsers();
       const userIndex = users.findIndex(u => u.username === currentOpenUsername);
       if (userIndex === -1) return;
@@ -4176,7 +4693,7 @@
       if (!FIREBASE_ENABLED) {
         localStorage.setItem("dashboardUsers.v1", JSON.stringify(users));
       }
-      
+
       // Update front UI links
       const container = document.querySelector(".action-links");
       if (container) {
@@ -4187,7 +4704,7 @@
           </a>
         `).join("");
       }
-      
+
       flipDashboardPanel(false);
 
       if (firebaseOnline && firebaseDocRef) {
@@ -4201,8 +4718,8 @@
           let mergedUsers = [...users];
           if (snap.exists()) {
             const cloud = snap.data();
-            const cloudUsers = Array.isArray(cloud.dashboardUsers_v2) 
-              ? cloud.dashboardUsers_v2 
+            const cloudUsers = Array.isArray(cloud.dashboardUsers_v2)
+              ? cloud.dashboardUsers_v2
               : (Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : []);
             cloudUsers.forEach(cloudUser => {
               const localUser = mergedUsers.find(u => u.username === cloudUser.username);
@@ -4241,13 +4758,13 @@
       const users = loadDashboardUsers();
       const user = users.find(u => u.username === username);
       if (!user) return;
-      
+
       const modal = document.getElementById("slideUpModal");
       if (!modal) return;
-      
+
       const frontHeader = modal.querySelector(".slide-up-front .slide-up-header");
       const backHeader = modal.querySelector(".slide-up-back .slide-up-header");
-      
+
       frontHeader.innerHTML = `
         ${renderUserAvatarHtml(user, 64)}
         <div class="user-details">
@@ -4256,7 +4773,7 @@
         <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px; margin-right: 8px;" title="Edit Links" onclick="flipDashboardPanel(true)">✎</button>
         <button class="icon-btn" style="width: 32px; height: 32px;" title="Close" onclick="closeSlideUpPanelForce()">✕</button>
       `;
-      
+
       backHeader.innerHTML = `
         ${renderUserAvatarHtml(user, 64)}
         <div class="user-details">
@@ -4265,7 +4782,7 @@
         <button class="icon-btn" style="margin-left: auto; width: 32px; height: 32px; margin-right: 8px;" title="Cancel" onclick="flipDashboardPanel(false)">↩</button>
         <button class="icon-btn" style="width: 32px; height: 32px;" title="Close" onclick="closeSlideUpPanelForce()">✕</button>
       `;
-      
+
       const container = modal.querySelector(".action-links");
       if (container) {
         container.innerHTML = (user.links || []).map(link => `
@@ -4275,7 +4792,7 @@
           </a>
         `).join("");
       }
-      
+
       modal.classList.add("is-open");
     }
 
@@ -4302,17 +4819,17 @@
       const username = currentOpenUsername;
       if (!username) return;
       if (!confirm(`Are you sure you want to delete @${username} and all their links?`)) return;
-      
+
       let users = loadDashboardUsers();
       users = users.filter(u => u.username !== username);
       dashboardUsers = users;
       if (!FIREBASE_ENABLED) {
         localStorage.setItem("dashboardUsers.v1", JSON.stringify(users));
       }
-      
+
       renderDashboardUsers();
       closeSlideUpPanelForce();
-      
+
       if (firebaseOnline && firebaseDocRef) {
         if (!isCloudLoaded) {
           console.warn("Firestore write blocked: Cloud data not yet loaded.");
@@ -4324,8 +4841,8 @@
           let mergedUsers = [...users];
           if (snap.exists()) {
             const cloud = snap.data();
-            const cloudUsers = Array.isArray(cloud.dashboardUsers_v2) 
-              ? cloud.dashboardUsers_v2 
+            const cloudUsers = Array.isArray(cloud.dashboardUsers_v2)
+              ? cloud.dashboardUsers_v2
               : (Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : []);
             cloudUsers.forEach(cloudUser => {
               if (cloudUser.username !== username) {
@@ -4366,38 +4883,38 @@
       const pfpInput = document.getElementById("newUserPfpInput");
       const username = usernameInput.value.trim().replace(/^@/, "");
       const pfp = pfpInput.value.trim();
-      
+
       if (!username) {
         alert("Username is required.");
         return;
       }
-      
+
       if (!/^[a-zA-Z0-9_]+$/.test(username)) {
         alert("Username must contain only letters, numbers, and underscores.");
         return;
       }
-      
+
       let users = loadDashboardUsers();
       if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
         alert("User already exists.");
         return;
       }
-      
+
       const newUser = {
         username,
         pfp,
         links: []
       };
-      
+
       users.push(newUser);
       dashboardUsers = users;
       if (!FIREBASE_ENABLED) {
         localStorage.setItem("dashboardUsers.v1", JSON.stringify(users));
       }
-      
+
       renderDashboardUsers();
       closeAddUserModal();
-      
+
       if (firebaseOnline && firebaseDocRef) {
         if (!isCloudLoaded) {
           console.warn("Firestore write blocked: Cloud data not yet loaded.");
@@ -4409,8 +4926,8 @@
           let mergedUsers = [...users];
           if (snap.exists()) {
             const cloud = snap.data();
-            const cloudUsers = Array.isArray(cloud.dashboardUsers_v2) 
-              ? cloud.dashboardUsers_v2 
+            const cloudUsers = Array.isArray(cloud.dashboardUsers_v2)
+              ? cloud.dashboardUsers_v2
               : (Array.isArray(cloud.dashboardUsers) ? cloud.dashboardUsers : []);
             cloudUsers.forEach(cloudUser => {
               const localUser = mergedUsers.find(u => u.username === cloudUser.username);
@@ -4440,44 +4957,45 @@
         history.replaceState(null, null, "/" + redirectPage);
         return redirectPage;
       }
-      
+
       // 2. Check path routing
       const path = window.location.pathname.replace(/^\/|\/$/g, "").toLowerCase();
-      if (path === "settings" || path === "visuals" || path === "roster" || path === "map" || path === "dashboard") {
+      if (path === "settings" || path === "visuals" || path === "roster" || path === "map" || path === "dashboard" || path === "mindset") {
         return path;
       }
-      
+
       // 3. Fallback to hash routing
       const hash = String(window.location.hash || "").replace("#", "").toLowerCase();
-      if (hash === "settings" || hash === "visuals" || hash === "roster" || hash === "map" || hash === "dashboard") {
+      if (hash === "settings" || hash === "visuals" || hash === "roster" || hash === "map" || hash === "dashboard" || hash === "mindset") {
         return hash;
       }
-      
+
       return "dashboard";
     }
 
     function routeToPage(route) {
       applyPendingUpdatesIfNeeded();
-      
+
       // Update active nav button styling
       const btnIdMap = {
         dashboard: "dashboardNavBtn",
         roster: "rosterNavBtn",
         visuals: "visualsNavBtn",
-        settings: "settingsNavBtn"
+        settings: "settingsNavBtn",
+        mindset: "mindsetNavBtn"
       };
-      
-      ["dashboardNavBtn", "rosterNavBtn", "visualsNavBtn", "settingsNavBtn"].forEach(id => {
+
+      ["dashboardNavBtn", "rosterNavBtn", "visualsNavBtn", "settingsNavBtn", "mindsetNavBtn"].forEach(id => {
         const btn = document.getElementById(id);
         if (btn) btn.classList.remove("active");
       });
-      
+
       const activeBtnId = btnIdMap[route];
       if (activeBtnId) {
         const activeBtn = document.getElementById(activeBtnId);
         if (activeBtn) activeBtn.classList.add("active");
       }
-      
+
       if (route === "settings") {
         showSettingsPage();
       } else if (route === "visuals") {
@@ -4486,6 +5004,8 @@
         showRosterPage();
       } else if (route === "map") {
         showMapPage();
+      } else if (route === "mindset") {
+        showMindsetPage();
       } else {
         showDashboardPage();
       }
@@ -4499,16 +5019,16 @@
     function renderAuthorizedUsersList() {
       const container = document.getElementById("adminUserList");
       if (!container) return;
-      
+
       if (authorizedUsers.length === 0) {
         container.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 16px 0;">No authorized accounts.</div>';
         return;
       }
-      
+
       container.innerHTML = authorizedUsers.map((user, index) => {
         const isSelf = (user.email || "").toLowerCase().trim() === (firebaseAuth.currentUser?.email || "").toLowerCase().trim();
         const roleText = user.role === "read-write" ? "Read & Write" : "Read Only";
-        
+
         return `
           <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding: 10px 0; gap: 8px;">
             <div style="display: flex; flex-direction: column;">
@@ -4545,12 +5065,12 @@
       const roleSelect = document.getElementById("adminNewRoleSelect");
       const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
       const role = roleSelect ? roleSelect.value : "read-only";
-      
+
       if (!email) {
         alert("Please enter a valid Gmail address.");
         return;
       }
-      
+
       if (!email.includes("@")) {
         alert("Please enter a complete email address.");
         return;
@@ -4562,7 +5082,7 @@
       }
 
       authorizedUsers.push({ email, role });
-      
+
       try {
         if (firebaseOnline && firebaseDocRef) {
           saveStatus.textContent = "Updating whitelist...";
@@ -4582,12 +5102,12 @@
 
     async function updateAuthorizedUserRole(email, newRole) {
       if (userRole !== "read-write") return;
-      
+
       const idx = authorizedUsers.findIndex(u => (u.email || "").toLowerCase().trim() === email.toLowerCase().trim());
       if (idx === -1) return;
-      
+
       authorizedUsers[idx].role = newRole;
-      
+
       try {
         if (firebaseOnline && firebaseDocRef) {
           saveStatus.textContent = "Updating role...";
@@ -4607,9 +5127,9 @@
     async function removeAuthorizedUser(email) {
       if (userRole !== "read-write") return;
       if (!confirm(`Are you sure you want to remove ${email} from the whitelist?`)) return;
-      
+
       authorizedUsers = authorizedUsers.filter(u => (u.email || "").toLowerCase().trim() !== email.toLowerCase().trim());
-      
+
       try {
         if (firebaseOnline && firebaseDocRef) {
           saveStatus.textContent = "Removing user...";
@@ -4660,6 +5180,7 @@
     window.showDashboardPage = showDashboardPage;
     window.showRosterPage = showRosterPage;
     window.showVisualsPage = showVisualsPage;
+    window.showMindsetPage = showMindsetPage;
     window.navigateTo = navigateTo;
     window.showMapPage = showMapPage;
     window.openSlideUpPanel = openSlideUpPanel;
@@ -4695,7 +5216,7 @@
       fetch(`/assets/audio/${name === 'click' ? 'btn-click' : name}.ogg`)
         .then(r => r.arrayBuffer())
         .then(buf => { _audioRaw[name] = buf; })
-        .catch(() => {});
+        .catch(() => { });
     });
 
     function _getAudioCtx() {
@@ -4716,7 +5237,7 @@
         // slice() because decodeAudioData detaches the buffer
         ctx.decodeAudioData(raw.slice(0)).then(buf => {
           _audioBuffers[name] = buf;
-        }).catch(() => {});
+        }).catch(() => { });
       });
     }
 
@@ -4738,7 +5259,7 @@
         src.buffer = buffer;
         src.connect(ctx.destination);
         src.start(0);
-      } catch (_) {}
+      } catch (_) { }
     }
     window.playAudio = playAudio;
 
@@ -4790,10 +5311,10 @@
         });
       }
       renderDashboardUsers();
-      document.getElementById("addUserModal").addEventListener("click", function(event) {
+      document.getElementById("addUserModal").addEventListener("click", function (event) {
         if (event.target.id === "addUserModal") closeAddUserModal();
       });
-      document.getElementById("adminDashboardModal").addEventListener("click", function(event) {
+      document.getElementById("adminDashboardModal").addEventListener("click", function (event) {
         if (event.target.id === "adminDashboardModal") closeAdminDashboardModal();
       });
       setSignedInUi(false, "Checking sign-in...");
@@ -4803,4 +5324,5 @@
     initApp();
   </script>
 </body>
+
 </html>
